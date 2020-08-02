@@ -12,14 +12,25 @@
     "react-scripts": "3.4.1",
     "simple-peer": "9.6.2",
     "socket.io-client": "^2.3.0",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "classnames": "2.2.6",
+    "moment": "2.26.0",
+    "node-sass": "4.14.1",
+    "nouislider": "14.5.0",
+    "react-bootstrap-switch": "15.5.3",
+    "react-datetime": "2.16.3",
+    "react-router": "5.2.0",
+    "reactstrap": "8.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "postinstall": "yarn build"
+    "postinstall": "yarn build",
+    "compile-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.css",
+    "minify-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.min.css --output-style compressed",
+    "map-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.css --source-map true"
   },
   "proxy": "http://localhost:5000",
   "eslintConfig": {
