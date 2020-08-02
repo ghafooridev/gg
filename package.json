@@ -11,7 +11,7 @@
     "socket.io": "^2.3.0"
   },
   "scripts": {
-    "start": "PROD=true node server.js",
+    "start": "node server.js",
     "postinstall": "cd ./client && yarn",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "node server.js",
