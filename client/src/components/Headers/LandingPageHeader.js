@@ -57,19 +57,14 @@ function LandingPageHeader() {
             <h1>Spiel</h1>
             <h3>Engage, socialize and connect with Zoom University students.</h3>
             <br />
-            {/* <Button
-              href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-              className="btn-round mr-1"
-              color="neutral"
-              target="_blank"
-              outline
-            >
-              <i className="fa fa-play" />
-              Watch video
+            <Button className="btn-round" color="neutral" type="button" outline>
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              Sign Up
             </Button>
             <Button className="btn-round" color="neutral" type="button" outline>
-              Download
-            </Button> */}
+              <i class="fa fa-sign-in" aria-hidden="true"></i>
+              Sign In
+            </Button>
           </div>
         </Container>
       </div>

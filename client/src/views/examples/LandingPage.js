@@ -147,7 +147,7 @@ function LandingPage() {
             </Row>
           </Container> */}
         {/* </div> */}
-        <div className="section section-dark text-center">
+        <div className="section section-dark text-center" id="games">
           <Container>
             <h2 name="About" className="title">Games</h2>
             <Row>
