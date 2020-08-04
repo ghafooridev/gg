@@ -13,8 +13,8 @@ const Container = styled.div`
 `;
 
 const StyledVideo = styled.video`
-    height: 1280;
-    width: 960;
+    height: 640;
+    width: 480;
 `;
 
 const Video = (props) => {
@@ -60,6 +60,9 @@ const Room = (props) => {
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
             userVideo.current.srcObject = stream;
             socketRef.current.emit("join room", roomID);
+            
+            // TODO: set state to joining here
+
             socketRef.current.on("all users", users => {
                 const peers = [];
                 users.forEach(userID => {
