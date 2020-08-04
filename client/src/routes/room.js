@@ -15,6 +15,9 @@ const Container = styled.div`
 const StyledVideo = styled.video`
     height: 640;
     width: 480;
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
 `;
 
 const Video = (props) => {
