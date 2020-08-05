@@ -7,26 +7,36 @@ const socket = require("socket.io");
 const io = socket(server);
 const path = require("path");
 
-console.log(process.env.PORT)
-
-const users = {};
-
-const socketToRoom = {};
+const users = {}; // room ID -> users in room map
+const socketToRoom = {}; // socket ID -> room ID map
 
 io.on('connection', socket => {
+    // user joining room
     socket.on("join room", roomID => {
+
+        // check if users array for roomID exists
         if (users[roomID]) {
             const length = users[roomID].length;
+
+            // room already full
             if (length === 4) {
                 socket.emit("room full");
                 return;
             }
+
             users[roomID].push(socket.id);
         } else {
             users[roomID] = [socket.id];
         }
+
+        // update server-side collections
         socketToRoom[socket.id] = roomID;
         const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
+        socket.join(roomID);
+
+        console.log("User connected! ", socket.id);
+        console.log(users, socketToRoom);
+        console.log("-------------");
 
         socket.emit("all users", usersInThisRoom);
     });
@@ -42,10 +52,20 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         const roomID = socketToRoom[socket.id];
         let room = users[roomID];
+
+        console.log('user disconnected! ', roomID, socket.id);
+        console.log(socketToRoom);
+        
+
         if (room) {
             room = room.filter(id => id !== socket.id);
             users[roomID] = room;
+
+            console.log('emitting user disconnect event!');
+            io.to(roomID).emit("user disconnect", { room: roomID, id: socket.id, users: room })
         }
+
+        console.log("-------------");
     });
 
 });

@@ -146,9 +146,7 @@ const Room = (props) => {
             initiator: true,
             trickle: false,
             stream,
-        });
-
-        peer.on("signal", signal => {
+        }).on("signal", signal => {
             socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
         });
 
