@@ -3,6 +3,8 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 
+import GamePageFooter from "../components/Footers/GamePageFooter";
+
 const Container = styled.div`
     padding: 20px;
     display: flex;
@@ -38,33 +40,30 @@ const StyledVideo = styled.video`
     -moz-transform:rotateY(180deg); /* Firefox */
 `;
 
-
-
 const Video = (props) => {
-    const ref = useRef();
+    // const ref = useRef();
 
    
-    useEffect(() => {
-        props.peer.on("stream", stream => {
-            console.log("Peer streaming ... ")
-            ref.current.srcObject = stream;
-        });
+    // useEffect(() => {
+    //     props.peer.on("stream", stream => {
+    //         console.log("Peer streaming ... ")
+    //         ref.current.srcObject = stream;
+    //     });
 
-        props.peer.on("error", err => {
-            console.log("Peer error");
-        });
+    //     props.peer.on("error", err => {
+    //         console.log("Peer error");
+    //     });
 
-        props.peer.on("close", () => {
-            console.log("Peer connection closed");
-        });
-        // eslint-disable-next-line
-    }, []);
+    //     props.peer.on("close", () => {
+    //         console.log("Peer connection closed");
+    //     });
+    //     // eslint-disable-next-line
+    // }, []);
 
     return (
-        <StyledVideo playsInline autoPlay ref={ref} loop poster="assets/img/FFFFFF-0.png" />
+        <StyledVideo playsInline autoPlay ref={props.ref} loop poster="assets/img/FFFFFF-0.png" />
     );
 }
-
 
 const videoConstraints = {
     audio: true,
@@ -81,53 +80,83 @@ const videoConstraints = {
 };
 
 const Room = (props) => {
+    let client = {};
     const [peers, setPeers] = useState([]);
     const socketRef = useRef();
     
     const userVideo = useRef();
+    const remoteStream = useRef({});
     const peersRef = useRef([]);
 
     const roomID = props.match.params.roomID;
 
     useEffect(() => {
         socketRef.current = io.connect("/");
-        navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
+        navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
+        .then(stream => {
             userVideo.current.srcObject = stream;
-            socketRef.current.emit("join room", roomID);
             
-            // TODO: set state to joining here
-
-            socketRef.current.on("all users", users => {
-                const peers = [];
-                users.forEach(userID => {
-                    const peer = createPeer(userID, socketRef.current.id, stream);
-                    peersRef.current.push({
-                        peerID: userID,
-                        peer,
-                    })
-                    peers.push(peer);
-                })
-                setPeers(peers);
-                console.log("peers: ", peers);
-            })
-
-            socketRef.current.on("user joined", payload => {
-                const peer = addPeer(payload.signal, payload.callerID, stream);
-                peersRef.current.push({
-                    peerID: payload.callerID,
-                    peer,
-                })
+            // subscribe to room
+            socketRef.current.emit("subscribe", roomID);
+            
+            // peer constructor
+            const initPeer = type => {
+                let peer = new Peer({
+                  initiator: type === "init" ? true : false,
+                  stream: stream,
+                  trickle: false
+                });
                 
-                const users = [...peers, peer];
-                setPeers(users);
-                console.log("User added to peers. peers: ", users);
-            });
+                peer.on("stream", stream => {
+                  console.log("remote stream is running ...")
+                  remoteStream.current.srcObject = stream;
+                });
 
-            socketRef.current.on("receiving returned signal", payload => {
-                const item = peersRef.current.find(p => p.peerID === payload.id);
-                item.peer.signal(payload.signal);
-                console.log("Recieved sent signal: ", payload);
-            });
+                return peer;
+            };
+            
+            // create initiator
+            const createHost = () => {
+                client.gotAnswer = false;
+                let peer = initPeer("init");
+                peer.on("signal", data =>  {
+                    if(!client.gotAnswer) {
+                        socketRef.current.emit("offer", roomID, data);
+                    }
+                });
+
+                client.peer = peer;
+                setPeers([peer]);
+            }
+
+            // create remote
+            const createRemote = offer => {
+                let peer = initPeer("notinit");
+                peer.on("signal", data => {
+                  socketRef.current.emit("answer", roomID, data);
+                });
+                peer.signal(offer);
+                client.peer = peer;
+                setPeers([peer]);
+            };
+
+            // handle answer
+            const handleAnswer = answer => {
+                client.gotAnswer = true;
+                let peer = client.peer;
+                peer.signal(answer);
+            }
+
+            const session_active = () => {
+                alert("session active");
+            };
+            
+            //socket events
+            socketRef.current.on("create_host", createHost);
+            socketRef.current.on("new_offer", createRemote);
+            socketRef.current.on("new_answer", handleAnswer);
+            // socketRef.current.on("end", end);
+            socketRef.current.on("session_active", session_active);
 
             socketRef.current.on("user disconnect", payload => {
                 if (roomID === payload.room) {
@@ -135,7 +164,10 @@ const Room = (props) => {
                 }
             });
         })
-
+        .catch(error => {
+            //error alerts
+            console.log(error);
+        });
         
 
         // eslint-disable-next-line
@@ -201,12 +233,6 @@ const Room = (props) => {
         setPeers(updatedPeers);
     }
 
-    // eslint-disable-next-line
-    function componentWillUpdate(nextProps, nextState) {
-        console.log("state changing to: ", nextState)
-        console.log("next props: ", nextProps)
-    }
-
     return (
         <Container>
             <StyledGameWindow>
@@ -220,12 +246,21 @@ const Room = (props) => {
                 {peers.map((peer, index) => {
                     return (
                         <StyledVideoContainer key={index}>
-                            <Video peer={peer} key={index} />
+                            <StyledVideo ref={remoteStream} muted autoPlay={true} playsInline />
+                            {/* <video
+                                id="remoteStream"
+                                autoPlay={true}
+                                muted
+                                playsInline
+                                ref={remoteStream}
+                            ></video> */}
                             <p>Eric, Univ. of Michigan</p>
                         </StyledVideoContainer>
                     );
                 })}
             </StyledVideoWindow>
+
+            <GamePageFooter />
         </Container>
     );
 };
