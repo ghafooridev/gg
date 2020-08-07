@@ -9,66 +9,51 @@ const path = require("path");
 
 const users = {}; // room ID -> users in room map
 const socketToRoom = {}; // socket ID -> room ID map
+rooms = {}
 
-io.on('connection', socket => {
-    // user joining room
-    socket.on("join room", roomID => {
-
-        // check if users array for roomID exists
-        if (users[roomID]) {
-            const length = users[roomID].length;
-
-            // room already full
-            if (length === 4) {
-                socket.emit("room full");
-                return;
-            }
-
-            users[roomID].push(socket.id);
-        } else {
-            users[roomID] = [socket.id];
+//socket connection established
+io.on("connection", socket => {
+    //subscribe to room
+    const subscribe = room => {
+      io.in(room).clients((error, clients) => {
+        if (error) {
+          throw error;
         }
-
-        // update server-side collections
-        socketToRoom[socket.id] = roomID;
-        const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
-        socket.join(roomID);
-
-        console.log("User connected! ", socket.id);
-        console.log(users, socketToRoom);
-        console.log("-------------");
-
-        socket.emit("all users", usersInThisRoom);
-    });
-
-    socket.on("sending signal", payload => {
-        io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
-    });
-
-    socket.on("returning signal", payload => {
-        io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
-    });
-
-    socket.on('disconnect', () => {
-        const roomID = socketToRoom[socket.id];
-        let room = users[roomID];
-
-        console.log('user disconnected! ', roomID, socket.id);
-        console.log(socketToRoom);
+        if (clients.length > 2) {
+          socket.emit("session_active");
+          return;
+        }
         
-
-        if (room) {
-            room = room.filter(id => id !== socket.id);
-            users[roomID] = room;
-
-            console.log('emitting user disconnect event!');
-            io.to(roomID).emit("user disconnect", { room: roomID, id: socket.id, users: room })
+        socket.join(room);
+        rooms[room] = { users: [...clients] };
+  
+        if (clients.length < 2) {
+          if (clients.length == 1) socket.emit("create_host");
         }
-
-        console.log("-------------");
-    });
-
+      });
+    };
+  
+    //siganl offer to remote
+    const sendOffer = (room, offer) => {
+      socket.to(room).broadcast.emit("new_offer", offer);
+    };
+  
+    //signal answer to remote
+    const sendAnswer = (room, data) => {
+      socket.to(room).broadcast.emit("new_answer", data);
+    };
+  
+    //user disconnected
+    const user_disconnected = room => {
+      socket.to(room).broadcast.emit("end");
+    };
+    //events
+    socket.on("subscribe", subscribe);
+    socket.on("offer", sendOffer);
+    socket.on("answer", sendAnswer);
+    socket.on("user_disconnected", user_disconnected);
 });
+  
 
 if (process.env.PROD) {
     app.use(express.static(path.join(__dirname, './client/build')));
