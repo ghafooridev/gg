@@ -9,13 +9,13 @@ const styleObj = {
 
 function GamePageFooter(props) {
   return (
-    <footer className="footer footer-black footer-white">
+    <footer className="footer footer-black footer-white" style={styleObj}>
       <Container>
         <Row>
           <nav className="footer-nav">
             <ul>
               <li>
-                <a href="" onClick={props.disableAudio}>
+                <a onClick={props.toggleAudio}>
                   <div className="icon icon-info">
                     <i className="nc-icon lg nc-bulb-63" />
                   </div>

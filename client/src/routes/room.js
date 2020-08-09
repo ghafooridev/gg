@@ -40,30 +40,20 @@ const StyledVideo = styled.video`
     -moz-transform:rotateY(180deg); /* Firefox */
 `;
 
-const Video = (props) => {
-    // const ref = useRef();
+const Video = ({peerStreams, peerID}) => {
+    const remoteStream = useRef({});
 
-   
-    // useEffect(() => {
-    //     props.peer.on("stream", stream => {
-    //         console.log("Peer streaming ... ")
-    //         ref.current.srcObject = stream;
-    //     });
-
-    //     props.peer.on("error", err => {
-    //         console.log("Peer error");
-    //     });
-
-    //     props.peer.on("close", () => {
-    //         console.log("Peer connection closed");
-    //     });
-    //     // eslint-disable-next-line
-    // }, []);
+    useEffect(() => {
+        const peerStream = peerStreams.find(p => p.peerID === peerID);
+        if (peerStream) {
+            remoteStream.current.srcObject = peerStream.stream;
+        }
+    }, [peerStreams, peerID])
 
     return (
-        <StyledVideo playsInline autoPlay ref={props.ref} loop poster="assets/img/FFFFFF-0.png" />
-    );
-}
+        <StyledVideo ref={remoteStream} muted autoPlay={true} loop playsInline poster="assets/img/FFFFFF-0.png" />
+    )
+};
 
 const videoConstraints = {
     audio: true,
@@ -80,9 +70,11 @@ const videoConstraints = {
 };
 
 const Room = (props) => {
-    let client = {};
+    let client = {}, localStream;
     const [peers, setPeers] = useState([]);
     const socketRef = useRef();
+    const [peerStreams, setPeerStreams] = useState([]);
+    const peerAnswers = useRef({});
     
     const userVideo = useRef();
     const remoteStream = useRef({});
@@ -91,10 +83,12 @@ const Room = (props) => {
     const roomID = props.match.params.roomID;
 
     useEffect(() => {
+        console.log("Running use effect");
         socketRef.current = io.connect("/");
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {
             userVideo.current.srcObject = stream;
+            localStream = stream;
             
             // subscribe to room
             socketRef.current.emit("subscribe", roomID);
@@ -133,7 +127,7 @@ const Room = (props) => {
             const createRemote = offer => {
                 let peer = initPeer("notinit");
                 peer.on("signal", data => {
-                  socketRef.current.emit("answer", roomID, data);
+                    socketRef.current.emit("answer", roomID, data);
                 });
                 peer.signal(offer);
                 client.peer = peer;
@@ -146,18 +140,47 @@ const Room = (props) => {
                 let peer = client.peer;
                 peer.signal(answer);
             }
-
-            const session_active = () => {
-                alert("session active");
-            };
             
+            // create peers for users already in room
+            const processRoomUsers = (users) => {
+                console.log("Processing Room users ... ", users);
+                const arr = [];
+                users.forEach((userID) => {
+                    // create peer
+                    const peer = createPeer(userID, socketRef.current.id, stream);
+                    arr.push(userID);
+
+                    peersRef.current.push({ peerID: userID, peer });
+                });
+                setPeers(arr);
+            }
+
+            // create peer for newly joined user
+            const processNewUser = (payload) => {
+                const peer = addPeer(payload.signal, payload.callerID, stream);
+                peersRef.current.push({ peerID: payload.callerID, peer });
+
+                setPeers(peers => [...peers, payload.callerID]);
+            }
+
+            // handle answer from peer 
+            const processUserAnswer = (payload) => {
+                console.log("processing user answer")
+                const d = peerAnswers.current;
+                d[payload.id] = true;
+
+                const item = peersRef.current.find(p => p.peerID === payload.id);
+                item.peer.signal(payload.signal);
+            }
+
             //socket events
             socketRef.current.on("create_host", createHost);
             socketRef.current.on("new_offer", createRemote);
             socketRef.current.on("new_answer", handleAnswer);
-            // socketRef.current.on("end", end);
-            socketRef.current.on("session_active", session_active);
 
+            socketRef.current.on("room users", processRoomUsers);
+            socketRef.current.on("user joined", processNewUser);
+            socketRef.current.on("user answer", processUserAnswer);
             socketRef.current.on("user disconnect", payload => {
                 if (roomID === payload.room) {
                     removePeer(payload.id);
@@ -173,24 +196,49 @@ const Room = (props) => {
         // eslint-disable-next-line
     }, []);
 
+    useEffect(() => {
+        console.log("state changed: ", peers, peerStreams);
+    }, [peers, peerStreams]); 
+
     function createPeer(userToSignal, callerID, stream) {
+
         const peer = new Peer({
             initiator: true,
             trickle: false,
             stream,
-        }).on("signal", signal => {
-            socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
+        })
+
+        peer.on("stream", stream => {
+            const arr = [...peerStreams, {peerID: userToSignal, stream}];
+            setPeerStreams(arr);
+        });
+        
+        const d = peerAnswers.current;
+        d[callerID] = false;
+
+        peer.on("signal", signal => {
+            const answered = peerAnswers.current;
+            if(!answered[callerID]) {
+                socketRef.current.emit("sending signal", { userToSignal, callerID, signal })
+            }
         });
 
         return peer;
     }
 
     function addPeer(incomingSignal, callerID, stream) {
+
         const peer = new Peer({
             initiator: false,
             trickle: false,
             stream,
         })
+
+        peer.on("stream", stream => {
+            const arr = [...peerStreams, {peerID: callerID, stream}];
+            setPeerStreams(arr);
+            // console.log(arr);
+        });
 
         peer.on("signal", signal => {
             socketRef.current.emit("returning signal", { signal, callerID })
@@ -198,11 +246,10 @@ const Room = (props) => {
 
         peer.signal(incomingSignal);
 
-        console.log('Adding a Peer! Returning signal to newly joint user: ',  incomingSignal, callerID);
-
         return peer;
     }
 
+    // TODO: update this to new structure
     function removePeer(peerID) {
         console.log("Removing peer!");
         console.log("peers: ", peers);
@@ -233,6 +280,16 @@ const Room = (props) => {
         setPeers(updatedPeers);
     }
 
+    // toggle audio
+    const toggleAudio = () => {
+        let audioTracks = userVideo.current.srcObject.getAudioTracks();
+        for (var i = 0; i < audioTracks.length; ++i) {
+            audioTracks[i].enabled = !audioTracks[i].enabled;
+        }
+    };
+
+    debugger;
+
     return (
         <Container>
             <StyledGameWindow>
@@ -243,24 +300,17 @@ const Room = (props) => {
                     <StyledVideo muted ref={userVideo} autoPlay playsInline loop poster="assets/img/FFFFFF-0.png" />
                     <p>Eric, Univ. of Michigan</p>
                 </StyledVideoContainer>
-                {peers.map((peer, index) => {
+                {peers.map((peerID, index) => {
                     return (
                         <StyledVideoContainer key={index}>
-                            <StyledVideo ref={remoteStream} muted autoPlay={true} playsInline />
-                            {/* <video
-                                id="remoteStream"
-                                autoPlay={true}
-                                muted
-                                playsInline
-                                ref={remoteStream}
-                            ></video> */}
+                            <Video peerID={peerID} peerStreams={peerStreams} muted autoPlay={true} playsInline />
                             <p>Eric, Univ. of Michigan</p>
                         </StyledVideoContainer>
                     );
                 })}
             </StyledVideoWindow>
 
-            <GamePageFooter />
+            <GamePageFooter disableAudio={toggleAudio} />
         </Container>
     );
 };
