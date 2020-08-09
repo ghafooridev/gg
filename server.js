@@ -19,39 +19,57 @@ io.on("connection", socket => {
         if (error) {
           throw error;
         }
-        if (clients.length > 2) {
-          socket.emit("session_active");
-          return;
-        }
         
         socket.join(room);
         rooms[room] = { users: [...clients] };
   
-        if (clients.length < 2) {
-          if (clients.length == 1) socket.emit("create_host");
-        }
+        // if (clients.length == 1) {
+        //     socket.to(room).emit("create_host");
+        // } 
+
+        console.log("room users emitting: ", clients);
+        socket.emit("room users", clients);
+
       });
+
     };
   
-    //siganl offer to remote
+    // signal offer to remote
     const sendOffer = (room, offer) => {
       socket.to(room).broadcast.emit("new_offer", offer);
     };
   
-    //signal answer to remote
+    // signal answer to remote
     const sendAnswer = (room, data) => {
       socket.to(room).broadcast.emit("new_answer", data);
     };
   
-    //user disconnected
-    const user_disconnected = room => {
-      socket.to(room).broadcast.emit("end");
+    // TODO: user disconnected
+    const user_disconnected = () => {
+        const roomID = socketToRoom[socket.id];
+
+        console.log('user disconnected! ', roomID, socket.id);
+        console.log(socketToRoom);
+        
+        console.log('emitting user disconnect event!');
+        io.to(roomID).emit("user disconnect", { room: roomID, id: socket.id, users: room })
+
+        console.log("-------------");
     };
-    //events
+
+    // events
     socket.on("subscribe", subscribe);
     socket.on("offer", sendOffer);
     socket.on("answer", sendAnswer);
-    socket.on("user_disconnected", user_disconnected);
+    // socket.on("disconnect", user_disconnected);
+
+    socket.on("sending signal", payload => {
+        io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
+    });
+
+    socket.on("returning signal", payload => {
+        io.to(payload.callerID).emit('user answer', { signal: payload.signal, id: socket.id });
+    });
 });
   
 
