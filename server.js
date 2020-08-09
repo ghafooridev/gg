@@ -22,10 +22,7 @@ io.on("connection", socket => {
         
         socket.join(room);
         rooms[room] = { users: [...clients] };
-  
-        // if (clients.length == 1) {
-        //     socket.to(room).emit("create_host");
-        // } 
+        socketToRoom[socket.id] = room;
 
         console.log("room users emitting: ", clients);
         socket.emit("room users", clients);
@@ -34,34 +31,23 @@ io.on("connection", socket => {
 
     };
   
-    // signal offer to remote
-    const sendOffer = (room, offer) => {
-      socket.to(room).broadcast.emit("new_offer", offer);
-    };
-  
-    // signal answer to remote
-    const sendAnswer = (room, data) => {
-      socket.to(room).broadcast.emit("new_answer", data);
-    };
-  
     // TODO: user disconnected
     const user_disconnected = () => {
-        const roomID = socketToRoom[socket.id];
+        const room = socketToRoom[socket.id];
 
-        console.log('user disconnected! ', roomID, socket.id);
+        console.log('user disconnected! ', room, socket.id);
         console.log(socketToRoom);
+        socketToRoom[room] = null;
         
         console.log('emitting user disconnect event!');
-        io.to(roomID).emit("user disconnect", { room: roomID, id: socket.id, users: room })
+        io.to(room).emit("user disconnect", { room: room, id: socket.id })
 
         console.log("-------------");
     };
 
     // events
     socket.on("subscribe", subscribe);
-    socket.on("offer", sendOffer);
-    socket.on("answer", sendAnswer);
-    // socket.on("disconnect", user_disconnected);
+    socket.on("disconnect", user_disconnected);
 
     socket.on("sending signal", payload => {
         io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });

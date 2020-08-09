@@ -77,7 +77,6 @@ const Room = (props) => {
     const peerAnswers = useRef({});
     
     const userVideo = useRef();
-    const remoteStream = useRef({});
     const peersRef = useRef([]);
 
     const roomID = props.match.params.roomID;
@@ -92,54 +91,6 @@ const Room = (props) => {
             
             // subscribe to room
             socketRef.current.emit("subscribe", roomID);
-            
-            // peer constructor
-            const initPeer = type => {
-                let peer = new Peer({
-                  initiator: type === "init" ? true : false,
-                  stream: stream,
-                  trickle: false
-                });
-                
-                peer.on("stream", stream => {
-                  console.log("remote stream is running ...")
-                  remoteStream.current.srcObject = stream;
-                });
-
-                return peer;
-            };
-            
-            // create initiator
-            const createHost = () => {
-                client.gotAnswer = false;
-                let peer = initPeer("init");
-                peer.on("signal", data =>  {
-                    if(!client.gotAnswer) {
-                        socketRef.current.emit("offer", roomID, data);
-                    }
-                });
-
-                client.peer = peer;
-                setPeers([peer]);
-            }
-
-            // create remote
-            const createRemote = offer => {
-                let peer = initPeer("notinit");
-                peer.on("signal", data => {
-                    socketRef.current.emit("answer", roomID, data);
-                });
-                peer.signal(offer);
-                client.peer = peer;
-                setPeers([peer]);
-            };
-
-            // handle answer
-            const handleAnswer = answer => {
-                client.gotAnswer = true;
-                let peer = client.peer;
-                peer.signal(answer);
-            }
             
             // create peers for users already in room
             const processRoomUsers = (users) => {
@@ -173,19 +124,18 @@ const Room = (props) => {
                 item.peer.signal(payload.signal);
             }
 
-            //socket events
-            socketRef.current.on("create_host", createHost);
-            socketRef.current.on("new_offer", createRemote);
-            socketRef.current.on("new_answer", handleAnswer);
-
-            socketRef.current.on("room users", processRoomUsers);
-            socketRef.current.on("user joined", processNewUser);
-            socketRef.current.on("user answer", processUserAnswer);
-            socketRef.current.on("user disconnect", payload => {
+            // handle user disconnect event
+            const processUserDisconnect = (payload) => {
                 if (roomID === payload.room) {
                     removePeer(payload.id);
                 }
-            });
+            }
+
+            //socket events
+            socketRef.current.on("room users", processRoomUsers);
+            socketRef.current.on("user joined", processNewUser);
+            socketRef.current.on("user answer", processUserAnswer);
+            socketRef.current.on("user disconnect", processUserDisconnect);
         })
         .catch(error => {
             //error alerts
@@ -251,22 +201,31 @@ const Room = (props) => {
 
     // TODO: update this to new structure
     function removePeer(peerID) {
-        console.log("Removing peer!");
-        console.log("peers: ", peers);
+        // console.log("Removing peer!");
+        // console.log("peers: ", peers);
 
+        debugger;
+        // remove from peerStreams state
+        setPeerStreams(userStreams => 
+            userStreams.filter(peerStream => peerStream.peerID !== peerID)
+        );
+
+        // remove from peers
+        setPeers(peers =>  peers.filter(userID => userID !== peerID));
+
+        // remove from peersRef
         let remove = null;
         const updatedPeers = [];
 
         peersRef.current.forEach(peerRefObj => {
             console.log(peerRefObj);
             if (peerRefObj.peerID !== peerID) { 
-                updatedPeers.push(peerRefObj.peer);
+                updatedPeers.push(peerRefObj.peerID);
             } else {
                 remove = peerRefObj;
             }
         });
 
-        // remove from peerRefObj
         if (remove) {
             const idx = peersRef.current.indexOf(remove);
 
@@ -274,10 +233,7 @@ const Room = (props) => {
                 peersRef.current.splice(idx, 1);
             }
         }
-
-        console.log("peers: ", updatedPeers);
-        console.log("peersRef: ", peersRef);
-        setPeers(updatedPeers);
+        
     }
 
     // toggle audio
@@ -287,8 +243,6 @@ const Room = (props) => {
             audioTracks[i].enabled = !audioTracks[i].enabled;
         }
     };
-
-    debugger;
 
     return (
         <Container>
