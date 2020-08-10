@@ -31,7 +31,7 @@ io.on("connection", socket => {
 
     };
   
-    // TODO: user disconnected
+    // user disconnected
     const user_disconnected = () => {
         const room = socketToRoom[socket.id];
 

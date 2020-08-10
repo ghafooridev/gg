@@ -16,6 +16,7 @@ const Container = styled.div`
 const StyledGameWindow = styled.div`
     left: 0; 
     width: 68%;
+    height: 90%;
     margin-right: 50px;
     background-color: grey;
 `;
@@ -51,7 +52,7 @@ const Video = ({peerStreams, peerID}) => {
     }, [peerStreams, peerID])
 
     return (
-        <StyledVideo ref={remoteStream} muted autoPlay={true} loop playsInline poster="assets/img/FFFFFF-0.png" />
+        <StyledVideo ref={remoteStream} autoPlay={true} loop playsInline poster="assets/img/FFFFFF-0.png" />
     )
 };
 
@@ -75,6 +76,7 @@ const Room = (props) => {
     const socketRef = useRef();
     const [peerStreams, setPeerStreams] = useState([]);
     const peerAnswers = useRef({});
+    const [muted, setMuted] = useState(false);
     
     const userVideo = useRef();
     const peersRef = useRef([]);
@@ -238,6 +240,10 @@ const Room = (props) => {
 
     // toggle audio
     const toggleAudio = () => {
+        console.log("toggle audio called!");
+        
+        setMuted((muted) => !muted);
+
         let audioTracks = userVideo.current.srcObject.getAudioTracks();
         for (var i = 0; i < audioTracks.length; ++i) {
             audioTracks[i].enabled = !audioTracks[i].enabled;
@@ -264,7 +270,7 @@ const Room = (props) => {
                 })}
             </StyledVideoWindow>
 
-            <GamePageFooter disableAudio={toggleAudio} />
+            <GamePageFooter toggleAudio={toggleAudio} muteText={muted ? 'Unmute' : 'Mute'} />
         </Container>
     );
 };
