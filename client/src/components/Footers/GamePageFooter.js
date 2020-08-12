@@ -1,21 +1,18 @@
 import React from "react";
 
-// reactstrap components
-import { Row, Container } from "reactstrap";
-
 const styleObj = {
   "width": "100%",
   "text-align": "center",
-  "height": "5%",
-  "margin-top": "50px"
+  "margin-top": "20px"
 }
 
 function GamePageFooter(props) {
   return (
     <div style={styleObj}>
-      <a onClick={(e) => props.toggleAudio()}>
+      <button type="button" class="btn btn-primary" 
+        onClick={(e) => props.toggleAudio()}>
         {props.muteText} 
-      </a>
+      </button>
     </div>
   );
 }

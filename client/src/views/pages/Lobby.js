@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { useHistory } from 'react-router-dom';
+import io from "socket.io-client";
 
 const StyledVideo = styled.video`
     height: 220px;
@@ -28,7 +30,16 @@ const videoConstraints = {
 };
 
 function Lobby () {
-    const userVideo = useRef({});
+    const history = useHistory();
+    const userVideo = useRef();
+    const socketRef = useRef();
+    const [joiningGame, setJoiningGame] = useState(false);
+
+    const user = {
+        "name": "Armin Jamshidi",
+        "university": "UC San Diego",
+        "description": "Chess-enthusiast, Masters Student, Extrovert"
+    }
 
     const styleObj = {
         "width": "25rem",
@@ -48,18 +59,33 @@ function Lobby () {
     }
 
     useEffect(() => {
+        socketRef.current = io.connect("/");
+        socketRef.current.emit("user queue", user);
+
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {
             userVideo.current.srcObject = stream;
-        })
-    }, []);
+        });
+
+        const handleGameFound = payload => {
+            setJoiningGame(true);
+            const roomId = payload.roomId;
+            console.log("Redirecting to game room. user = ", user);
+            history.push("/room/" + roomId, {user: user});
+        }
+
+        //socket events
+        socketRef.current.on("game found", handleGameFound);        
+    }, [user, history]);
 
     return (
         <div>
-            <h1 style={{"textAlign": "center"}}>Matching with other players ...</h1>
+            <h1 style={{"textAlign": "center"}}>
+                {joiningGame ? "Joining game ..." : "Matching with other players ..."}
+            </h1>
             <center style={centerStyle}>
                 <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card image cap" />
+                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
                     <div class="card-body">
                         <p class="card-text"><b>Player 1</b><br></br>
                         <i>UCLA</i></p>
@@ -67,7 +93,7 @@ function Lobby () {
                     </div>
                 </div>
                 <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card image cap" />
+                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
                     <div class="card-body">
                         <p class="card-text"><b>Player 2</b><br></br>
                         <i>Stanford University</i></p>
@@ -79,13 +105,13 @@ function Lobby () {
                         <StyledVideo class="card-img-top" ref={userVideo} autoPlay={true} muted loop playsInline poster="assets/img/FFFFFF-0.png" /> 
                     </div>
                     <div class="card-body">
-                    <p class="card-text"><b>Armin Jamshidi</b><br></br>
-                        <i>UCSD</i></p>
-                        <p class="card-text">Chess-enthusiast, Masters Student, Extrovert</p>
+                    <p class="card-text"><b>{user.name}</b><br></br>
+                        <i>{user.university}</i></p>
+                        <p class="card-text">{user.description}</p>
                     </div>
                 </div>
                 <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card image cap" />
+                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
                     <div class="card-body">
                         <p class="card-text"><b>Player 4</b><br></br>
                         <i>University of Michigan</i></p>
@@ -93,7 +119,7 @@ function Lobby () {
                     </div>
                 </div>
                 <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card image cap" />
+                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
                     <div class="card-body">
                         <p class="card-text"><b>Player 5</b><br></br>
                         <i>UC Berkley</i></p>
