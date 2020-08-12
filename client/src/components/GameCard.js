@@ -6,7 +6,7 @@ const GameCard = (props) => {
 
     return (
         <Card className="card-profile card-plain">
-            <NavLink href="/lobby" >
+            <NavLink href={"/lobby?gameName=" + title} >
                 <div className="card-logo info">
                     <div className="icon icon-info">
                         <i className={icon} />

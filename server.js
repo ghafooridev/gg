@@ -40,20 +40,22 @@ io.on("connection", socket => {
       console.log("socketToRoom: ", socketToRoom);
       console.log("queue: ", queue);
 
-        if(socket.id in queue) {
-          delete queue[socket.id];
+      for(const game in queue) {
+        if(socket.id in queue[game]) {
+          delete queue[game][socket.id];
           console.log("user removed from queue");
           console.log("-------------");
           return;
         }
-
-        const room = socketToRoom[socket.id];
-        delete socketToRoom[room];
+      }
         
-        io.to(room).emit("user disconnect", { room: room, id: socket.id })
-        
-        console.log('user removed from room');
-        console.log("-------------");
+      const room = socketToRoom[socket.id];
+      delete socketToRoom[room];
+      
+      io.to(room).emit("user disconnect", { room: room, id: socket.id })
+      
+      console.log('user removed from room');
+      console.log("-------------");
     };
 
     // sending signal
@@ -67,20 +69,29 @@ io.on("connection", socket => {
     }
 
     // user joins queue
-    const userQueue = (user) => {
-      queue[socket.id] = user;
+    const userQueue = payload => {
+      if (!payload.gameName || !payload.user) {
+        console.log("Incorrect params supplied to user queue event");
+        return;
+      }
+
+      if (payload.gameName && !queue[payload.gameName]) {
+        queue[payload.gameName] = {};
+      }
+
+      queue[payload.gameName][socket.id] = payload.user;
       
       // if 4 or more players are waiting, then create game room
-      if (Object.keys(queue).length >= 2) {
+      if (Object.keys(queue[payload.gameName]).length >= 2) {
         do { roomId = util.makeId(5) }
         while(roomId in rooms);
 
         var userCount = 0;
-        for (const [socketId, _] of Object.entries(queue)) {
+        for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
           if(userCount == 4) return; 
 
           io.to(socketId).emit("game found", { roomId: roomId });
-          delete queue[socketId];
+          delete queue[payload.gameName][socketId];
           userCount += 1;
         }
       }

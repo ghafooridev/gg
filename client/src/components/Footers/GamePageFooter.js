@@ -8,11 +8,14 @@ const styleObj = {
 
 function GamePageFooter(props) {
   return (
-    <div style={styleObj}>
-      <button type="button" class="btn btn-primary" 
-        onClick={(e) => props.toggleAudio()}>
-        {props.muteText} 
-      </button>
+    <div style={styleObj}>    
+      {props.muteText === "Mute" ?
+        <button type="button" class="btn btn-danger"
+          onClick={(e) => props.toggleAudio()}> Mute </button>
+        :
+        <button type="button" class="btn btn-primary" 
+          onClick={(e) => props.toggleAudio()}> Unmute </button>
+      }
     </div>
   );
 }

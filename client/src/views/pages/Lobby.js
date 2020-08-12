@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useHistory } from 'react-router-dom';
 import io from "socket.io-client";
+import qs from 'qs';
 
 const StyledVideo = styled.video`
     height: 220px;
@@ -29,7 +30,7 @@ const videoConstraints = {
     }
 };
 
-function Lobby () {
+const Lobby = (props) => {
     const history = useHistory();
     const userVideo = useRef();
     const socketRef = useRef();
@@ -59,11 +60,15 @@ function Lobby () {
     }
 
     useEffect(() => {
+        const params = qs.parse(props.location.search, { ignoreQueryPrefix: true });
+        const gameName = params.gameName;
+
         socketRef.current = io.connect("/");
-        socketRef.current.emit("user queue", user);
+        socketRef.current.emit("user queue", {user: user, gameName: gameName});
 
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {
+            userVideo.current = {};
             userVideo.current.srcObject = stream;
         });
 
@@ -76,7 +81,9 @@ function Lobby () {
 
         //socket events
         socketRef.current.on("game found", handleGameFound);        
-    }, [user, history]);
+    }, 
+    // eslint-disable-next-line
+    []);
 
     return (
         <div>
