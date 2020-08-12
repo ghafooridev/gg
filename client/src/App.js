@@ -10,7 +10,8 @@ import "./assets/demo/demo.css?v=1.2.0";
 
 import CreateRoom from './routes/createRoom';
 import Room from './routes/room';
-import LandingPage from './views/examples/LandingPage';
+import LandingPage from './views/pages/LandingPage';
+import Lobby from './views/pages/Lobby';
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" exact component={CreateRoom} />
           <Route path="/home" exact component={LandingPage} />
           <Route path="/room/:roomID" component={Room} />
+          <Route path="/lobby" component={Lobby} />
         </Switch>
       </BrowserRouter>
     );
