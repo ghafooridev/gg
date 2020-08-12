@@ -7,13 +7,16 @@ const socket = require("socket.io");
 const io = socket(server);
 const path = require("path");
 
+const util = require("./util");
+
 const users = {}; // room ID -> users in room map
 const socketToRoom = {}; // socket ID -> room ID map
-rooms = {}
+rooms = {};
+queue = {};
 
 //socket connection established
 io.on("connection", socket => {
-    //subscribe to room
+    // subscribe to room
     const subscribe = room => {
       io.in(room).clients((error, clients) => {
         if (error) {
@@ -32,30 +35,64 @@ io.on("connection", socket => {
     };
   
     // user disconnected
-    const user_disconnected = () => {
+    const userDisconnected = () => {
+      console.log('user disconnected! ', socket.id);
+      console.log("socketToRoom: ", socketToRoom);
+      console.log("queue: ", queue);
+
+        if(socket.id in queue) {
+          delete queue[socket.id];
+          console.log("user removed from queue");
+          console.log("-------------");
+          return;
+        }
+
         const room = socketToRoom[socket.id];
-
-        console.log('user disconnected! ', room, socket.id);
-        console.log(socketToRoom);
-        socketToRoom[room] = null;
+        delete socketToRoom[room];
         
-        console.log('emitting user disconnect event!');
         io.to(room).emit("user disconnect", { room: room, id: socket.id })
-
+        
+        console.log('user removed from room');
         console.log("-------------");
     };
 
+    // sending signal
+    const sendSignal = payload => {
+      io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
+    }
+
+    // returning signal
+    const returnSignal = payload => {
+      io.to(payload.callerID).emit('user answer', { signal: payload.signal, id: socket.id });
+    }
+
+    // user joins queue
+    const userQueue = (user) => {
+      queue[socket.id] = user;
+      
+      // if 4 or more players are waiting, then create game room
+      if (Object.keys(queue).length >= 2) {
+        do { roomId = util.makeId(5) }
+        while(roomId in rooms);
+
+        var userCount = 0;
+        for (const [socketId, _] of Object.entries(queue)) {
+          if(userCount == 4) return; 
+
+          io.to(socketId).emit("game found", { roomId: roomId });
+          delete queue[socketId];
+          userCount += 1;
+        }
+      }
+    }
+
     // events
     socket.on("subscribe", subscribe);
-    socket.on("disconnect", user_disconnected);
+    socket.on("disconnect", userDisconnected);
+    socket.on("sending signal", sendSignal);
+    socket.on("returning signal", returnSignal);
 
-    socket.on("sending signal", payload => {
-        io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
-    });
-
-    socket.on("returning signal", payload => {
-        io.to(payload.callerID).emit('user answer', { signal: payload.signal, id: socket.id });
-    });
+    socket.on("user queue", userQueue);
 });
   
 
