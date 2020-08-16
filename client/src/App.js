@@ -5,8 +5,8 @@ import './App.css';
 
 // styles
 import "./assets/css/bootstrap.min.css";
-import "./assets/scss/paper-kit.scss?v=1.2.0";
-import "./assets/demo/demo.css?v=1.2.0";
+import "./assets/scss/paper-kit.scss";
+import "./assets/demo/demo.css";
 
 import CreateRoom from './routes/createRoom';
 import Room from './routes/room';
