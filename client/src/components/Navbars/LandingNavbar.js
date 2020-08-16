@@ -98,12 +98,12 @@ function LandingNavbar() {
         >
           <Nav navbar>
             <NavItem>
-              <NavLink href="#about" tag={Link}>
+              <NavLink to="#about" tag={Link}>
                 <i className="nc-icon lg nc-single-copy-04" /> About
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="#games">
+              <NavLink to="#games">
                 <i className="nc-icon lg nc-controller-modern" /> Games
               </NavLink>
             </NavItem>

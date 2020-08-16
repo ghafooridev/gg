@@ -71,7 +71,7 @@ const videoConstraints = {
 };
 
 const Room = (props) => {
-    let client = {}, localStream;
+    console.log(props);
     const [peers, setPeers] = useState([]);
     const socketRef = useRef();
     const [peerStreams, setPeerStreams] = useState([]);
@@ -82,14 +82,14 @@ const Room = (props) => {
     const peersRef = useRef([]);
 
     const roomID = props.match.params.roomID;
+    const user = props.location.state.user;
 
     useEffect(() => {
-        console.log("Running use effect");
+        console.log("Running use effect", props);
         socketRef.current = io.connect("/");
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {
             userVideo.current.srcObject = stream;
-            localStream = stream;
             
             // subscribe to room
             socketRef.current.emit("subscribe", roomID);
@@ -258,7 +258,7 @@ const Room = (props) => {
             <StyledVideoWindow>
                 <StyledVideoContainer>
                     <StyledVideo muted ref={userVideo} autoPlay playsInline loop poster="assets/img/FFFFFF-0.png" />
-                    <p>Eric, Univ. of Michigan</p>
+                    <p>{user.name}, {user.university}</p>
                 </StyledVideoContainer>
                 {peers.map((peerID, index) => {
                     return (
