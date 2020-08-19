@@ -75,8 +75,8 @@ const Lobby = (props) => {
         const handleGameFound = payload => {
             setJoiningGame(true);
             const roomId = payload.roomId;
-            console.log("Redirecting to game room. user = ", user);
-            history.push("/room/" + roomId, {user: user});
+            console.log("Redirecting to game room. user = ", user, gameName);
+            history.push("/room/" + roomId, {user: user, gameName: gameName});
         }
 
         //socket events

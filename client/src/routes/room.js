@@ -3,6 +3,7 @@ import io from "socket.io-client";
 import Peer from "simple-peer";
 import styled from "styled-components";
 
+// import GameBrowser from "../components/GameBrowser";
 import GamePageFooter from "../components/Footers/GamePageFooter";
 
 const Container = styled.div`
@@ -70,6 +71,14 @@ const videoConstraints = {
     }
 };
 
+const gameURLs = {
+    "Scribble": "https://skribbl.io/",
+    "Out of Context": "https://www.outofcontext.party/",
+    "Secret Hitler": "https://secrethitler.io/",
+    "Covidopoly": "https://www.covidopoly.io/",
+    "Mafia": "https://mafia.gg/"
+}
+
 const Room = (props) => {
     console.log(props);
     const [peers, setPeers] = useState([]);
@@ -83,6 +92,7 @@ const Room = (props) => {
 
     const roomID = props.match.params.roomID;
     const user = props.location.state.user;
+    const gameName = props.location.state.gameName;
 
     useEffect(() => {
         console.log("Running use effect", props);
@@ -253,7 +263,7 @@ const Room = (props) => {
     return (
         <Container>
             <StyledGameWindow>
-                Hello
+                <iframe width="100%" height="100%" src={gameURLs[gameName]} title="Game Browser" />
             </StyledGameWindow>
             <StyledVideoWindow>
                 <StyledVideoContainer>

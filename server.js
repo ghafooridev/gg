@@ -14,6 +14,13 @@ const socketToRoom = {}; // socket ID -> room ID map
 rooms = {};
 queue = {};
 
+const gameRoomSize = {
+  "Scribble": 5,
+  "Mafia": 6,
+  "Covidopoly": 4,
+  "Out of Context": 4
+}
+
 //socket connection established
 io.on("connection", socket => {
     // subscribe to room
@@ -82,13 +89,13 @@ io.on("connection", socket => {
       queue[payload.gameName][socket.id] = payload.user;
       
       // if 4 or more players are waiting, then create game room
-      if (Object.keys(queue[payload.gameName]).length >= 2) {
+      if (Object.keys(queue[payload.gameName]).length >= gameRoomSize[payload.gameName]) {
         do { roomId = util.makeId(5) }
         while(roomId in rooms);
 
         var userCount = 0;
         for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
-          if(userCount == 4) return; 
+          if(userCount == gameRoomSize[payload.gameName]) return; 
 
           io.to(socketId).emit("game found", { roomId: roomId });
           delete queue[payload.gameName][socketId];

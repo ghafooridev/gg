@@ -152,8 +152,8 @@ function LandingPage() {
             <h2 name="About" className="title">Games</h2>
             <Row>
               <Col md="4">
-                <GameCard description="Collaborate in writing stories one line at a time with minimal context."
-                  title="Out of Context" subtitle="Story-based Game (2-4 players)" icon="nc-icon lg nc-bulb-63" />
+                <GameCard description="Collect and steal properties from other players to establish your real-estate monopoly."
+                  title="Covidopoly" subtitle="Card-based Game (3-6 players)" icon="nc-icon lg nc-single-copy-04" />
               </Col>
               <Col md="4">
                 <GameCard description="Play as either Villager or Werewolf in a social deduction game created."
