@@ -1,13 +1,25 @@
 require('dotenv').config();
 const express = require("express");
-const http = require("http");
 const app = express();
-const server = http.createServer(app);
+
 const socket = require("socket.io");
-const io = socket(server);
 const path = require("path");
 
 const util = require("./util");
+
+const http = require("http");
+let server = http.createServer(app);
+
+if (process.env.PROD) {
+  const fs = require('fs');
+  const https = require('https');
+  server = https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/cert.pem')
+  }, app);
+}
+
+const io = socket(server);
 
 const users = {}; // room ID -> users in room map
 const socketToRoom = {}; // socket ID -> room ID map

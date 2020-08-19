@@ -5,9 +5,6 @@ import io from "socket.io-client";
 import qs from 'qs';
 
 const StyledVideo = styled.video`
-    height: 220px;
-    width: 280px;
-
     border-radius-top-left: 10px;
     border-radius-top-right: 10px;
 
@@ -56,7 +53,7 @@ const Lobby = (props) => {
 
     const videoDivStyle = {
         "overflow": "hidden",
-        "border-radius": "10px 10px 0 0"
+        "borderRadius": "10px 10px 0 0"
     }
 
     useEffect(() => {
@@ -68,8 +65,8 @@ const Lobby = (props) => {
 
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {
-            userVideo.current = {};
             userVideo.current.srcObject = stream;
+            console.log("updating usevideo ref")
         });
 
         const handleGameFound = payload => {
@@ -91,46 +88,46 @@ const Lobby = (props) => {
                 {joiningGame ? "Joining game ..." : "Matching with other players ..."}
             </h1>
             <center style={centerStyle}>
-                <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div class="card-body">
-                        <p class="card-text"><b>Player 1</b><br></br>
+                <div className="card" style={styleObj}>
+                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
+                    <div className="card-body">
+                        <p className="card-text"><b>Player 1</b><br></br>
                         <i>UCLA</i></p>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
                 </div>
-                <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div class="card-body">
-                        <p class="card-text"><b>Player 2</b><br></br>
+                <div className="card" style={styleObj}>
+                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
+                    <div className="card-body">
+                        <p className="card-text"><b>Player 2</b><br></br>
                         <i>Stanford University</i></p>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
                 </div>
-                <div class="card" style={styleObj}>
+                <div className="card" style={styleObj}>
                     <div style={videoDivStyle}>
-                        <StyledVideo class="card-img-top" ref={userVideo} autoPlay={true} muted loop playsInline poster="assets/img/FFFFFF-0.png" /> 
+                        <StyledVideo className="card-img-top" ref={userVideo} autoPlay={true} muted loop playsInline poster="assets/img/FFFFFF-0.png" /> 
                     </div>
-                    <div class="card-body">
-                    <p class="card-text"><b>{user.name}</b><br></br>
+                    <div className="card-body">
+                    <p className="card-text"><b>{user.name}</b><br></br>
                         <i>{user.university}</i></p>
-                        <p class="card-text">{user.description}</p>
+                        <p className="card-text">{user.description}</p>
                     </div>
                 </div>
-                <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div class="card-body">
-                        <p class="card-text"><b>Player 4</b><br></br>
+                <div className="card" style={styleObj}>
+                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
+                    <div className="card-body">
+                        <p className="card-text"><b>Player 4</b><br></br>
                         <i>University of Michigan</i></p>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
                 </div>
-                <div class="card" style={styleObj}>
-                    <img class="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div class="card-body">
-                        <p class="card-text"><b>Player 5</b><br></br>
+                <div className="card" style={styleObj}>
+                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
+                    <div className="card-body">
+                        <p className="card-text"><b>Player 5</b><br></br>
                         <i>UC Berkley</i></p>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                     </div>
                 </div>
             </center>
