@@ -65,8 +65,12 @@ const Lobby = (props) => {
 
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {
-            userVideo.current.srcObject = stream;
-            console.log("updating usevideo ref")
+            try {
+                userVideo.current.srcObject = stream;
+                console.log("updating usevideo ref");
+            } catch(err) {
+                console.error(err);
+            }
         });
 
         const handleGameFound = payload => {

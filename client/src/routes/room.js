@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 // import GameBrowser from "../components/GameBrowser";
 import GamePageFooter from "../components/Footers/GamePageFooter";
+import Messages from "../components/Messages";
 
 const Container = styled.div`
     padding: 20px;
@@ -26,6 +27,7 @@ const StyledVideoWindow = styled.div`
     right: 0;
     display: inline-block;
     width: 28%;
+    position: relative;
 `;
 
 const StyledVideoContainer = styled.div`
@@ -86,13 +88,20 @@ const Room = (props) => {
     const [peerStreams, setPeerStreams] = useState([]);
     const peerAnswers = useRef({});
     const [muted, setMuted] = useState(false);
+    const [messages, setMessages] = useState([]);
     
     const userVideo = useRef();
     const peersRef = useRef([]);
 
     const roomID = props.match.params.roomID;
-    const user = props.location.state.user;
-    const gameName = props.location.state.gameName;
+    // const user = props.location.state.user;
+    // const gameName = props.location.state.gameName;
+    const user = {
+        "name": "Armin Jamshidi",
+        "university": "UC San Diego",
+        "description": "Chess-enthusiast, Masters Student, Extrovert"
+    }
+    const gameName = "Covidopoly"
 
     useEffect(() => {
         console.log("Running use effect", props);
@@ -143,11 +152,20 @@ const Room = (props) => {
                 }
             }
 
+            // someone sent a message to the chat room
+            const recieveChatMessage = (payload) => {
+                console.log("message recieved!")
+                setMessages(messages => 
+                    [...messages, {message: payload.message, user: payload.sender}]
+                );
+            }
+
             //socket events
             socketRef.current.on("room users", processRoomUsers);
             socketRef.current.on("user joined", processNewUser);
             socketRef.current.on("user answer", processUserAnswer);
             socketRef.current.on("user disconnect", processUserDisconnect);
+            socketRef.current.on("message notification", recieveChatMessage);
         })
         .catch(error => {
             //error alerts
@@ -248,6 +266,12 @@ const Room = (props) => {
         
     }
 
+    // send chat message to room
+    function sendMessage(message) {
+        console.log("send message invoked!", message)
+        socketRef.current.emit("user message", {message: message, sender: user.name})
+    }
+    
     // toggle audio
     const toggleAudio = () => {
         console.log("toggle audio called!");
@@ -278,6 +302,8 @@ const Room = (props) => {
                         </StyledVideoContainer>
                     );
                 })}
+
+                <Messages messages={messages} sendMessage={sendMessage} />
             </StyledVideoWindow>
 
             <GamePageFooter toggleAudio={toggleAudio} muteText={muted ? 'Unmute' : 'Mute'} />
