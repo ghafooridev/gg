@@ -1,13 +1,25 @@
 require('dotenv').config();
 const express = require("express");
-const http = require("http");
 const app = express();
-const server = http.createServer(app);
+
 const socket = require("socket.io");
-const io = socket(server);
 const path = require("path");
 
 const util = require("./util");
+
+const http = require("http");
+let server = http.createServer(app);
+
+if (process.env.PROD) {
+  const fs = require('fs');
+  const https = require('https');
+  server = https.createServer({
+    key: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/cert.pem')
+  }, app);
+}
+
+const io = socket(server);
 
 const users = {}; // room ID -> users in room map
 const socketToRoom = {}; // socket ID -> room ID map
@@ -18,7 +30,8 @@ const gameRoomSize = {
   "Scribble": 5,
   "Mafia": 6,
   "Covidopoly": 4,
-  "Out of Context": 4
+  "Out of Context": 4,
+  "test": 2
 }
 
 //socket connection established
@@ -57,7 +70,7 @@ io.on("connection", socket => {
       }
         
       const room = socketToRoom[socket.id];
-      delete socketToRoom[room];
+      delete socketToRoom[socket.id];
       
       io.to(room).emit("user disconnect", { room: room, id: socket.id })
       
@@ -104,6 +117,13 @@ io.on("connection", socket => {
       }
     }
 
+    // user sends message to room
+    const sendMessage = payload => {
+      console.log("message recieved from: ", payload.sender);
+      const roomId = socketToRoom[socket.id];
+      io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
+    }
+
     // events
     socket.on("subscribe", subscribe);
     socket.on("disconnect", userDisconnected);
@@ -111,6 +131,7 @@ io.on("connection", socket => {
     socket.on("returning signal", returnSignal);
 
     socket.on("user queue", userQueue);
+    socket.on("user message", sendMessage);
 });
   
 
@@ -120,6 +141,10 @@ if (process.env.PROD) {
         res.sendFile(path.join(__dirname, './client/build/index.html'));
     });
 }
+
+app.post('/test', (req, res) => {
+  res.send('test passed.')
+})
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`server is running on port ${port}`));
