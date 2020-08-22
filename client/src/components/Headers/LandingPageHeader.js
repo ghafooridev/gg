@@ -58,11 +58,11 @@ function LandingPageHeader() {
             <h3>Engage, socialize and connect with Zoom University students.</h3>
             <br />
             <Button className="btn-round" color="neutral" type="button" outline>
-              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              <i className="fa fa-paper-plane" aria-hidden="true"></i>
               Sign Up
             </Button>
             <Button className="btn-round" color="neutral" type="button" outline>
-              <i class="fa fa-sign-in" aria-hidden="true"></i>
+              <i className="fa fa-sign-in" aria-hidden="true"></i>
               Sign In
             </Button>
           </div>

@@ -30,7 +30,8 @@ const gameRoomSize = {
   "Scribble": 5,
   "Mafia": 6,
   "Covidopoly": 4,
-  "Out of Context": 4
+  "Out of Context": 4,
+  "test": 2
 }
 
 //socket connection established
@@ -69,7 +70,7 @@ io.on("connection", socket => {
       }
         
       const room = socketToRoom[socket.id];
-      delete socketToRoom[room];
+      delete socketToRoom[socket.id];
       
       io.to(room).emit("user disconnect", { room: room, id: socket.id })
       
@@ -116,6 +117,13 @@ io.on("connection", socket => {
       }
     }
 
+    // user sends message to room
+    const sendMessage = payload => {
+      console.log("message recieved from: ", payload.sender);
+      const roomId = socketToRoom[socket.id];
+      io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
+    }
+
     // events
     socket.on("subscribe", subscribe);
     socket.on("disconnect", userDisconnected);
@@ -123,6 +131,7 @@ io.on("connection", socket => {
     socket.on("returning signal", returnSignal);
 
     socket.on("user queue", userQueue);
+    socket.on("user message", sendMessage);
 });
   
 
@@ -133,7 +142,7 @@ if (process.env.PROD) {
     });
 }
 
-app.get('/test', (req, res) => {
+app.post('/test', (req, res) => {
   res.send('test passed.')
 })
 

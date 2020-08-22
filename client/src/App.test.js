@@ -4,6 +4,6 @@ import App from './App';
 
 test('renders create room', () => {
   const { getByText } = render(<App />);
-  const linkElement = getByText(/create room/i);
+  const linkElement = getByText(/Engage, socialize and connect/i);
   expect(linkElement).toBeInTheDocument();
 });
