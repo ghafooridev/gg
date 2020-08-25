@@ -23,7 +23,7 @@ import { Button, Container } from "reactstrap";
 
 // core components
 
-const LandingPageHeader = ({handleSignin, handleSignup, isLoggedin, username}) => {
+const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin, username}) => {
   let pageHeader = React.createRef();
 
   React.useEffect(() => {
@@ -58,13 +58,19 @@ const LandingPageHeader = ({handleSignin, handleSignup, isLoggedin, username}) =
             <h3>Engage, socialize and connect with Zoom University students.</h3>
             <br />
             {isLoggedin ? 
-              <h4 style={{"color": "#6bd098"}}>Welcome {username}!</h4>
+              <>
+                <h4 style={{"color": "#6bd098"}}>Welcome {username}!</h4>
+                <Button className="btn-round" color="neutral" type="button" outline onClick={handleLogout}>
+                    <i className="fa fa-sign-in" aria-hidden="true"></i>
+                    Logout
+                </Button>
+              </>
               :  
               <>
                 <Button className="btn-round" color="neutral" type="button" outline onClick={handleSignup}>
                   <i className="fa fa-paper-plane" aria-hidden="true"></i>
                   Sign Up
-                </Button>
+                </Button> 
                 <Button className="btn-round" color="neutral" type="button" outline onClick={handleSignin}>
                   <i className="fa fa-sign-in" aria-hidden="true"></i>
                   Sign In
