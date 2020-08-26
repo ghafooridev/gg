@@ -144,7 +144,15 @@ if (process.env.PROD) {
 
 app.post('/test', (req, res) => {
   res.send('test passed.')
-})
+});
+
+app.get('/createroom', (req, res) => {
+  let roomId = "";
+  do { roomId = util.makeId(5) }
+  while(roomId in rooms);
+
+  res.send(roomId);
+});
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`server is running on port ${port}`));

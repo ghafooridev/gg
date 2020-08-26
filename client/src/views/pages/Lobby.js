@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useHistory } from 'react-router-dom';
 import io from "socket.io-client";
 import qs from 'qs';
+import { authenticationService } from "services/authentication.service";
 
 const StyledVideo = styled.video`
     border-radius-top-left: 10px;
@@ -33,11 +34,12 @@ const Lobby = (props) => {
     const socketRef = useRef();
     const [joiningGame, setJoiningGame] = useState(false);
 
-    const user = {
-        "name": "Armin Jamshidi",
-        "university": "UC San Diego",
-        "description": "Chess-enthusiast, Masters Student, Extrovert"
-    }
+    // const user = {
+    //     "name": "Armin Jamshidi",
+    //     "university": "UC San Diego",
+    //     "description": "Chess-enthusiast, Masters Student, Extrovert"
+    // }
+    const user = authenticationService.currentUserValue;
 
     const styleObj = {
         "width": "25rem",
