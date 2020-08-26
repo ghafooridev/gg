@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardTitle, CardFooter } from "reactstrap";
 import { useHistory } from 'react-router';
 import { authenticationService } from 'services/authentication.service';
+import {apiUrl} from "config";
 
 const GameCard = (props) => {
     const { title, subtitle, description, icon } = props;
@@ -16,6 +17,17 @@ const GameCard = (props) => {
 
     function joinLobby() {
         history.push("/lobby?gameName" + title);
+    }
+
+    function createRoom() {
+        console.log("apiURL: ", apiUrl)
+        fetch(`${apiUrl}/createroom`, {mode: "cors", method: "GET", credentials: "same-origin"}).then(response => {
+            response.text().then(text => {
+                console.log(text);
+                history.push('/room/'+text);
+            });
+            
+        });
     }
 
     return (
@@ -41,7 +53,9 @@ const GameCard = (props) => {
                     <button className="btn btn-primary" style={{"marginRight": "5px"}} onClick={joinLobby}>
                         Find Game
                     </button>
-                    <button className="btn btn-default">Private Room</button>
+                    <button className="btn btn-default" onClick={createRoom}>
+                        Private Room
+                    </button>
                 </>
                 :
                 <>
