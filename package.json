@@ -7,14 +7,15 @@
     "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongodb": "^3.6.0",
     "react-scripts": "^3.4.1",
     "socket.io": "^2.3.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/server.js",
     "postinstall": "cd ./client && yarn",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node server.js",
+    "server": "node server/server.js",
     "client": "cd ./client && yarn start",
     "heroku-postbuild": "cd ./client && yarn && yarn build",
     "test": "cd client && npm run test"

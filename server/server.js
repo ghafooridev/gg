@@ -6,6 +6,7 @@ const socket = require("socket.io");
 const path = require("path");
 
 const util = require("./util");
+const api = require("./api");
 
 const http = require("http");
 let server = http.createServer(app);
@@ -34,7 +35,7 @@ const gameRoomSize = {
   "test": 2
 }
 
-//socket connection established
+// socket connection event
 io.on("connection", socket => {
     // subscribe to room
     const subscribe = room => {
@@ -133,26 +134,16 @@ io.on("connection", socket => {
     socket.on("user queue", userQueue);
     socket.on("user message", sendMessage);
 });
-  
+
+// attach to api router
+app.use('/api', api);
 
 if (process.env.PROD) {
-    app.use(express.static(path.join(__dirname, './client/build')));
+    app.use(express.static(path.join(__dirname, '../client/build')));
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, './client/build/index.html'));
+        res.sendFile(path.join(__dirname, '../client/build/index.html'));
     });
 }
-
-app.post('/test', (req, res) => {
-  res.send('test passed.')
-});
-
-app.get('/createroom', (req, res) => {
-  let roomId = "";
-  do { roomId = util.makeId(5) }
-  while(roomId in rooms);
-
-  res.send(roomId);
-});
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`server is running on port ${port}`));
