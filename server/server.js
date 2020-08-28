@@ -7,6 +7,7 @@ const path = require("path");
 
 const util = require("./util");
 const api = require("./api");
+const { gameNames, gameSizes } = require("./config");
 
 const http = require("http");
 let server = http.createServer(app);
@@ -26,14 +27,6 @@ const users = {}; // room ID -> users in room map
 const socketToRoom = {}; // socket ID -> room ID map
 rooms = {};
 queue = {};
-
-const gameRoomSize = {
-  "Scribble": 5,
-  "Mafia": 6,
-  "Covidopoly": 4,
-  "Out of Context": 4,
-  "test": 2
-}
 
 // socket connection event
 io.on("connection", socket => {
@@ -103,13 +96,13 @@ io.on("connection", socket => {
       queue[payload.gameName][socket.id] = payload.user;
       
       // if 4 or more players are waiting, then create game room
-      if (Object.keys(queue[payload.gameName]).length >= gameRoomSize[payload.gameName]) {
+      if (Object.keys(queue[payload.gameName]).length >= gameSizes[payload.gameName]) {
         do { roomId = util.makeId(5) }
         while(roomId in rooms);
 
         var userCount = 0;
         for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
-          if(userCount == gameRoomSize[payload.gameName]) return; 
+          if(userCount == gameSizes[payload.gameName]) return; 
 
           io.to(socketId).emit("game found", { roomId: roomId });
           delete queue[payload.gameName][socketId];
@@ -140,8 +133,25 @@ app.use('/api', api);
 
 if (process.env.PROD) {
     app.use(express.static(path.join(__dirname, '../client/build')));
-    app.get('*', (req, res) => {
+    
+    app.get('/', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+
+    app.get('/login', (req, res) => {
         res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+    
+    app.get('/room', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+
+    app.get('/room/*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+
+    app.get('/lobby', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
     });
 }
 
