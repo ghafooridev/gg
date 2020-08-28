@@ -3,9 +3,9 @@ require('dotenv').config();
 let apiUrl;
 
 if (process.env.PROD) {
-  apiUrl = "";
+  apiUrl = "/api";
 } else {
-  apiUrl = "http://localhost:5000"
+  apiUrl = "https://spielzoom.com/api"
 }
 
 module.exports = {
