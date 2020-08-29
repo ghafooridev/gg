@@ -16,8 +16,8 @@ if (process.env.PROD) {
   const fs = require('fs');
   const https = require('https');
   server = https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/cert.pem')
+    key: fs.readFileSync(process.env.LETS_ENCRYPT_PRIVKEY),
+    cert: fs.readFileSync(process.env.LETS_ENCRYPT_CERT)
   }, app);
 }
 
