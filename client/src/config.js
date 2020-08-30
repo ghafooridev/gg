@@ -5,7 +5,7 @@ let apiUrl;
 if (process.env.PROD) {
   apiUrl = "";
 } else {
-  apiUrl = "http://localhost:5000"
+  apiUrl = "https://ggchat.io/api"
 }
 
 module.exports = {

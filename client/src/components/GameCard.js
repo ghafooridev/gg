@@ -21,12 +21,12 @@ const GameCard = (props) => {
 
     function createRoom() {
         console.log("apiURL: ", apiUrl)
-        fetch(`${apiUrl}/createroom`, {mode: "cors", method: "GET", credentials: "same-origin"}).then(response => {
-            response.text().then(text => {
-                console.log(text);
-                history.push('/room/'+text);
+        fetch(`${apiUrl}/create/room?game=${title}`, {mode: "cors", method: "POST", credentials: "same-origin"})
+        .then(response => {
+            response.json().then(json => {
+                console.log(json);
+                history.push('/room/'+json.roomId);
             });
-            
         });
     }
 

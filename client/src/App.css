@@ -39,6 +39,6 @@
 
 .messages { list-style-type: none; margin: 0; padding: 0; height: 100%; width: 100%; overflow: auto; }
 
-.messages li { padding: 5px 10px; color: #fff}
+.messages li { padding: 5px 10px; color: #f7f8f2}
       
-.messages li:nth-child(odd) { background: #0b1011; }
+.messages li:nth-child(odd) { background: #2e3336; }
