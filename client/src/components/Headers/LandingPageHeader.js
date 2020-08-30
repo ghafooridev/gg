@@ -54,7 +54,7 @@ const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin
         <div className="filter" />
         <Container>
           <div className="motto text-center">
-            <h1>Spiel</h1>
+            <h1>GGchat</h1>
             <h3>Engage, socialize and connect with Zoom University students.</h3>
             <br />
             {isLoggedin ? 

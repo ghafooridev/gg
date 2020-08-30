@@ -5,7 +5,7 @@ let apiUrl;
 if (process.env.PROD) {
   apiUrl = "/api";
 } else {
-  apiUrl = "https://spielzoom.com/api"
+  apiUrl = "https://ggchat.io/api"
 }
 
 module.exports = {

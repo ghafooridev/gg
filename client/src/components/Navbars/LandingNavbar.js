@@ -77,7 +77,7 @@ function LandingNavbar() {
             title="Coded by Creative Tim"
             tag={Link}
           >
-            Spiel v1.0
+            GGchat v1.0
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}

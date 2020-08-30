@@ -13,7 +13,7 @@ const CreateRoom = (props) => {
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo" />
                     <p>
-                    Welcome to <code>Spiel</code>. Click on this button to create a room.
+                    Welcome to <code>GGchat</code>. Click on this button to create a room.
                     </p>
                     <button onClick={create}>Create room</button>
             </header>
