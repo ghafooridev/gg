@@ -1,0 +1,54 @@
+.lobby {
+	height: 100vh;
+	&__heading {
+		text-align: center;
+		height: 10vh;
+		font-size: 1.5rem;
+		font-weight: 600;
+		margin: 0;
+		padding-top: 1.5rem;
+	}
+	&__container {
+		height: 88vh;
+		overflow: hidden;
+		display: flex;
+	}
+	&__col {
+		width: 33vw;
+		height: 88vh;
+		padding: 1.5rem;
+	}
+}
+
+.rules {
+	&__heading {
+		text-align: center;
+		margin: 0;
+		padding: 0 0.5rem 0.5rem 0.5rem;
+	}
+	&__content {
+		height: 80vh;
+		padding: 0.5rem;
+		overflow: auto;
+	}
+}
+
+.user-card {
+	margin: 2rem 0rem;
+	text-align: center;
+	&__body {
+		padding: 0rem;
+	}
+	&__title {
+		display: inline-block;
+		padding: 0 0 1rem 0;
+		font-size: 1.75rem;
+	}
+	&__subtitle {
+		font-size: 1rem;
+	}
+}
+
+.icebreak {
+	text-align: center;
+}

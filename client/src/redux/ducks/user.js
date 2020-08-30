@@ -4,8 +4,12 @@
 // Actions
 
 // Reducers
-const initialState = {};
-export default user = (state = initialState, action) => {
+const initialState = {
+	name: 'AJ',
+	university: 'UCSD',
+	description: 'Greasy',
+};
+const user = (state = initialState, action) => {
 	switch (action) {
 		default:
 			return state;
@@ -15,3 +19,5 @@ export default user = (state = initialState, action) => {
 // Action Creators
 
 // Side Effects
+
+export default user;
