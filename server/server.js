@@ -6,6 +6,8 @@ const socket = require("socket.io");
 const path = require("path");
 
 const util = require("./util");
+const api = require("./api");
+const { gameNames, gameSizes } = require("./config");
 
 const http = require("http");
 let server = http.createServer(app);
@@ -14,8 +16,8 @@ if (process.env.PROD) {
   const fs = require('fs');
   const https = require('https');
   server = https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/spielzoom.com/cert.pem')
+    key: fs.readFileSync(process.env.LETS_ENCRYPT_PRIVKEY),
+    cert: fs.readFileSync(process.env.LETS_ENCRYPT_CERT)
   }, app);
 }
 
@@ -26,15 +28,7 @@ const socketToRoom = {}; // socket ID -> room ID map
 rooms = {};
 queue = {};
 
-const gameRoomSize = {
-  "Scribble": 5,
-  "Mafia": 6,
-  "Covidopoly": 4,
-  "Out of Context": 4,
-  "test": 2
-}
-
-//socket connection established
+// socket connection event
 io.on("connection", socket => {
     // subscribe to room
     const subscribe = room => {
@@ -102,13 +96,13 @@ io.on("connection", socket => {
       queue[payload.gameName][socket.id] = payload.user;
       
       // if 4 or more players are waiting, then create game room
-      if (Object.keys(queue[payload.gameName]).length >= gameRoomSize[payload.gameName]) {
+      if (Object.keys(queue[payload.gameName]).length >= gameSizes[payload.gameName]) {
         do { roomId = util.makeId(5) }
         while(roomId in rooms);
 
         var userCount = 0;
         for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
-          if(userCount == gameRoomSize[payload.gameName]) return; 
+          if(userCount == gameSizes[payload.gameName]) return; 
 
           io.to(socketId).emit("game found", { roomId: roomId });
           delete queue[payload.gameName][socketId];
@@ -133,26 +127,33 @@ io.on("connection", socket => {
     socket.on("user queue", userQueue);
     socket.on("user message", sendMessage);
 });
-  
+
+// attach to api router
+app.use('/api', api);
 
 if (process.env.PROD) {
-    app.use(express.static(path.join(__dirname, './client/build')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, './client/build/index.html'));
+    app.use(express.static(path.join(__dirname, '../client/build')));
+    
+    app.get('/', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+
+    app.get('/login', (req, res) => {
+        res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+    
+    app.get('/room', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+
+    app.get('/room/*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    });
+
+    app.get('/lobby', (req, res) => {
+      res.sendFile(path.join(__dirname, '../client/build/index.html'));
     });
 }
-
-app.post('/test', (req, res) => {
-  res.send('test passed.')
-});
-
-app.get('/createroom', (req, res) => {
-  let roomId = "";
-  do { roomId = util.makeId(5) }
-  while(roomId in rooms);
-
-  res.send(roomId);
-});
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => console.log(`server is running on port ${port}`));
