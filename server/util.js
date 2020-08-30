@@ -12,6 +12,16 @@ function makeId(length) {
     return result;
 }
 
+async function generateUniqueId(model, idField, idLength) {
+    
+    let id = "";
+    do { id = makeId(idLength) }
+    while(await model.exists({ [idField]: id }));
+
+    return id;
+}
+
 module.exports = {
-    makeId: makeId
+    makeId: makeId,
+    generateUniqueId: generateUniqueId
 }

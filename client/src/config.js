@@ -3,7 +3,7 @@ require('dotenv').config();
 let apiUrl;
 
 if (process.env.PROD) {
-  apiUrl = "";
+  apiUrl = "/api";
 } else {
   apiUrl = "https://ggchat.io/api"
 }
