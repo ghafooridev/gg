@@ -127,7 +127,7 @@ const LandingPage = (props) => {
             <span aria-hidden={true}>×</span>
           </button>
           <h6 className="text-muted">Welcome</h6>
-          <h3 className="modal-title text-center">Spiel</h3>
+          <h3 className="modal-title text-center">GGchat</h3>
           <p>Log in to your account</p>
         </div>
         <div className="modal-body">
