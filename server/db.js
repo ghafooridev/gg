@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+mongoose.set('useFindAndModify', false);
 const mongoPass = process.env.DB_PASS;
 const mongoUser = process.env.DB_USER;
 

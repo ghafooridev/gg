@@ -5,8 +5,7 @@ const app = express();
 const socket = require("socket.io");
 const path = require("path");
 
-const { gamesList, gameSizes, ID_LEN } = require("./config");
-const util = require("./util");
+const { ROOM_CLEAN_INTERVAL } = require("./config");
 const api = require("./api");
 
 const http = require("http");
@@ -29,9 +28,9 @@ const io = socket(server);
 queue = {};
 
 // socket connection event
-io.on("connection", (socket, userId) => {
-    // subscribe to room
-    const subscribe = room => {
+io.on("connection", (socket) => {
+    // user joins room
+    const handleRoomJoin = (room, userId) => {
       io.in(room).clients((error, clients) => {
         if (error) {
           throw error;
@@ -39,37 +38,45 @@ io.on("connection", (socket, userId) => {
         
         socket.join(room);
         socketHelper.addUserRoom(room, userId);
-        socketHelper.setSocketRoom(socket.id, roomId);
+        socketHelper.setSocketRoom(socket.id, room, userId);
 
         console.log("room users emitting: ", clients);
         socket.emit("room users", clients);
-
       });
 
     };
+
+    // user joins lobby
+    const handleLobbyJoin = (payload) => {
+      const lobby = payload.lobbyId;
+      const userId = payload.userId;
+
+      io.in(lobby).clients((error, clients) => {
+        if (error) throw error;
+
+        socket.join(lobby);
+        // track socketId map to room / lobby id
+        socketHelper.setSocketRoom(socket.id, lobby, userId);
+        
+        const lobbyFullClbk = (roomId) => {
+          io.to(lobby).emit("game found", { roomId: roomId })
+        }
+        socketHelper.addUserLobby(lobby, userId, lobbyFullClbk, payload.game);
+        socket.to(lobby).emit("user joined lobby", userId);
+      });
+    }
+
   
     // user disconnected
-    const userDisconnected = () => {
+    const userDisconnected = (userId) => {
       console.log('user disconnected! ', socket.id);
-      console.log("queue: ", queue);
-
-      for(const game in queue) {
-        if(socket.id in queue[game]) {
-          delete queue[game][socket.id];
-          console.log("user removed from queue");
-          console.log("-------------");
-          return;
-        }
-      }
-        
+  
       // const room = socketToRoom[socket.id];
       socketHelper.getSocketRoom(socket.id).then(room => {
         io.to(room).emit("user disconnect", { room: room, id: socket.id })
       })
 
-      // delete socketToRoom[socket.id];
       socketHelper.removeSocketObject(socket.id);
-      // io.to(room).emit("user disconnect", { room: room, id: socket.id })
 
       console.log('user removed from room');
       console.log("-------------");
@@ -85,61 +92,34 @@ io.on("connection", (socket, userId) => {
       io.to(payload.callerID).emit('user answer', { signal: payload.signal, id: socket.id });
     }
 
-    // user joins queue
-    const userQueue = payload => {
-      if (!payload.gameName || !payload.user) {
-        console.log("Incorrect params supplied to user queue event");
-        return;
-      }
-
-      if (payload.gameName && !queue[payload.gameName]) {
-        queue[payload.gameName] = {};
-      }
-
-      queue[payload.gameName][socket.id] = payload.user;
-      
-      // if 4 or more players are waiting, then create game room
-      if (Object.keys(queue[payload.gameName]).length >= gameSizes[payload.gameName]) {
-        util.generateUniqueId(Room, "roomId", ID_LEN).then(roomId => {
-          
-          var userCount = 0;
-          
-          for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
-            if(userCount == gameSizes[payload.gameName]) return; 
-
-            io.to(socketId).emit("game found", { roomId: roomId });
-            delete queue[payload.gameName][socketId];
-            userCount += 1;
-          }
-
-        });
-      }
-    }
-
     // user sends message to room
     const sendMessage = payload => {
       console.log("message recieved from: ", payload.sender);
-      // const roomId = socketToRoom[socket.id];
+
       socketHelper.getSocketRoom(socket.id).then(roomId => {
         io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
-      })
 
-      // io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
-
+        const isRoom = payload.room ? true : false;
+        socketHelper.storeChatMessage(payload.message, payload.sender, isRoom, roomId)
+      });
     }
 
     // events
-    socket.on("subscribe", subscribe);
+    socket.on("subscribe", handleRoomJoin);
+    socket.on("user queue", handleLobbyJoin);
+
     socket.on("disconnect", userDisconnected);
     socket.on("sending signal", sendSignal);
     socket.on("returning signal", returnSignal);
 
-    socket.on("user queue", userQueue);
     socket.on("user message", sendMessage);
 });
 
 // attach to api router
 app.use('/api', api);
+
+// clean rooms periodically
+setInterval(socketHelper.removeInactiveRooms, ROOM_CLEAN_INTERVAL)
 
 if (process.env.PROD) {
     app.use(express.static(path.join(__dirname, '../client/build')));
