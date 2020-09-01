@@ -6,6 +6,10 @@ const gameSizes = {
   "Drawasaurus": 2
 }
 
+const ID_LEN = 7;
+
 module.exports = {
-  gamesList: gamesList
+  gamesList: gamesList,
+  gameSizes: gameSizes,
+  roomIdLength: ID_LEN
 }

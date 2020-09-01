@@ -1,18 +1,14 @@
+// connect to databse
+const mongoose = require('./db');
+
 const util = require("./util");
 const Room = require("./models/Room");
 const Lobby = require("./models/Lobby");
-const { gamesList } = require("./config");
+const { gamesList, ID_LEN } = require("./config");
 
 var express = require('express')
 var router = express.Router()
 
-const mongoose = require("mongoose");
-const { idExists } = require("./util");
-const mongoPass = process.env.DB_PASS;
-const mongoUser = process.env.DB_USER;
-
-const uri = `mongodb+srv://${mongoUser}:${mongoPass}@cluster0.yoddu.mongodb.net/game?retryWrites=true&w=majority`;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, autoIndex: false });
 
 // middleware that is specific to this router
 router.use(function timeLog (req, res, next) {
@@ -41,7 +37,7 @@ router.post('/create/room', (req, res) => {
   }
 
   let roomId = "";
-  util.generateUniqueId(Room, "roomId", 5).then(id => {
+  util.generateUniqueId(Room, "roomId", ID_LEN).then(id => {
     roomId = id;
 
     const room = new Room({
@@ -67,7 +63,7 @@ router.post('/create/lobby', (req, res) => {
   }
 
   let lobbyId = "";
-  util.generateUniqueId(Lobby, "lobbyId", 5).then(id => {
+  util.generateUniqueId(Lobby, "lobbyId", ID_LEN).then(id => {
     lobbyId = id;
 
     const lobby = new Lobby({
@@ -89,10 +85,54 @@ router.post('/create/lobby', (req, res) => {
 router.get('/user/joinRoom', (req, res) => {
   // TODO: authenticate user here
 
+  // check if the user should be allowed to be in the room 
+
   // add user to room users array
 });
 
 // user joins a lobby
+router.get('/user/joinLobby', (req, res) => {
+  if (!req.query.game) {
+    res.status(400).send("Missing game query param!");
+  }
+
+  // TODO: authenticate user
+
+  // check for open lobbies
+  Lobby.findOne({ $lt: { userCount: gameSizes[req.query.game] } }, (err, lobby) => {
+    if (err) console.error(err);
+
+    if (lobby) {
+      res.json({ lobbyId: lobby.lobbyId });
+      return
+    }
+
+    // create new lobby if no open ones exist
+    util.generateUniqueId(Lobby, "lobbyId", ID_LEN).then(id => {
+      lobbyId = id;
+  
+      const lobby = new Lobby({
+        _id: new mongoose.Types.ObjectId(),
+        lobbyId: lobbyId,
+        users: [],
+        game: req.query.game
+      });
+  
+      lobby.save(err => {
+        if (err) return console.error(err);
+      });
+  
+      res.json({lobbyId: lobbyId});
+    });
+
+  })
+
+  return lobbyId;
+});
+
+router.get('/user/message', (req, res) => {
+  
+})
 
 // return stats on number of users active, number of rooms, how many users in each game etc.
 router.get('/serverstats', (req, res) => {  

@@ -5,11 +5,12 @@ const app = express();
 const socket = require("socket.io");
 const path = require("path");
 
+const { gamesList, gameSizes, ID_LEN } = require("./config");
 const util = require("./util");
 const api = require("./api");
-const { gameNames, gameSizes } = require("./config");
 
 const http = require("http");
+const socketHelper = require('./socketHelper');
 let server = http.createServer(app);
 
 if (process.env.PROD) {
@@ -23,13 +24,12 @@ if (process.env.PROD) {
 
 const io = socket(server);
 
-const users = {}; // room ID -> users in room map
-const socketToRoom = {}; // socket ID -> room ID map
-rooms = {};
+// const socketToRoom = {}; // socket ID -> room ID map
+// rooms = {};
 queue = {};
 
 // socket connection event
-io.on("connection", socket => {
+io.on("connection", (socket, userId) => {
     // subscribe to room
     const subscribe = room => {
       io.in(room).clients((error, clients) => {
@@ -38,8 +38,8 @@ io.on("connection", socket => {
         }
         
         socket.join(room);
-        rooms[room] = { users: [...clients] };
-        socketToRoom[socket.id] = room;
+        socketHelper.addUserRoom(room, userId);
+        socketHelper.setSocketRoom(socket.id, roomId);
 
         console.log("room users emitting: ", clients);
         socket.emit("room users", clients);
@@ -51,7 +51,6 @@ io.on("connection", socket => {
     // user disconnected
     const userDisconnected = () => {
       console.log('user disconnected! ', socket.id);
-      console.log("socketToRoom: ", socketToRoom);
       console.log("queue: ", queue);
 
       for(const game in queue) {
@@ -63,11 +62,15 @@ io.on("connection", socket => {
         }
       }
         
-      const room = socketToRoom[socket.id];
-      delete socketToRoom[socket.id];
-      
-      io.to(room).emit("user disconnect", { room: room, id: socket.id })
-      
+      // const room = socketToRoom[socket.id];
+      socketHelper.getSocketRoom(socket.id).then(room => {
+        io.to(room).emit("user disconnect", { room: room, id: socket.id })
+      })
+
+      // delete socketToRoom[socket.id];
+      socketHelper.removeSocketObject(socket.id);
+      // io.to(room).emit("user disconnect", { room: room, id: socket.id })
+
       console.log('user removed from room');
       console.log("-------------");
     };
@@ -97,25 +100,32 @@ io.on("connection", socket => {
       
       // if 4 or more players are waiting, then create game room
       if (Object.keys(queue[payload.gameName]).length >= gameSizes[payload.gameName]) {
-        do { roomId = util.makeId(5) }
-        while(roomId in rooms);
+        util.generateUniqueId(Room, "roomId", ID_LEN).then(roomId => {
+          
+          var userCount = 0;
+          
+          for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
+            if(userCount == gameSizes[payload.gameName]) return; 
 
-        var userCount = 0;
-        for (const [socketId, _] of Object.entries(queue[payload.gameName])) {
-          if(userCount == gameSizes[payload.gameName]) return; 
+            io.to(socketId).emit("game found", { roomId: roomId });
+            delete queue[payload.gameName][socketId];
+            userCount += 1;
+          }
 
-          io.to(socketId).emit("game found", { roomId: roomId });
-          delete queue[payload.gameName][socketId];
-          userCount += 1;
-        }
+        });
       }
     }
 
     // user sends message to room
     const sendMessage = payload => {
       console.log("message recieved from: ", payload.sender);
-      const roomId = socketToRoom[socket.id];
-      io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
+      // const roomId = socketToRoom[socket.id];
+      socketHelper.getSocketRoom(socket.id).then(roomId => {
+        io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
+      })
+
+      // io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
+
     }
 
     // events

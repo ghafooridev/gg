@@ -9,6 +9,7 @@ var lobbySchema = new Schema({
   creator: { type: String, default: "server" },
   active: { type: Boolean, default: true },
   users: Array,
+  userCount: Number
 }, { collection: "lobbys" });
 
 const Lobby = mongoose.model("Lobby", lobbySchema);
