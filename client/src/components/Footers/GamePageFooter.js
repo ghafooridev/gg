@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from 'react-router';
 
 const styleObj = {
   "width": "100%",
@@ -7,6 +8,13 @@ const styleObj = {
 }
 
 function GamePageFooter(props) {
+  const history = useHistory();
+
+  function leaveRoomClick(e) {
+    e.preventDefault();
+    history.push("/");
+  }
+
   return (
     <div style={styleObj}>    
       {props.muteText === "Mute" ?
@@ -16,6 +24,9 @@ function GamePageFooter(props) {
         <button type="button" className="btn btn-primary" 
           onClick={(e) => props.toggleAudio()}> Unmute </button>
       }
+
+      <button type="button" className="btn btn-warning" style={{"marginLeft": "10px"}}
+        onClick={leaveRoomClick}> Leave Room </button>
     </div>
   );
 }
