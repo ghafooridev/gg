@@ -164,7 +164,24 @@ router.get('/user/message', (req, res) => {
 router.get('/serverstats', (req, res) => {  
   // perform actions on the collection object
   if(req.query.users) {
-    res.send({activeUsers: 123})
+
+    Room.aggregate([{ $group: {_id: "$active", total: {$sum: "$userCount" }}}]).exec((err, roomRes) => {
+      if (err) console.error(err);
+
+      Lobby.aggregate([{ $group: {_id: "$active", total: {$sum: "$userCount" }}}]).exec((err, lobbyRes) => {
+        if (err) console.error(err);
+        console.log(roomRes, lobbyRes);
+        const emptyLobby = lobbyRes.length === 0;
+        const emptyRoom = roomRes.length === 0;
+        console.log(emptyLobby, emptyRoom);
+
+        if (!emptyLobby && !emptyRoom) res.send({activeUsers: roomRes[0].total + lobbyRes[0].total});
+        else if(!emptyRoom) res.send({activeUsers: roomRes[0].total});
+        else if(!emptyLobby) res.send({activeUsers: lobbyRes[0].total});
+        else res.send({activeUsers: 0});
+      });
+    });
+
   } 
   
   else if (req.query.activeRooms) {  
@@ -176,25 +193,14 @@ router.get('/serverstats', (req, res) => {
   } 
   
   else if(req.query.gameUsers) {
-    let roomUsers = {};
-    let lobbyUsers = {};
-    let gameUsers = {};
-
-    gamesList.forEach(gameName => {
-      Room.find({ game: gameName, active: true }).exec( (err, results) => {
-        if (err) console.error(err);
-        roomUsers[gameName] = results.length
-      });
-
-      Lobby.find({ game: gameName, active: true }).exec( (err, results) => {
-        if (err) console.error(err);
-        lobbyUsers[gameName] = results.length;
-      });
-
-      gameUsers[gameName] = roomUsers[gameName] + lobbyUsers[gameName];
+    // TODO: maybe include lobby users here too?
+    Room.aggregate([{ $group: {_id: "$game", total: {$sum: "$userCount"}} }])
+    .exec((err, results) => {
+      console.log("results: ", results);
+      if (err) console.error(err);
+      res.send({activeRooms: results});
     });
 
-    res.send({ gameUsers: gameUsers });
   } 
   
   else if (req.query.all) {
@@ -207,6 +213,8 @@ router.get('/serverstats', (req, res) => {
         Scribble: 50
       }
     })
+  } else {
+    res.status(403).send("missing query");
   }
 });
 
