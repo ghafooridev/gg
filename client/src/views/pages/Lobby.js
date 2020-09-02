@@ -34,11 +34,7 @@ const Lobby = (props) => {
     const socketRef = useRef();
     const [joiningGame, setJoiningGame] = useState(false);
 
-    // const user = {
-    //     "name": "Armin Jamshidi",
-    //     "university": "UC San Diego",
-    //     "description": "Chess-enthusiast, Masters Student, Extrovert"
-    // }
+    const lobbyId = props.match.params.lobbyId;
     const user = authenticationService.currentUserValue;
 
     const styleObj = {
@@ -63,7 +59,7 @@ const Lobby = (props) => {
         const gameName = params.gameName;
 
         socketRef.current = io.connect("/");
-        socketRef.current.emit("user queue", {user: user, gameName: gameName});
+        socketRef.current.emit("user queue", {userId: user.userId, lobbyId: lobbyId, game: gameName});
 
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
         .then(stream => {

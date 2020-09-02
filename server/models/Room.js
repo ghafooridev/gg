@@ -9,6 +9,7 @@ var roomSchema = new Schema({
   creator: { type: String, default: "server" },
   active: { type: Boolean, default: true },
   users: Array,
+  userCount: { type: Number, default: 0 }
 }, { collection: "rooms" });
 
 const Room = mongoose.model("Room", roomSchema);
