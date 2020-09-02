@@ -4,8 +4,8 @@ import Peer from "simple-peer";
 import styled from "styled-components";
 
 // import GameBrowser from "../components/GameBrowser";
-import GamePageFooter from "../components/Footers/GamePageFooter";
-import Messages from "../components/Messages";
+import GamePageFooter from "components/Footers/GamePageFooter";
+import Messages from "components/Messages";
 import { authenticationService } from "services/authentication.service";
 
 const Container = styled.div`

@@ -19,9 +19,9 @@ import {
 } from "reactstrap";
 
 // core components
-import LandingNavbar from "../../components/Navbars/LandingNavbar.js";
-import LandingPageHeader from "../../components/Headers/LandingPageHeader.js";
-import LandingFooter from "../../components/Footers/LandingFooter.js";
+import LandingNavbar from "../components/Navbars/LandingNavbar.js";
+import LandingPageHeader from "../components/Headers/LandingPageHeader.js";
+import LandingFooter from "../components/Footers/LandingFooter.js";
 import GameCard from "components/GameCard.js";
 import { authenticationService } from "services/authentication.service.js";
 

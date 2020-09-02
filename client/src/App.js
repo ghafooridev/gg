@@ -9,9 +9,9 @@ import "./assets/scss/paper-kit.scss";
 import "./assets/demo/demo.css";
 
 // import CreateRoom from './routes/createRoom';
-import Room from './routes/room';
-import LandingPage from './views/pages/LandingPage';
-import Lobby from './views/pages/Lobby';
+import Room from './views/room';
+import LandingPage from './views/LandingPage';
+import Lobby from './views/Lobby';
 
 function App() {
     return (
