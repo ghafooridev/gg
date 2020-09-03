@@ -30,7 +30,11 @@ queue = {};
 // socket connection event
 io.on("connection", (socket) => {
     // user joins room
-    const handleRoomJoin = (room, userId) => {
+    const handleRoomJoin = (payload) => {
+      
+      const room = payload.roomId;
+      const userId = payload.userId;
+
       io.in(room).clients((error, clients) => {
         if (error) {
           throw error;
@@ -100,7 +104,7 @@ io.on("connection", (socket) => {
         io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
 
         const isRoom = payload.room ? true : false;
-        socketHelper.storeChatMessage(payload.message, payload.sender, isRoom, roomId)
+        socketHelper.storeChatMessage(payload.message, payload.sender, isRoom, roomId);
       });
     }
 
