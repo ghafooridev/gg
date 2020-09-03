@@ -109,7 +109,7 @@ const Room = (props) => {
             userVideo.current.srcObject = stream;
             
             // subscribe to room
-            socketRef.current.emit("subscribe", roomID);
+            socketRef.current.emit("subscribe", {roomId: roomID, userId: user.userId});
             
             // create peers for users already in room
             const processRoomUsers = (users) => {
@@ -267,7 +267,7 @@ const Room = (props) => {
     // send chat message to room
     function sendMessage(message) {
         console.log("send message invoked!", message)
-        socketRef.current.emit("user message", {message: message, sender: user.name})
+        socketRef.current.emit("user message", {message: message, sender: user.name, id: user.userId, room: true})
     }
     
     // toggle audio
