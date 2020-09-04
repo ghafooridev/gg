@@ -34,7 +34,7 @@ function LandingFooter() {
                   href="https://www.creative-tim.com?ref=pkr-footer"
                   target="_blank"
                 >
-                  Team Spiel
+                  Team GGchat
                 </a>
               </li>
               <li>
@@ -58,7 +58,7 @@ function LandingFooter() {
           <div className="credits ml-auto">
             <span className="copyright">
               © {new Date().getFullYear()}, made with{" "}
-              <i className="fa fa-heart heart" /> by Team Spiel
+              <i className="fa fa-heart heart" /> by Team GGchat
             </span>
           </div>
         </Row>

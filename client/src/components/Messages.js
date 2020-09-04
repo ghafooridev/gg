@@ -12,8 +12,8 @@ import styled from "styled-components";
 const StyledMessageContainer = styled.div`
   float: left; 
   width: 100%; 
-  height: 30%; 
-  background: #0b1011; 
+  height: 26%; 
+  background: #2e3336; 
   position: absolute;
   bottom: 0;
 `;
@@ -39,7 +39,7 @@ const Messages = (props) => {
           return (
             <li key={index}>
               <p>
-                <div style={{display: "inline", color: "#6bd098"}}>
+                <div style={{display: "inline", color: "#8dd002"}}>
                   {messageObj["user"]}:
                 </div> {messageObj["message"]}
               </p>
@@ -52,10 +52,10 @@ const Messages = (props) => {
       <Row>
         <Col>
           <form onSubmit={handleSubmit}>
-            <Input style={{width: "88%", display: "inline"}} 
+            <Input style={{width: "86%", display: "inline"}} 
               type="text" placeholder="Type message here" name="text" 
               ref={textInput} />
-            <Button style={{display: "inline"}}>Send</Button>
+            <Button style={{display: "inline", width: "14%"}}>Send</Button>
           </form>
         </Col>
       </Row>

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 
-import Rules from '../../components/Lobby/Rules';
-import UserCard from '../../components/Lobby/UserCard';
-import Icebreaker from '../../components/Lobby/Icebreaker';
-import Chat from '../../components/Lobby/Chat';
-import Ad from '../../components/Ad';
+import Rules from '../components/Lobby/Rules';
+import UserCard from '../components/Lobby/UserCard';
+import Icebreaker from '../components/Lobby/Icebreaker';
+import Chat from '../components/Lobby/Chat';
+import Ad from '../components/Ad';
 
 const Lobby = (props) => {
 	return (

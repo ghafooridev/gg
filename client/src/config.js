@@ -2,10 +2,10 @@ require('dotenv').config();
 
 let apiUrl;
 
-if (process.env.PROD) {
-  apiUrl = "/api";
+if (!process.env.DEBUG) {
+  apiUrl = "http://localhost:5000/api";
 } else {
-  apiUrl = "https://spielzoom.com/api"
+  apiUrl = "https://ggchat.io/api"
 }
 
 module.exports = {

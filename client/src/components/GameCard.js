@@ -16,18 +16,24 @@ const GameCard = (props) => {
     }, authenticationService.currentUserValue)
 
     function joinLobby() {
-        history.push("/lobby?gameName" + title);
+        fetch(`${apiUrl}/user/joinLobby?game=${title}`, {mode: "cors", method: "PUT", credentials: "same-origin"})
+        .then(response => {
+            response.json().then(json => {
+                console.log(json);
+                history.push('/lobby/'+json.lobbyId)
+            });
+            
+        });
     }
 
     function createRoom() {
-        console.log("apiURL: ", apiUrl);
+        console.log("apiURL: ", apiUrl)
         fetch(`${apiUrl}/create/room?game=${title}`, {mode: "cors", method: "POST", credentials: "same-origin"})
         .then(response => {
             response.json().then(json => {
                 console.log(json);
                 history.push('/room/'+json.roomId);
             });
-            
         });
     }
 

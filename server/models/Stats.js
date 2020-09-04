@@ -5,6 +5,6 @@ var statsSchema = new Schema({
   activeUsers: Number
 }, { collection: "stats" });
 
-const Stats = mongoose.model("Stats", roomSchema);
+const Stats = mongoose.model("Stats", statsSchema);
 
 module.exports = Stats;

@@ -33,7 +33,8 @@ function login(username, password, description, university, email) {
         name: username,
         university: university,
         description: description,
-        email: email
+        email: email,
+        userId: "thisisarandomuserIdstring"
     };
 
     localStorage.setItem('currentUser', JSON.stringify(user));

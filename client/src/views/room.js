@@ -4,8 +4,9 @@ import Peer from "simple-peer";
 import styled from "styled-components";
 
 // import GameBrowser from "../components/GameBrowser";
-import GamePageFooter from "../components/Footers/GamePageFooter";
-import Messages from "../components/Messages";
+import GamePageFooter from "components/Footers/GamePageFooter";
+import Messages from "components/Messages";
+import { authenticationService } from "services/authentication.service";
 
 const Container = styled.div`
     padding: 20px;
@@ -36,8 +37,8 @@ const StyledVideoContainer = styled.div`
 `;
 
 const StyledVideo = styled.video`
-    height: 220px;
-    width: 280px;
+    width: 250px;
+    height: 185px;
 
     transform: rotateY(180deg);
     -webkit-transform:rotateY(180deg); /* Safari and Chrome */
@@ -96,11 +97,8 @@ const Room = (props) => {
     const roomID = props.match.params.roomID;
     // const user = props.location.state.user;
     // const gameName = props.location.state.gameName;
-    const user = {
-        "name": "Armin Jamshidi",
-        "university": "UC San Diego",
-        "description": "Chess-enthusiast, Masters Student, Extrovert"
-    }
+    const user = authenticationService.currentUserValue;
+
     const gameName = "Covidopoly"
 
     useEffect(() => {

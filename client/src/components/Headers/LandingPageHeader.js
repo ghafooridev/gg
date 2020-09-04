@@ -54,12 +54,13 @@ const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin
         <div className="filter" />
         <Container>
           <div className="motto text-center">
-            <h1>Spiel</h1>
+            <h1>GGchat</h1>
             <h3>Engage, socialize and connect with Zoom University students.</h3>
             <br />
             {isLoggedin ? 
               <>
-                <h4 style={{"color": "#6bd098"}}>Welcome {username}!</h4>
+                <h4 style={{"color": "#6bd098", "display": "inline", "marginRight": "10px"}}>
+                  Welcome {username}!</h4>
                 <Button className="btn-round" color="neutral" type="button" outline onClick={handleLogout}>
                     <i className="fa fa-sign-in" aria-hidden="true"></i>
                     Logout
@@ -77,6 +78,7 @@ const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin
                 </Button>
               </>
             }
+            <h5 style={{"margin-top": "60px"}}>Checkout the games <a href="#games">below</a></h5>
           </div>
         </Container>
       </div>
