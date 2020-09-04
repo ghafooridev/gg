@@ -4,14 +4,17 @@ dotenv.config();
 
 // connect to database
 const mongoose = require('./db');
-
+const {validSign, validLogin} = require('./helpers/valid');
 const util = require("./util");
+
 const Room = require("./models/Room");
 const Lobby = require("./models/Lobby");
-const { gamesList, ROOM_ID_LEN, LOBBY_ID_LEN, gameSizes } = require("./config");
-
-var express = require('express');
 const User = require('./models/User');
+
+const { ROOM_ID_LEN, LOBBY_ID_LEN, gameSizes } = require("./config");
+
+const jwt = require('jsonwebtoken');
+var express = require('express');
 var router = express.Router()
 
 function authenticateToken(req, res, next) {
@@ -20,7 +23,7 @@ function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(' ')[1]
   if (token == null) return res.sendStatus(401) // if there isn't any token
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
     console.log(err)
     if (err) return res.sendStatus(403)
     req.user = user
@@ -103,6 +106,41 @@ router.post('/create/lobby', (req, res) => {
   });
 });
 
+// authenticate email and password
+router.post('/user/authenticate', validLogin, (req, res) => {
+  console.log(req.body);
+  User.findOne({ email: req.body.email}, (err, user) => {
+    if (err) throw err;
+    if (!user) res.status(400).send("email password combination is incorrect!")
+
+    user.comparePassword(req.password, function(err, isMatch) {
+      if (err) throw err;
+      
+      if (isMatch) {
+        const token = jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
+
+        res.json({
+          id: user.id,
+          username: user.username,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          token: token
+        });
+      } else {
+        res.status(400).send("email password combination is incorrect!");
+      }
+    })
+  })
+});
+
+// create a new user
+router.post('/user/register', validSign, (req, res) => {
+  const { name, email, password } = req.body;
+  const errors = validationResult(req);
+
+  // TODO: use auth controller here
+});
+
 // user joins a room
 router.put('/user/joinRoom', (req, res) => {
   // TODO: authenticate user here
@@ -156,6 +194,7 @@ router.put('/user/joinLobby', (req, res) => {
 
 });
 
+// store message in database
 router.get('/user/message', (req, res) => {
   
 })

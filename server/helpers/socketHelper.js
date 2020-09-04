@@ -1,10 +1,10 @@
-const mongoose = require('./db');
-const Socket = require('./models/Socket');
-const Room = require('./models/Room');
-const Lobby = require('./models/Lobby');
+const mongoose = require('../db');
+const Socket = require('../models/Socket');
+const Room = require('../models/Room');
+const Lobby = require('../models/Lobby');
 
-const util = require('./util');
-const { gameSizes, ROOM_ID_LEN } = require('./config');
+const util = require('../util');
+const { gameSizes, ROOM_ID_LEN } = require('../config');
 
 // add user to room users array
 function addUserRoom(roomId, userId) {

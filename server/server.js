@@ -9,7 +9,7 @@ const { ROOM_CLEAN_INTERVAL } = require("./config");
 const api = require("./api");
 
 const http = require("http");
-const socketHelper = require('./socketHelper');
+const socketHelper = require('./helpers/socketHelper');
 let server = http.createServer(app);
 
 if (process.env.PROD) {
