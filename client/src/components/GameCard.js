@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardBody, CardTitle, CardFooter } from "reactstrap";
 import { useHistory } from 'react-router';
-import { authenticationService } from 'services/authentication.service';
+import authenticationService from 'services/authentication.service';
 import {apiUrl} from "config";
 
 const GameCard = (props) => {

@@ -6,7 +6,7 @@ import styled from "styled-components";
 // import GameBrowser from "../components/GameBrowser";
 import GamePageFooter from "components/Footers/GamePageFooter";
 import Messages from "components/Messages";
-import { authenticationService } from "services/authentication.service";
+import authenticationService from "services/authentication.service";
 
 const Container = styled.div`
     padding: 20px;

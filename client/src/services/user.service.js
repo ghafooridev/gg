@@ -1,5 +1,6 @@
 import config from 'config';
-import { authHeader, handleResponse } from 'helpers';
+import handleResponse from '../helpers/handle-response';
+import authHeader from '../helpers/auth-header';
 
 export const userService = {
     getAll,

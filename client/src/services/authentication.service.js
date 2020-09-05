@@ -1,25 +1,37 @@
 import { BehaviorSubject } from 'rxjs';
 
 import config from 'config';
-import { handleResponse } from '../helpers';
+import handleResponse from '../helpers/handle-response';
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
-export const authenticationService = {
-    login,
-    logout,
-    currentUser: currentUserSubject.asObservable(),
-    get currentUserValue () { return currentUserSubject.value }
-};
+function signup(email, password, name, username, university, description) {
 
-function login(username, password, description, university, email) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        params: JSON.stringify({ email, password, name, username, university, description })
+    }
+
+    return fetch(`${config.apiUrl}/user/register`, requestOptions)
+        .then(handleResponse)
+        .then(user => {
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            currentUserSubject.next(user);
+
+            return user;
+        });
+}
+
+function login(email, password) {
+
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/user/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -28,18 +40,6 @@ function login(username, password, description, university, email) {
 
             return user;
         });
-
-    // const user = {
-    //     name: username,
-    //     university: university,
-    //     description: description,
-    //     email: email,
-    //     userId: "thisisarandomuserIdstring"
-    // };
-
-    // localStorage.setItem('currentUser', JSON.stringify(user));
-    // currentUserSubject.next(user);
-    // return user;
 }
 
 function logout() {
@@ -47,3 +47,13 @@ function logout() {
     localStorage.removeItem('currentUser');
     currentUserSubject.next(null);
 }
+
+const authenticationService = {
+    signup,
+    login,
+    logout,
+    currentUser: currentUserSubject.asObservable(),
+    get currentUserValue () { return currentUserSubject.value }
+};
+
+export default authenticationService;

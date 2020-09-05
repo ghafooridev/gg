@@ -4,7 +4,13 @@ dotenv.config();
 
 // connect to database
 const mongoose = require('./db');
-const {validSign, validLogin} = require('./helpers/valid');
+
+const {
+  validSign, 
+  validLogin, 
+  forgotPasswordValidator,
+  resetPasswordValidator } = require('./helpers/valid');
+
 const util = require("./util");
 
 const Room = require("./models/Room");
@@ -15,6 +21,7 @@ const { ROOM_ID_LEN, LOBBY_ID_LEN, gameSizes } = require("./config");
 
 const jwt = require('jsonwebtoken');
 var express = require('express');
+const { registerController } = require("./auth.controller");
 var router = express.Router()
 
 function authenticateToken(req, res, next) {
@@ -106,40 +113,50 @@ router.post('/create/lobby', (req, res) => {
   });
 });
 
+/*
+* ====================== USER AUTHENTICATION ROUTES ======================
+*/
+
 // authenticate email and password
 router.post('/user/authenticate', validLogin, (req, res) => {
   console.log(req.body);
-  User.findOne({ email: req.body.email}, (err, user) => {
+  User.findOne({ email: req.body.email }, (err, user) => {
     if (err) throw err;
-    if (!user) res.status(400).send("email password combination is incorrect!")
+    if (!user) return res.status(400).send("email password combination is incorrect!")
 
-    user.comparePassword(req.password, function(err, isMatch) {
+    user.comparePassword(req.body.password, function(err, isMatch) {
       if (err) throw err;
       
       if (isMatch) {
-        const token = jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
+        const username = user.username;
+        const password = user.password;
+        const email = user.email;
+        const token = jwt.sign({username, password, email}, 
+          process.env.TOKEN_SECRET, { expiresIn: '7d' });
 
         res.json({
           id: user.id,
           username: user.username,
-          firstname: user.firstname,
-          lastname: user.lastname,
+          name: user.name,
           token: token
         });
       } else {
-        res.status(400).send("email password combination is incorrect!");
+        return res.status(400).send("email password combination is incorrect!");
       }
     })
   })
 });
 
-// create a new user
-router.post('/user/register', validSign, (req, res) => {
-  const { name, email, password } = req.body;
-  const errors = validationResult(req);
+// register a new user
+router.post('/user/register', validSign, registerController);
 
-  // TODO: use auth controller here
-});
+// router.post('/user/activation', activationController);
+// router.put('/user/forgotpassword',  forgotPasswordValidator, forgotPasswordController);
+// router.put('/user/resetpassword', resetPasswordValidator, resetPasswordController);
+
+/**
+ * ====================== END ======================
+ */
 
 // user joins a room
 router.put('/user/joinRoom', (req, res) => {
@@ -193,11 +210,6 @@ router.put('/user/joinLobby', (req, res) => {
   })
 
 });
-
-// store message in database
-router.get('/user/message', (req, res) => {
-  
-})
 
 // return stats on number of users active, number of rooms, how many users in each game etc.
 router.get('/serverstats', (req, res) => {  
