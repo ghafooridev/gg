@@ -5,13 +5,23 @@ dotenv.config();
 // connect to database
 const mongoose = require('./db');
 
+const {
+  validSign, 
+  validLogin, 
+  forgotPasswordValidator,
+  resetPasswordValidator } = require('./helpers/valid');
+
 const util = require("./util");
+
 const Room = require("./models/Room");
 const Lobby = require("./models/Lobby");
-const { gamesList, ROOM_ID_LEN, LOBBY_ID_LEN, gameSizes } = require("./config");
-
-var express = require('express');
 const User = require('./models/User');
+
+const { ROOM_ID_LEN, LOBBY_ID_LEN, gameSizes } = require("./config");
+
+const jwt = require('jsonwebtoken');
+var express = require('express');
+const { registerController } = require("./auth.controller");
 var router = express.Router()
 
 function authenticateToken(req, res, next) {
@@ -20,7 +30,7 @@ function authenticateToken(req, res, next) {
   const token = authHeader && authHeader.split(' ')[1]
   if (token == null) return res.sendStatus(401) // if there isn't any token
 
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
     console.log(err)
     if (err) return res.sendStatus(403)
     req.user = user
@@ -103,6 +113,51 @@ router.post('/create/lobby', (req, res) => {
   });
 });
 
+/*
+* ====================== USER AUTHENTICATION ROUTES ======================
+*/
+
+// authenticate email and password
+router.post('/user/authenticate', validLogin, (req, res) => {
+  console.log(req.body);
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) throw err;
+    if (!user) return res.status(400).send("email password combination is incorrect!")
+
+    user.comparePassword(req.body.password, function(err, isMatch) {
+      if (err) throw err;
+      
+      if (isMatch) {
+        const username = user.username;
+        const password = user.password;
+        const email = user.email;
+        const token = jwt.sign({username, password, email}, 
+          process.env.TOKEN_SECRET, { expiresIn: '7d' });
+
+        res.json({
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          token: token
+        });
+      } else {
+        return res.status(400).send("email password combination is incorrect!");
+      }
+    })
+  })
+});
+
+// register a new user
+router.post('/user/register', validSign, registerController);
+
+// router.post('/user/activation', activationController);
+// router.put('/user/forgotpassword',  forgotPasswordValidator, forgotPasswordController);
+// router.put('/user/resetpassword', resetPasswordValidator, resetPasswordController);
+
+/**
+ * ====================== END ======================
+ */
+
 // user joins a room
 router.put('/user/joinRoom', (req, res) => {
   // TODO: authenticate user here
@@ -156,15 +211,28 @@ router.put('/user/joinLobby', (req, res) => {
 
 });
 
-router.get('/user/message', (req, res) => {
-  
-})
-
 // return stats on number of users active, number of rooms, how many users in each game etc.
 router.get('/serverstats', (req, res) => {  
   // perform actions on the collection object
   if(req.query.users) {
-    res.send({activeUsers: 123})
+
+    Room.aggregate([{ $group: {_id: "$active", total: {$sum: "$userCount" }}}]).exec((err, roomRes) => {
+      if (err) console.error(err);
+
+      Lobby.aggregate([{ $group: {_id: "$active", total: {$sum: "$userCount" }}}]).exec((err, lobbyRes) => {
+        if (err) console.error(err);
+        console.log(roomRes, lobbyRes);
+        const emptyLobby = lobbyRes.length === 0;
+        const emptyRoom = roomRes.length === 0;
+        console.log(emptyLobby, emptyRoom);
+
+        if (!emptyLobby && !emptyRoom) res.send({activeUsers: roomRes[0].total + lobbyRes[0].total});
+        else if(!emptyRoom) res.send({activeUsers: roomRes[0].total});
+        else if(!emptyLobby) res.send({activeUsers: lobbyRes[0].total});
+        else res.send({activeUsers: 0});
+      });
+    });
+
   } 
   
   else if (req.query.activeRooms) {  
@@ -176,25 +244,14 @@ router.get('/serverstats', (req, res) => {
   } 
   
   else if(req.query.gameUsers) {
-    let roomUsers = {};
-    let lobbyUsers = {};
-    let gameUsers = {};
-
-    gamesList.forEach(gameName => {
-      Room.find({ game: gameName, active: true }).exec( (err, results) => {
-        if (err) console.error(err);
-        roomUsers[gameName] = results.length
-      });
-
-      Lobby.find({ game: gameName, active: true }).exec( (err, results) => {
-        if (err) console.error(err);
-        lobbyUsers[gameName] = results.length;
-      });
-
-      gameUsers[gameName] = roomUsers[gameName] + lobbyUsers[gameName];
+    // TODO: maybe include lobby users here too?
+    Room.aggregate([{ $group: {_id: "$game", total: {$sum: "$userCount"}} }])
+    .exec((err, results) => {
+      console.log("results: ", results);
+      if (err) console.error(err);
+      res.send({activeRooms: results});
     });
 
-    res.send({ gameUsers: gameUsers });
   } 
   
   else if (req.query.all) {
@@ -207,6 +264,8 @@ router.get('/serverstats', (req, res) => {
         Scribble: 50
       }
     })
+  } else {
+    res.status(403).send("missing query");
   }
 });
 

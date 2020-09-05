@@ -23,18 +23,24 @@ import LandingNavbar from "../components/Navbars/LandingNavbar.js";
 import LandingPageHeader from "../components/Headers/LandingPageHeader.js";
 import LandingFooter from "../components/Footers/LandingFooter.js";
 import GameCard from "components/GameCard.js";
-import { authenticationService } from "services/authentication.service.js";
+import authenticationService from "services/authentication.service.js";
 
 const LandingPage = (props) => {
   const loggedInStartState = authenticationService.currentUserValue ? true : false;
-  const showModalStartState = !loggedInStartState && props.match.path === "/login" ? true : false;
+  const showLoginModalStartState = !loggedInStartState && props.match.path === "/login" ? true : false;
+  const showSignupModalStartState = !loggedInStartState && props.match.path === "/signup" ? true : false;
+
   const history = useHistory();
 
   const [isLoggedin, setLoggedin] = useState(loggedInStartState);
-  const [showModal, setShowModal] = useState(showModalStartState);
+  const [showLoginModal, setShowLoginModal] = useState(showLoginModalStartState);
+  const [showSignupModal, setShowSignupModal] = useState(showSignupModalStartState);
+
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [university, setUniversity] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [description, setDescription] = useState("");
 
   document.documentElement.classList.remove("nav-open");
@@ -43,6 +49,7 @@ const LandingPage = (props) => {
     if (loggedInStartState) {
       const user = authenticationService.currentUserValue;
       setName(user.name);
+      setUsername(user.username);
       setUniversity(user.university);
       setEmail(user.email);
       setDescription(user.description);
@@ -55,12 +62,12 @@ const LandingPage = (props) => {
   }, [loggedInStartState]);
 
   function handleSignin() {
-    modalOpen();
+    modalLoginOpen();
   }
 
   // TODO: handle sign up button press event
   function handleSignup() {
-
+    modalSignupOpen();
   }
 
   function handleLogout() {
@@ -70,15 +77,27 @@ const LandingPage = (props) => {
     setUniversity("");
     setEmail("");
     setDescription("");
+    setPassword("");
+    setUsername("");
   }
 
-  function modalOpen() {
-    setShowModal(true);
-    history.push("/login")
+  function modalSignupOpen() {
+    setShowSignupModal(true);
+    history.push("/signup")
   }
 
-  function modalClose() {
-    setShowModal(false);
+  function modalSignupClose() {
+    setShowSignupModal(false);
+    history.push("/");
+  }
+
+  function modalLoginOpen() {
+    setShowLoginModal(true);
+    history.push("/login");
+  }
+
+  function modalLoginClose() {
+    setShowLoginModal(false);
     history.push("/");
   }
 
@@ -96,13 +115,21 @@ const LandingPage = (props) => {
       setUniversity(value);
     } else if(name === "description") {
       setDescription(value);
+    } else if(name === "password") {
+      setPassword(value);
     }
   }
 
   function handleLoginSubmit(e) {
-    modalClose();
+    modalLoginClose();
     setLoggedin(true);
-    authenticationService.login(name, "", description, university, email);
+    authenticationService.login(email, password);
+  }
+
+  function handleSignupSubmit(e) {
+    modalSignupClose();
+    setLoggedin(true);
+    authenticationService.signup(name, username, email, password, description, university);
   }
 
   return (
@@ -111,9 +138,8 @@ const LandingPage = (props) => {
       <LandingPageHeader handleSignin={handleSignin} handleSignup={handleSignup} 
         handleLogout={handleLogout} isLoggedin={isLoggedin} username={name} />
 
-      <Modal
-        isOpen={showModal}
-        toggle={() => setShowModal(false)}
+      <Modal isOpen={showSignupModal}
+        toggle={() => setShowSignupModal(false)}
         modalClassName="modal-register"
       >
         <div className="modal-header no-border-header text-center">
@@ -122,23 +148,23 @@ const LandingPage = (props) => {
             className="close"
             data-dismiss="modal"
             type="button"
-            onClick={() => modalClose()}
+            onClick={() => modalSignupClose()}
           >
             <span aria-hidden={true}>×</span>
           </button>
           <h6 className="text-muted">Welcome</h6>
           <h3 className="modal-title text-center">GGchat</h3>
-          <p>Log in to your account</p>
+          <p>Register your account</p>
         </div>
         <div className="modal-body">
           <form onSubmit={e => e.preventDefault()}>
             <FormGroup>
-              <Label for="Name">First Name</Label>
+              <Label for="Name">Full Name</Label>
               <Input
                 type="text"
                 name="name"
                 id="Name"
-                placeholder="Enter First Name"
+                placeholder="Enter Name"
                 onChange={e => handleChange(e)}
               />
             </FormGroup>
@@ -152,8 +178,19 @@ const LandingPage = (props) => {
                 onChange={e => handleChange(e)}
               />
               <FormText color="muted">
-                We'll never share your information with anyone else.
+                Please enter your .edu email address
               </FormText>
+            </FormGroup>
+            <FormGroup>
+              <Label for="Password">Password</Label>
+              <Input
+                type="password"
+                name="password"
+                id="Password"
+                placeholder="Password"
+                autoComplete="off"
+                onChange={e => handleChange(e)}
+              />
             </FormGroup>
             <FormGroup>
               <Label for="University">University Name</Label>
@@ -177,7 +214,10 @@ const LandingPage = (props) => {
                 onChange={e => handleChange(e)}
               />
             </FormGroup>
-            <FormGroup check>
+            <FormText color="muted">
+                We'll never share your information with anyone else.
+            </FormText>
+            {/* <FormGroup check>
               <Label check>
                 <Input type="checkbox" />{' '}
                 Remember Me
@@ -185,6 +225,58 @@ const LandingPage = (props) => {
                   <span className="check"></span>
               </span>
               </Label>
+            </FormGroup> */}
+          </form>
+        </div>
+        <div className="modal-footer">
+          <Button color="primary" type="submit" onClick={e => handleSignupSubmit(e)} style={{"margin": "auto"}}>
+            Submit
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={showLoginModal}
+        toggle={() => setShowLoginModal(false)}
+        modalClassName="modal-register">
+        <div className="modal-header no-border-header text-center">
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => modalLoginClose()}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+          <h6 className="text-muted">Welcome</h6>
+          <h3 className="modal-title text-center">GGchat</h3>
+          <p>Log in to your account</p>
+        </div>
+        <div className="modal-body">
+          <form onSubmit={e => e.preventDefault()}>
+            <FormGroup>
+              <Label for="emailAdd">Email</Label>
+              <Input
+                type="email"
+                name="email"
+                id="emailAdd"
+                placeholder="Enter Email"
+                onChange={e => handleChange(e)}
+              />
+              <FormText color="muted">
+                Please enter your .edu email address
+              </FormText>
+            </FormGroup>
+            <FormGroup>
+              <Label for="Password">Password</Label>
+              <Input
+                type="password"
+                name="password"
+                id="Password"
+                placeholder="Password"
+                autoComplete="off"
+                onChange={e => handleChange(e)}
+              />
             </FormGroup>
           </form>
         </div>

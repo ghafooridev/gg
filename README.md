@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Zoom-University-Spiel/web-client.svg?branch=prod)](https://travis-ci.org/Zoom-University-Spiel/web-client)
+[![Build Status](https://travis-ci.org/GGchat-io/site.svg?branch=prod)](https://travis-ci.org/Zoom-University-Spiel/web-client)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

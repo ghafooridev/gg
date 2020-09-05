@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
+app.use(express.json());
+app.use(bodyParser.json());
 
 const socket = require("socket.io");
 const path = require("path");
@@ -9,7 +12,7 @@ const { ROOM_CLEAN_INTERVAL } = require("./config");
 const api = require("./api");
 
 const http = require("http");
-const socketHelper = require('./socketHelper');
+const socketHelper = require('./helpers/socketHelper');
 let server = http.createServer(app);
 
 if (process.env.PROD) {
@@ -30,7 +33,11 @@ queue = {};
 // socket connection event
 io.on("connection", (socket) => {
     // user joins room
-    const handleRoomJoin = (room, userId) => {
+    const handleRoomJoin = (payload) => {
+      
+      const room = payload.roomId;
+      const userId = payload.userId;
+
       io.in(room).clients((error, clients) => {
         if (error) {
           throw error;
@@ -100,7 +107,7 @@ io.on("connection", (socket) => {
         io.to(roomId).emit("message notification", {message: payload.message, sender: payload.sender, senderId: payload.id});
 
         const isRoom = payload.room ? true : false;
-        socketHelper.storeChatMessage(payload.message, payload.sender, isRoom, roomId)
+        socketHelper.storeChatMessage(payload.message, payload.sender, isRoom, roomId);
       });
     }
 

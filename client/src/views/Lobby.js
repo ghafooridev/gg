@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useHistory } from 'react-router-dom';
 import io from "socket.io-client";
 import qs from 'qs';
-import { authenticationService } from "services/authentication.service";
+import authenticationService from "services/authentication.service";
 
 const StyledVideo = styled.video`
     border-radius-top-left: 10px;
