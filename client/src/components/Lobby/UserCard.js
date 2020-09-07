@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import { useHistory } from 'react-router-dom';
+
+import authenticationService from 'services/authentication.service.js';
 
 const videoConstraints = {
 	audio: true,
@@ -31,7 +32,7 @@ const UserCard = (props) => {
 	const history = useHistory();
 	const [joiningGame, setJoiningGame] = useState(false);
 
-	const user = useSelector((state) => state.user);
+	const user = authenticationService.currentUserValue;
 
 	useEffect(
 		() => {

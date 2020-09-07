@@ -78,7 +78,7 @@ const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin
                 </Button>
               </>
             }
-            <h5 style={{"margin-top": "60px"}}>Checkout the games <a href="#games">below</a></h5>
+            <h5 style={{"marginTop": "60px"}}>Checkout the games <a href="#games">below</a></h5>
           </div>
         </Container>
       </div>

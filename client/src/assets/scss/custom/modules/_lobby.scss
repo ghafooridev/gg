@@ -2,7 +2,7 @@
 	height: 100vh;
 	&__heading {
 		text-align: center;
-		height: 10vh;
+		height: 7vh;
 		font-size: 1.5rem;
 		font-weight: 600;
 		margin: 0;
@@ -50,4 +50,16 @@
 }
 
 .icebreak {
+}
+
+.chat {
+}
+
+.ad {
+	width: 100%;
+	height: 25vh;
+	text-align: center;
+	font-weight: 600;
+	font-size: 2rem;
+	padding-top: 3rem;
 }

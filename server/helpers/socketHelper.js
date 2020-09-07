@@ -1,10 +1,10 @@
-const mongoose = require('./db');
-const Socket = require('./models/Socket');
-const Room = require('./models/Room');
-const Lobby = require('./models/Lobby');
+const mongoose = require('../db');
+const Socket = require('../models/Socket');
+const Room = require('../models/Room');
+const Lobby = require('../models/Lobby');
 
-const util = require('./util');
-const { gameSizes, ROOM_ID_LEN } = require('./config');
+const util = require('../util');
+const { gameSizes, ROOM_ID_LEN } = require('../config');
 
 // add user to room users array
 function addUserRoom(roomId, userId) {
@@ -57,12 +57,14 @@ async function getSocketRoom(socketId) {
   const doc = await Socket.findOne({ socketId: socketId }).exec();
   if (doc) return doc.roomId;
   
-  console.error("Failed to find socket object: ");
+  console.error("Failed to find socket object: ", socketId);
   return null;
 }
 
 // store room Id 
 function setSocketRoom(socketId, roomId, userId) {
+  console.log("setting socket object: ", socketId);
+  
   const socketObj = new Socket({
     _id: new mongoose.Types.ObjectId(),
     socketId: socketId,
@@ -71,7 +73,7 @@ function setSocketRoom(socketId, roomId, userId) {
   });
 
   socketObj.save(err => {
-    if (err) return console.error(err);
+    if (err) console.error(err);
   });
 }
 
@@ -79,6 +81,7 @@ function setSocketRoom(socketId, roomId, userId) {
 function removeSocketObject(socketId) {
   Socket.findOneAndDelete({ socketId: socketId }, (err, doc) => {
     if (err) console.error("Socket Object deleted failed: ", err);
+    if (!doc) return;
 
     const userId = doc.userId;
     const roomId = doc.roomId;
@@ -113,15 +116,22 @@ function removeInactiveRooms() {
 
 // store message in databse
 function storeChatMessage(message, sender, isRoom, id) {
+  console.log("In store chat message with params: ", message, sender, isRoom, id);
   const messageObj = {
     text: message,
     sender: sender
   }
 
   if (isRoom) {
-    Room.findOneAndUpdate({ roomId: id }, { $push: { messages: messageObj }});
+    Room.findOneAndUpdate({ roomId: id }, { $push: { messages: messageObj }},
+      (err, _, __) => {
+        console.error("Error updating room with new message: ", err);
+      });
   } else {
-    Lobby.findOneAndUpdate({ lobbyId: id }, { $push: { messages: messageObj }});
+    Lobby.findOneAndUpdate({ lobbyId: id }, { $push: { messages: messageObj }},
+      (err, _, __) => {
+        console.error("Error updating lobby with new message: ", message);
+      });
   }
 } 
 
