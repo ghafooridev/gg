@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Row, Col, Input, Button } from 'reactstrap';
 import styled from 'styled-components';
@@ -10,16 +10,15 @@ const StyledMessageContainer = styled.div`
 `;
 
 const Messages = (props) => {
-	const textInput = React.createRef();
+	const [message, setMessage] = useState();
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log('in handlesubmit');
-
-		textInput.current.value = '';
-
-		const message = e.target.text.value;
-		props.sendMessage(message);
+		if (message !== '') {
+			props.sendMessage(message);
+		}
+		setMessage('');
 	};
 
 	return (
@@ -50,7 +49,8 @@ const Messages = (props) => {
 							type="text"
 							placeholder="Type message here"
 							name="text"
-							ref={textInput}
+							value={message}
+							onChange={(e) => setMessage(e.target.value)}
 						/>
 						<Button style={{ display: 'inline', width: '14%' }}>Send</Button>
 					</form>

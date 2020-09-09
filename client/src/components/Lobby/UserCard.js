@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import { useHistory } from 'react-router-dom';
-
-import authenticationService from 'services/authentication.service.js';
+import qs from 'qs';
 
 const videoConstraints = {
 	audio: true,
@@ -26,18 +25,21 @@ const StyledVideo = styled.video`
 	-moz-transform: rotateY(180deg); /* Firefox */
 `;
 
-const UserCard = (props) => {
+const UserCard = ({ updateQueue, user, location, lobbyId }) => {
 	const userVideo = useRef();
 	const socketRef = useRef();
 	const history = useHistory();
 	const [joiningGame, setJoiningGame] = useState(false);
 
-	const user = authenticationService.currentUserValue;
-
 	useEffect(
 		() => {
+			const params = qs.parse(location.search, { ignoreQueryPrefix: true });
 			socketRef.current = io.connect('/');
-			socketRef.current.emit('user queue', { user: user, gameName: 'Mafia' });
+			socketRef.current.emit('user queue', {
+				userId: user._id,
+				lobbyId: lobbyId,
+				gameName: params.gameName,
+			});
 
 			navigator.mediaDevices
 				.getUserMedia({ video: videoConstraints, audio: true })
@@ -59,6 +61,9 @@ const UserCard = (props) => {
 
 			//socket events
 			socketRef.current.on('game found', handleGameFound);
+			socketRef.current.on('user joined lobby', updateQueue);
+
+			// TODO cleanup
 		},
 		// eslint-disable-next-line
 		[]
@@ -78,7 +83,7 @@ const UserCard = (props) => {
 			</div>
 			<div className="user-card__body card-body">
 				<p className="card-text">
-					<b className="user-card__title">{user.name}</b>
+					<b className="user-card__title">{user.username}</b>
 					<br></br>
 					<i className="user-card__subtitle">{user.description}</i>
 					<br></br>

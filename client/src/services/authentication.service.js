@@ -13,14 +13,13 @@ function signup(newUser) {
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify(newUser),
 	};
-	console.log(requestOptions);
 
 	return fetch(`${config.apiUrl}/user/register`, requestOptions)
 		.then(handleResponse)
 		.then((user) => {
+			console.log(user);
 			localStorage.setItem('currentUser', JSON.stringify(user));
 			currentUserSubject.next(user);
-
 			return user;
 		});
 }
@@ -38,7 +37,7 @@ function login(email, password) {
 			// store user details and jwt token in local storage to keep user logged in between page refreshes
 			localStorage.setItem('currentUser', JSON.stringify(user));
 			currentUserSubject.next(user);
-
+			console.log(user);
 			return user;
 		});
 }
