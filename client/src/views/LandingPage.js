@@ -43,6 +43,9 @@ const LandingPage = (props) => {
   const [password, setPassword] = useState("");
   const [description, setDescription] = useState("");
 
+  const [signupErrors, setSignupErrors] = useState("");
+  const [loginErrors, setLoginErrors] = useState("");
+
   document.documentElement.classList.remove("nav-open");
   
   React.useEffect(() => {
@@ -121,15 +124,33 @@ const LandingPage = (props) => {
   }
 
   function handleLoginSubmit(e) {
-    modalLoginClose();
-    setLoggedin(true);
-    authenticationService.login(email, password);
+    authenticationService.login(email, password)
+    .then(val => {
+      console.log(val);
+      if (val.errors) {
+        setLoginErrors(val.errors);
+      } else {
+        modalLoginClose();
+        setLoggedin(true);
+        setLoginErrors("");
+      }
+    });
+
   }
 
   function handleSignupSubmit(e) {
-    modalSignupClose();
-    setLoggedin(true);
-    authenticationService.signup(name, username, email, password, description, university);
+    authenticationService.signup(email, password, name, university, description)
+    .then(val => {
+      console.log(val);
+      if (val.errors) {
+        setSignupErrors(val.errors);
+      } else {
+        modalSignupClose();
+        setLoggedin(true);
+        setSignupErrors("");
+      }
+    });
+    
   }
 
   return (
@@ -217,6 +238,9 @@ const LandingPage = (props) => {
             <FormText color="muted">
                 We'll never share your information with anyone else.
             </FormText>
+            <FormText color="red" style={{textAlign: "center", color: "red", fontSize:  "0.9em"}}>
+              {signupErrors}
+            </FormText>
             {/* <FormGroup check>
               <Label check>
                 <Input type="checkbox" />{' '}
@@ -278,6 +302,9 @@ const LandingPage = (props) => {
                 onChange={e => handleChange(e)}
               />
             </FormGroup>
+            <FormText color="red" style={{textAlign: "center", color: "red", fontSize:  "0.9em"}}>
+              {loginErrors}
+            </FormText>
           </form>
         </div>
         <div className="modal-footer">
@@ -290,7 +317,7 @@ const LandingPage = (props) => {
       <div className="main">
         <div className="section section-dark text-center" id="games">
           <Container>
-            <h2 name="About" className="title">Games</h2>
+            <h2 name="Games" className="title">Games</h2>
             <Row>
               <Col md="4">
                 <GameCard description="Collect and steal properties from other players to establish your real-estate monopoly."
@@ -306,7 +333,13 @@ const LandingPage = (props) => {
               </Col>
             </Row>
           </Container>
-        </div>
+        {isLoggedin ? <></> : 
+          <div className="section section-dark section-footer" style={{"fontSize": "1.4em"}}>
+            <a href="/login">Login</a> to play games
+          </div>
+        }
+        
+        </div> 
         <div className="section landing-section">
           <Container>
             <Row>

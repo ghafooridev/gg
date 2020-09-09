@@ -77,7 +77,7 @@ function LandingNavbar() {
             title="Coded by Creative Tim"
             tag={Link}
           >
-            GGchat v1.0
+            GGchat v 1.0
           </NavbarBrand>
           <button
             aria-expanded={navbarCollapse}
@@ -107,7 +107,7 @@ function LandingNavbar() {
                 <i className="nc-icon lg nc-controller-modern" /> Games
               </NavLink>
             </NavItem>
-            <NavItem>
+            {/* <NavItem>
               <NavLink
                 data-placement="bottom"
                 href="https://twitter.com/CreativeTim?ref=creativetim"
@@ -150,7 +150,7 @@ function LandingNavbar() {
                 <i className="fa fa-github" />
                 <p className="d-lg-none">GitHub</p>
               </NavLink>
-            </NavItem>
+            </NavItem> */}
           </Nav>
         </Collapse>
       </Container>
