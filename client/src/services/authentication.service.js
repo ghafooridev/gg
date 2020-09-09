@@ -10,7 +10,13 @@ function signup(email, password, name, username, university, description) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        params: JSON.stringify({ email, password, name, username, university, description })
+        body: JSON.stringify({ 
+            name: name,
+            email: email, 
+            password: password, 
+            username: username, 
+            university: university, 
+            description: description })
     }
 
     return fetch(`${config.apiUrl}/user/register`, requestOptions)
@@ -18,8 +24,11 @@ function signup(email, password, name, username, university, description) {
         .then(user => {
             localStorage.setItem('currentUser', JSON.stringify(user));
             currentUserSubject.next(user);
-
             return user;
+
+        }).catch(err => {
+            console.log("catching error: ", err);
+            return err;
         });
 }
 
@@ -39,6 +48,9 @@ function login(email, password) {
             currentUserSubject.next(user);
 
             return user;
+        }).catch(err => {
+            console.log("cataching error: ", err);
+            return err;
         });
 }
 

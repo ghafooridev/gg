@@ -13,7 +13,7 @@ const GameCard = (props) => {
     useEffect(() => {
         const user = authenticationService.currentUserValue;
         if(user) { setIsLoggedIn(true); }
-    }, authenticationService.currentUserValue)
+    }, [authenticationService.currentUserValue])
 
     function joinLobby() {
         fetch(`${apiUrl}/user/joinLobby?game=${title}`, {mode: "cors", method: "PUT", credentials: "same-origin"})
