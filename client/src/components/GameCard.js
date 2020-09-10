@@ -7,7 +7,6 @@ import { apiUrl } from 'config';
 const GameCard = (props) => {
   const { title, subtitle, description, icon } = props;
   const history = useHistory();
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {

@@ -13,7 +13,7 @@ import { GAME_DATA } from '../constants';
 const Lobby = (props) => {
   const user = authenticationService.currentUserValue;
   const [queue, setQueue] = useState([user.username]);
-  const [secs, setSecs] = useState(0);
+  const [secs, setSecs] = useState(1);
   const [mins, setMins] = useState(0);
   const [gameData, setGameData] = useState({});
   const history = useHistory();

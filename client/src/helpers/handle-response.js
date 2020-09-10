@@ -5,13 +5,17 @@ export default function handleResponse(response) {
         console.log(text);
         const data = text && JSON.parse(text);
         if (!response.ok) {
+            console.log("response not okay");
+            let errorStatus = false;
+
             if ([401, 403].indexOf(response.status) !== -1) {
                 // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
                 authenticationService.logout();
                 window.location.reload(true);
+                errorStatus = true;
             }
 
-            const error = (data && data.message) || response.statusText;
+            const error = data;
             return Promise.reject(error);
         }
 
