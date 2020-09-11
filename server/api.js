@@ -122,7 +122,7 @@ router.post('/user/authenticate', validLogin, (req, res) => {
   console.log(req.body);
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) throw err;
-    if (!user) return res.status(400).send("email password combination is incorrect!")
+    if (!user) return res.status(400).json({errors: "email password combination is incorrect!"})
 
     user.comparePassword(req.body.password, function(err, isMatch) {
       if (err) throw err;
@@ -141,7 +141,7 @@ router.post('/user/authenticate', validLogin, (req, res) => {
           token: token
         });
       } else {
-        return res.status(400).send("email password combination is incorrect!");
+        return res.status(400).json({errors: "email password combination is incorrect!"});
       }
     })
   })
