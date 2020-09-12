@@ -1,140 +1,102 @@
-import React, { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef } from 'react';
+import { Button } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
-import io from "socket.io-client";
-import qs from 'qs';
-import authenticationService from "services/authentication.service";
+import io from 'socket.io-client';
 
-const StyledVideo = styled.video`
-    border-radius-top-left: 10px;
-    border-radius-top-right: 10px;
-
-    transform: rotateY(180deg);
-    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-    -moz-transform:rotateY(180deg); /* Firefox */
-`;
-
-const videoConstraints = {
-    audio: true,
-    video: {
-        width: {
-            min: 320,
-            max: 640
-        },
-        height: {
-            min: 240,
-            max: 480
-        }
-    }
-};
+import Rules from '../components/Lobby/Rules';
+import UserCard from '../components/Lobby/UserCard';
+import Icebreaker from '../components/Lobby/Icebreaker';
+import Chat from '../components/Lobby/Chat';
+import Stats from '../components/Lobby/Stats';
+import authenticationService from 'services/authentication.service.js';
+import { GAME_DATA } from '../constants';
 
 const Lobby = (props) => {
-    const history = useHistory();
-    const userVideo = useRef();
-    const socketRef = useRef();
-    const [joiningGame, setJoiningGame] = useState(false);
+  const user = authenticationService.currentUserValue;
+  const [queue, setQueue] = useState(
+    props.location.state.users ? props.location.state.users : [user.name]
+  );
+  const [secs, setSecs] = useState(1);
+  const [mins, setMins] = useState(0);
+  const gameName = props.location.state.gameName;
+  const gameData = GAME_DATA[gameName];
+  const [stats, setStats] = useState('');
+  const history = useHistory();
+  const lobbyId = props.match.params.lobbyId;
+  const socketRef = useRef();
+  const [joiningGame, setJoiningGame] = useState(false);
 
-    const lobbyId = props.match.params.lobbyId;
-    const user = authenticationService.currentUserValue;
+  const updateQueue = (payload) => {
+    setQueue([...queue, payload]);
+  };
 
-    const styleObj = {
-        "width": "25rem",
-        "margin": "5px"
-    }
-
-    const centerStyle = {
-        "display": "inline-flex",
-        "width": "100%",
-        "marginTop": "10%",
-        "padding": "10px"
-    }
-
-    const videoDivStyle = {
-        "overflow": "hidden",
-        "borderRadius": "10px 10px 0 0"
-    }
-
-    useEffect(() => {
-        const params = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-        const gameName = params.gameName;
-
-        socketRef.current = io.connect("/");
-        socketRef.current.emit("user queue", {userId: user.userId, lobbyId: lobbyId, game: gameName});
-
-        navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true })
-        .then(stream => {
-            try {
-                userVideo.current.srcObject = stream;
-                console.log("updating usevideo ref");
-            } catch(err) {
-                console.error(err);
-            }
-        });
-
-        const handleGameFound = payload => {
-            setJoiningGame(true);
-            const roomId = payload.roomId;
-            console.log("Redirecting to game room. user = ", user, gameName);
-            history.push("/room/" + roomId, {user: user, gameName: gameName});
+  useEffect(() => {
+    socketRef.current = io.connect('/');
+    // start timer
+    const interval = setInterval(() => {
+      setSecs((secs) => {
+        if (secs === 59) {
+          return 0;
+        } else {
+          return secs + 1;
         }
+      });
+    }, 1000);
 
-        //socket events
-        socketRef.current.on("game found", handleGameFound);        
-    }, 
-    // eslint-disable-next-line
-    []);
+    // get server statistics
 
-    return (
-        <div>
-            <h1 style={{"textAlign": "center"}}>
-                {joiningGame ? "Joining game ..." : "Matching with other players ..."}
-            </h1>
-            <center style={centerStyle}>
-                <div className="card" style={styleObj}>
-                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div className="card-body">
-                        <p className="card-text"><b>Player 1</b><br></br>
-                        <i>UCLA</i></p>
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-                <div className="card" style={styleObj}>
-                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div className="card-body">
-                        <p className="card-text"><b>Player 2</b><br></br>
-                        <i>Stanford University</i></p>
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-                <div className="card" style={styleObj}>
-                    <div style={videoDivStyle}>
-                        <StyledVideo className="card-img-top" ref={userVideo} autoPlay={true} muted loop playsInline poster="assets/img/FFFFFF-0.png" /> 
-                    </div>
-                    <div className="card-body">
-                    <p className="card-text"><b>{user.name}</b><br></br>
-                        <i>{user.university}</i></p>
-                        <p className="card-text">{user.description}</p>
-                    </div>
-                </div>
-                <div className="card" style={styleObj}>
-                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div className="card-body">
-                        <p className="card-text"><b>Player 4</b><br></br>
-                        <i>University of Michigan</i></p>
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-                <div className="card" style={styleObj}>
-                    <img className="card-img-top" src={require("assets/img/image cap.svg")} alt="Card cap" />
-                    <div className="card-body">
-                        <p className="card-text"><b>Player 5</b><br></br>
-                        <i>UC Berkley</i></p>
-                        <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
-            </center>
+    // cleanup
+    return () => {
+      clearInterval(interval);
+      socketRef.current.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (secs === 0) {
+      setMins((mins) => mins + 1);
+    }
+  }, [secs]);
+
+  const handleLeave = () => {
+    history.push('/');
+  };
+
+  return (
+    <div className="lobby">
+      <h1 className="lobby__heading">
+        {joiningGame
+          ? 'Joining game ...'
+          : `Waiting for other Players ${mins > '9' ? mins : `0${mins}`}:${
+              secs > '9' ? secs : `0${secs}`
+            }`}
+      </h1>
+      <div className="lobby__container">
+        <div className="lobby__col--33">
+          <Rules />
         </div>
-    )
-}
+        <div className="lobby__col--33 text-center">
+          <Stats stats={stats} />
+          <UserCard
+            updateQueue={updateQueue}
+            user={user}
+            lobbyId={lobbyId}
+            gameName={gameName}
+            socketRef={socketRef}
+            setJoiningGame={setJoiningGame}
+          />
+          <Icebreaker />
+          <Button color="primary" onClick={handleLeave}>
+            Leave Queue
+          </Button>
+        </div>
+        <div className="lobby__col--33">
+          <Chat queue={queue} gameData={gameData} socketRef={socketRef} />
+          {/* <Ad /> */}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Lobby;
