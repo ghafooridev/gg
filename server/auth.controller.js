@@ -112,7 +112,7 @@ exports.registerController = (req, res) => {
 //         const { name, email, password } = jwt.decode(token);
 
 //         console.log(email);
-        
+
 //         // TODO: update this
 //         const user = new User({
 //           name,

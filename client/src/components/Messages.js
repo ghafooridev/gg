@@ -1,65 +1,53 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import {
-  Row,
-  Col,
-  Input, 
-  Button
-} from "reactstrap";
-import styled from "styled-components";
-
-
-const StyledMessageContainer = styled.div`
-  float: left; 
-  width: 100%; 
-  height: 26%; 
-  background: #2e3336; 
-  position: absolute;
-  bottom: 0;
-`;
+import { Input, Button } from 'reactstrap';
 
 const Messages = (props) => {
-  const textInput = React.createRef();
+  const [message, setMessage] = useState();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("in handlesubmit");
-
-    textInput.current.value = "";
-
-    const message = e.target.text.value;
-    props.sendMessage(message);
-  }
+    console.log('in handlesubmit');
+    if (message !== '') {
+      props.sendMessage(message);
+    }
+    setMessage('');
+  };
 
   return (
-    <StyledMessageContainer>
-      <ul className="messages">
-        <li>Welcome to the game room!  Feel free to share links and chat here</li>
+    <div className="messages">
+      <ul className="messages__chat">
+        <li>
+          Welcome to the game room! Feel free to share links and chat here
+        </li>
         {props.messages.map((messageObj, index) => {
           return (
             <li key={index}>
               <p>
-                <div style={{display: "inline", color: "#8dd002"}}>
-                  {messageObj["user"]}:
-                </div> {messageObj["message"]}
+                <div style={{ display: 'inline', color: '#8dd002' }}>
+                  {messageObj['user']}:
+                </div>{' '}
+                {messageObj['message']}
               </p>
             </li>
-          )
+          );
         })}
       </ul>
-
-      
-      <Row>
-        <Col>
-          <form onSubmit={handleSubmit}>
-            <Input style={{width: "86%", display: "inline"}} 
-              type="text" placeholder="Type message here" name="text" 
-              ref={textInput} />
-            <Button style={{display: "inline", width: "14%"}}>Send</Button>
-          </form>
-        </Col>
-      </Row>
-    </StyledMessageContainer>
+      <div className="messages__input-container">
+        <form onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            placeholder="Type message here"
+            name="text"
+            value={message}
+            className="messages__input"
+            autoComplete="off"
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <Button className="messages__send">Send</Button>
+        </form>
+      </div>
+    </div>
   );
 };
 
