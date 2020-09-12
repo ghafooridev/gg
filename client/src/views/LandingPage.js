@@ -440,32 +440,20 @@ const LandingPage = (props) => {
               Games
             </h2>
             <Row>
-              <Col md="4">
-                <GameCard
-                  description="Collect and steal properties from other players to establish your real-estate monopoly."
-                  title="Covidopoly"
-                  subtitle="Card-based Game (3-6 players)"
-                  icon="nc-icon lg nc-single-copy-04"
-                  isLoggedin={isLoggedin}
-                />
+            <Col md="4">
+                <GameCard description="Draw the word you get as the rest of the group tries to guess the word you got."
+                  title="Drawasaurus" subtitle="Party Game (4 players)" icon="nc-icon lg nc-ruler-pencil" isLoggedin={isLoggedin} 
+                  comingSoon={false} />
               </Col>
               <Col md="4">
-                <GameCard
-                  description="Play as either Villager or Werewolf in a social deduction game created."
-                  title="Mafia"
-                  subtitle="Deduction Game (5+ players)"
-                  icon="nc-icon lg nc-zoom-split"
-                  isLoggedin={isLoggedin}
-                />
+                <GameCard description="Collect and steal properties from other players to establish your real-estate monopoly."
+                  title="Covidopoly" subtitle="Card-based Game (5 players)" icon="nc-icon lg nc-single-copy-04" isLoggedin={isLoggedin} 
+                  comingSoon={false} />
               </Col>
               <Col md="4">
-                <GameCard
-                  description="Draw the word you get as the rest of the group tries to guess the word you got."
-                  title="Scribble"
-                  subtitle="Party Game (2+ players)"
-                  icon="nc-icon lg nc-ruler-pencil"
-                  isLoggedin={isLoggedin}
-                />
+                <GameCard description="Play as either Townsfolk or Criminal in a social deduction game."
+                  title="Mafia" subtitle="Deduction Game (5+ players)" icon="nc-icon lg nc-zoom-split" isLoggedin={isLoggedin} 
+                  comingSoon={true} />
               </Col>
             </Row>
           </Container>

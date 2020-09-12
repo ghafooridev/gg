@@ -5,14 +5,27 @@ import authenticationService from 'services/authentication.service';
 import { apiUrl } from 'config';
 
 const GameCard = (props) => {
-  const { title, subtitle, description, icon } = props;
-  const history = useHistory();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { title, subtitle, description, icon, comingSoon } = props;
+    const history = useHistory();
 
-  useEffect(() => {
-    const user = authenticationService.currentUserValue;
-    if (user) {
-      setIsLoggedIn(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    
+    useEffect(() => {
+        console.log("Running useEffect");
+        const user = authenticationService.currentUserValue;
+        if(user) { setIsLoggedIn(true); }
+        else { setIsLoggedIn(false); }
+    }, [authenticationService.currentUserValue])
+
+    function joinLobby() {
+        fetch(`${apiUrl}/user/joinLobby?game=${title}`, {mode: "cors", method: "PUT", credentials: "same-origin"})
+        .then(response => {
+            response.json().then(json => {
+                console.log(json);
+                history.push('/lobby/'+json.lobbyId)
+            });
+            
+        });
     }
   }, authenticationService.currentUserValue);
 
@@ -55,33 +68,39 @@ const GameCard = (props) => {
           <i className={icon} />
         </div>
       </div>
-
-      <CardBody>
-        <div className="author">
-          <CardTitle tag="h4">{title}</CardTitle>
-          <h6 className="card-category">{subtitle}</h6>
-        </div>
-        <p className="card-description text-center">{description}</p>
-      </CardBody>
-      <CardFooter className="text-center">
-        {isLoggedIn ? (
-          <>
-            <button
-              className="btn btn-primary"
-              style={{ marginRight: '5px' }}
-              onClick={joinLobby}
-            >
-              Find Game
-            </button>
-            <button className="btn btn-default" onClick={createRoom}>
-              Private Room
-            </button>
-          </>
-        ) : (
-          <></>
-        )}
-      </CardFooter>
-    </Card>
+            <CardBody>
+                <div className="author">
+                    <CardTitle tag="h4">{title}</CardTitle>
+                    <h6 className="card-category">{subtitle}</h6>
+                </div>
+                <p className="card-description text-center">
+                    {description}
+                </p>
+            </CardBody>
+            <CardFooter className="text-center">
+                {(isLoggedIn && !comingSoon) ? 
+                <>
+                    <button className="btn btn-primary" style={{"marginRight": "5px"}} onClick={joinLobby}>
+                        Find Game
+                    </button>
+                    <button className="btn btn-default" onClick={createRoom}>
+                        Private Room
+                    </button>
+                </>
+                :
+                <>
+                </>
+                }
+                {comingSoon ? 
+                    <>
+                    <p style={{color: "darkturquoise", fontSize: "17px"}}>Coming soon!</p>
+                    </>:
+                    <></>
+                }
+                
+            </CardFooter>
+        </Card>
+    )
   );
 };
 
