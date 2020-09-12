@@ -42,7 +42,7 @@
 }
 
 .user-card {
-  margin: 2rem 0rem;
+  margin: 0.75rem 0rem;
   text-align: center;
   &__body {
     padding: 0rem;
@@ -71,7 +71,14 @@
   }
 }
 
+.stats {
+  font-size: 1rem;
+  color: #9f9f9f;
+  font-weight: 525;
+}
+
 .icebreak {
+  margin-bottom: 0.55rem;
 }
 
 .chat {

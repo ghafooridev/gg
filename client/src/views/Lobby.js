@@ -7,6 +7,7 @@ import Rules from '../components/Lobby/Rules';
 import UserCard from '../components/Lobby/UserCard';
 import Icebreaker from '../components/Lobby/Icebreaker';
 import Chat from '../components/Lobby/Chat';
+import Stats from '../components/Lobby/Stats';
 import authenticationService from 'services/authentication.service.js';
 import { GAME_DATA } from '../constants';
 
@@ -19,6 +20,7 @@ const Lobby = (props) => {
   const [mins, setMins] = useState(0);
   const gameName = props.location.state.gameName;
   const gameData = GAME_DATA[gameName];
+  const [stats, setStats] = useState('');
   const history = useHistory();
   const lobbyId = props.match.params.lobbyId;
   const socketRef = useRef();
@@ -30,6 +32,7 @@ const Lobby = (props) => {
 
   useEffect(() => {
     socketRef.current = io.connect('/');
+    // start timer
     const interval = setInterval(() => {
       setSecs((secs) => {
         if (secs === 59) {
@@ -39,6 +42,10 @@ const Lobby = (props) => {
         }
       });
     }, 1000);
+
+    // get server statistics
+
+    // cleanup
     return () => {
       clearInterval(interval);
       socketRef.current.disconnect();
@@ -69,6 +76,7 @@ const Lobby = (props) => {
           <Rules />
         </div>
         <div className="lobby__col--33 text-center">
+          <Stats stats={stats} />
           <UserCard
             updateQueue={updateQueue}
             user={user}
@@ -78,7 +86,7 @@ const Lobby = (props) => {
             setJoiningGame={setJoiningGame}
           />
           <Icebreaker />
-          <Button color="primary" className="m-auto" onClick={handleLeave}>
+          <Button color="primary" onClick={handleLeave}>
             Leave Queue
           </Button>
         </div>
