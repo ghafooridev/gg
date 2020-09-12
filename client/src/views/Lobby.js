@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'reactstrap';
 import { useHistory } from 'react-router-dom';
-import qs from 'qs';
+import io from 'socket.io-client';
 
 import Rules from '../components/Lobby/Rules';
 import UserCard from '../components/Lobby/UserCard';
@@ -12,21 +12,24 @@ import { GAME_DATA } from '../constants';
 
 const Lobby = (props) => {
   const user = authenticationService.currentUserValue;
-  const [queue, setQueue] = useState([user.username]);
+  const [queue, setQueue] = useState(
+    props.location.state.users ? props.location.state.users : [user.name]
+  );
   const [secs, setSecs] = useState(1);
   const [mins, setMins] = useState(0);
-  const [gameData, setGameData] = useState({});
+  const gameName = props.location.state.gameName;
+  const gameData = GAME_DATA[gameName];
   const history = useHistory();
   const lobbyId = props.match.params.lobbyId;
-  let params = {};
+  const socketRef = useRef();
+  const [joiningGame, setJoiningGame] = useState(false);
 
   const updateQueue = (payload) => {
     setQueue([...queue, payload]);
   };
 
   useEffect(() => {
-    params = qs.parse(props.location.search, { ignoreQueryPrefix: true });
-    setGameData(GAME_DATA[params.gameName]);
+    socketRef.current = io.connect('/');
     const interval = setInterval(() => {
       setSecs((secs) => {
         if (secs === 59) {
@@ -36,7 +39,10 @@ const Lobby = (props) => {
         }
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      socketRef.current.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -52,9 +58,11 @@ const Lobby = (props) => {
   return (
     <div className="lobby">
       <h1 className="lobby__heading">
-        {/*joiningGame ? "Joining game ..." : "Matching with other players ..."*/}
-        Waiting for other Players {mins > '9' ? mins : `0${mins}`}:
-        {secs > '9' ? secs : `0${secs}`}
+        {joiningGame
+          ? 'Joining game ...'
+          : `Waiting for other Players ${mins > '9' ? mins : `0${mins}`}:${
+              secs > '9' ? secs : `0${secs}`
+            }`}
       </h1>
       <div className="lobby__container">
         <div className="lobby__col--33">
@@ -65,7 +73,9 @@ const Lobby = (props) => {
             updateQueue={updateQueue}
             user={user}
             lobbyId={lobbyId}
-            gameName={params.gameName}
+            gameName={gameName}
+            socketRef={socketRef}
+            setJoiningGame={setJoiningGame}
           />
           <Icebreaker />
           <Button color="primary" className="m-auto" onClick={handleLeave}>
@@ -73,7 +83,7 @@ const Lobby = (props) => {
           </Button>
         </div>
         <div className="lobby__col--33">
-          <Chat queue={queue} gameData={gameData} />
+          <Chat queue={queue} gameData={gameData} socketRef={socketRef} />
           {/* <Ad /> */}
         </div>
       </div>

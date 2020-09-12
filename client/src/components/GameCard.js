@@ -23,8 +23,13 @@ const GameCard = (props) => {
       credentials: 'same-origin',
     }).then((response) => {
       response.json().then((json) => {
-        console.log(json);
-        history.push('/lobby/' + json.lobbyId + `?gameName=${title}`);
+        history.push({
+          pathname: '/lobby/' + json.lobbyId,
+          state: {
+            users: json.users,
+            gameName: title,
+          },
+        });
       });
     });
   }

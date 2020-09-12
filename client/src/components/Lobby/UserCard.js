@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import io from 'socket.io-client';
+import { Badge } from 'reactstrap';
+
 import { useHistory } from 'react-router-dom';
 
 const videoConstraints = {
@@ -24,47 +25,56 @@ const StyledVideo = styled.video`
   -moz-transform: rotateY(180deg); /* Firefox */
 `;
 
-const UserCard = ({ updateQueue, user, gameName, lobbyId }) => {
+const UserCard = ({
+  updateQueue,
+  user,
+  gameName,
+  lobbyId,
+  socketRef,
+  setJoiningGame,
+}) => {
   const userVideo = useRef();
-  const socketRef = useRef();
   const history = useHistory();
-  const [joiningGame, setJoiningGame] = useState(false);
 
+  // connect to video
+  useEffect(() => {
+    navigator.mediaDevices
+      .getUserMedia({ video: videoConstraints, audio: true })
+      .then((stream) => {
+        try {
+          userVideo.current.srcObject = stream;
+          console.log('updating usevideo ref');
+        } catch (err) {
+          console.error(err);
+        }
+      });
+  }, []);
+
+  // sockets
   useEffect(
     () => {
-      socketRef.current = io.connect('/');
-      socketRef.current.emit('user queue', {
-        userId: user._id,
-        lobbyId: lobbyId,
-        gameName: gameName,
-      });
-
-      navigator.mediaDevices
-        .getUserMedia({ video: videoConstraints, audio: true })
-        .then((stream) => {
-          try {
-            userVideo.current.srcObject = stream;
-            console.log('updating usevideo ref');
-          } catch (err) {
-            console.error(err);
-          }
+      if (socketRef.current) {
+        socketRef.current.emit('user queue', {
+          user: user,
+          lobbyId: lobbyId,
+          gameName: gameName,
         });
 
-      const handleGameFound = (payload) => {
-        setJoiningGame(true);
-        const roomId = payload.roomId;
-        // console.log('Redirecting to game room. user = ', user, gameName);
-        // history.push('/room/' + roomId, { user: user, gameName: gameName });
-      };
+        const handleGameFound = (payload) => {
+          setJoiningGame(true);
+          const roomId = payload.roomId;
+          console.log('Redirecting to game room. user = ', user, gameName);
+          history.push('/room/' + roomId, { user: user, gameName: gameName });
+        };
 
-      //socket events
-      socketRef.current.on('game found', handleGameFound);
-      socketRef.current.on('user joined lobby', updateQueue);
-
+        //socket events
+        socketRef.current.on('game found', handleGameFound);
+        socketRef.current.on('user joined lobby', updateQueue);
+      }
       // TODO cleanup
     },
     // eslint-disable-next-line
-    []
+    [socketRef]
   );
   return (
     <div className="user-card card">
@@ -80,12 +90,16 @@ const UserCard = ({ updateQueue, user, gameName, lobbyId }) => {
         />
       </div>
       <div className="user-card__body card-body">
-        <p className="card-text">
-          <b className="user-card__title">{user.username}</b>
+        <p className="user-card__text">
+          <b className="user-card__title">{user.name}</b>
           <br></br>
-          <i className="user-card__subtitle">{user.description}</i>
+          <i className="user-card__subtitle">{user.username}</i>
           <br></br>
           <i className="user-card__subtitle">{user.university}</i>
+        </p>
+        <p className="user-card__badges">
+          <div className="label label-info mr-2">Novice</div>
+          <div className="label label-success">Alpha</div>
         </p>
       </div>
     </div>

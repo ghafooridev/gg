@@ -53,7 +53,21 @@
     font-size: 1.75rem;
   }
   &__subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    display: inline-block;
+  }
+  &__badges {
+    font-style: 1.25rem;
+    margin-top: 0.5rem;
+    .label {
+      padding: 0.5rem 0.75rem;
+      font-weight: 600 !important;
+      border-radius: 20px;
+    }
+  }
+  &__text {
+    margin-bottom: 0;
   }
 }
 
@@ -62,11 +76,13 @@
 
 .chat {
   &__queue {
-    height: 12vh;
+    min-height: 12vh;
     margin-bottom: 1rem;
     &-list {
       display: flex;
       flex-direction: column;
+      max-height: 18vh;
+      overflow-y: auto;
     }
     &-title {
       font-size: 1.2rem;

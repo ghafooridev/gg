@@ -4,13 +4,11 @@ import io from 'socket.io-client';
 import Messages from '../Messages';
 import authenticationService from '../../services/authentication.service';
 
-const Chat = ({ queue, gameData }) => {
+const Chat = ({ queue, gameData, socketRef }) => {
   const [messages, setMessages] = useState([]);
-  const socketRef = useRef();
   const user = authenticationService.currentUserValue;
   // handle socket events
   useEffect(() => {
-    socketRef.current = io.connect('/');
     // someone sent a message to the chat room
     const recieveChatMessage = (payload) => {
       console.log('message recieved!');
@@ -20,8 +18,10 @@ const Chat = ({ queue, gameData }) => {
       ]);
     };
 
-    socketRef.current.on('message notification', recieveChatMessage);
-  }, []);
+    if (socketRef.current) {
+      socketRef.current.on('message notification', recieveChatMessage);
+    }
+  }, [socketRef]);
 
   // send chat message to lobby
   function sendMessage(message) {
@@ -42,9 +42,10 @@ const Chat = ({ queue, gameData }) => {
           {queue.map((item) => (
             <span className="chat__queue-item">{item}</span>
           ))}
-          <span className="chat__queue-item--prompt">
-            Waiting for {gameData.minPlayers - queue.length} more players...
-          </span>
+        </div>
+        <div className="chat__queue-item--prompt">
+          Waiting for {(gameData ? gameData.minPlayers : 0) - queue.length} more
+          players...
         </div>
       </div>
       <Messages messages={messages} sendMessage={sendMessage} />
