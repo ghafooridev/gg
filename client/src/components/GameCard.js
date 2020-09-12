@@ -5,14 +5,16 @@ import authenticationService from 'services/authentication.service';
 import {apiUrl} from "config";
 
 const GameCard = (props) => {
-    const { title, subtitle, description, icon } = props;
+    const { title, subtitle, description, icon, comingSoon } = props;
     const history = useHistory();
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     
     useEffect(() => {
+        console.log("Running useEffect");
         const user = authenticationService.currentUserValue;
         if(user) { setIsLoggedIn(true); }
+        else { setIsLoggedIn(false); }
     }, [authenticationService.currentUserValue])
 
     function joinLobby() {
@@ -55,7 +57,7 @@ const GameCard = (props) => {
                 </p>
             </CardBody>
             <CardFooter className="text-center">
-                {isLoggedIn ? 
+                {(isLoggedIn && !comingSoon) ? 
                 <>
                     <button className="btn btn-primary" style={{"marginRight": "5px"}} onClick={joinLobby}>
                         Find Game
@@ -67,6 +69,12 @@ const GameCard = (props) => {
                 :
                 <>
                 </>
+                }
+                {comingSoon ? 
+                    <>
+                    <p style={{color: "darkturquoise", fontSize: "17px"}}>Coming soon!</p>
+                    </>:
+                    <></>
                 }
                 
             </CardFooter>

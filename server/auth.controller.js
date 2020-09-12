@@ -46,14 +46,13 @@ exports.registerController = (req, res) => {
               errors: errorHandler(err)
             });
           } else {
-            return res.json({
+            return res.status(200).json({
               success: true,
               message: user,
               message: 'Signup success'
             });
           }
         });
-        res.status(200).json({message: "Signup successful!"});
       }
     });
   }
