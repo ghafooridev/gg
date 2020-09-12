@@ -64,9 +64,10 @@ function addUserLobby(lobbyId, user, lobbyFullCallback, game) {
 async function getSocketRoom(socketId) {
   const doc = await Socket.findOne({ socketId: socketId }).exec();
   if (doc) return doc.roomId;
-
-  console.error('Failed to find socket object: ', socketId);
-  return null;
+  else {
+    console.error("Failed to find socket object: ", socketId);
+    return null;
+  }
 }
 
 // store room Id
@@ -146,17 +147,15 @@ function storeChatMessage(message, sender, isRoom, id) {
       { roomId: id },
       { $push: { messages: messageObj } },
       (err, _, __) => {
-        console.error('Error updating room with new message: ', err);
-      }
-    );
+        if (err) console.log("Error updating room with new message: ", message, err);
+      });
   } else {
     Lobby.findOneAndUpdate(
       { lobbyId: id },
       { $push: { messages: messageObj } },
       (err, _, __) => {
-        console.error('Error updating lobby with new message: ', message);
-      }
-    );
+        if (err) console.log("Error updating lobby with new message: ", message, err);
+      });
   }
 }
 
