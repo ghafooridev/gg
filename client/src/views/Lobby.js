@@ -65,7 +65,10 @@ const Lobby = (props) => {
     // cleanup
     return () => {
       clearInterval(interval);
-      handleLeave();
+      
+      const requestOptions = { method: 'PUT' };
+      fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
+
       socketRef.current.disconnect();
     };
   }, [socketRef]);
