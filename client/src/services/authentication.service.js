@@ -24,7 +24,8 @@ function signup(email, password, name, username, university, description) {
   return fetch(`${config.apiUrl}/user/register`, requestOptions)
     .then(handleResponse)
     .then((user) => {
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      console.log(user);
+      localStorage.setItem('currentUser', JSON.stringify(user.userObj));
       currentUserSubject.next(user);
       return user;
     })

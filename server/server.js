@@ -49,8 +49,9 @@ io.on('connection', (socket) => {
       socketHelper.addUserRoom(room, userId);
       socketHelper.setSocketRoom(socket.id, room, userId);
 
-      console.log('room users emitting: ', clients);
+      // send current room sockets to newly joined user
       socket.emit('room users', clients);
+      // socket.emit('new user', userId);
     });
   };
 
@@ -58,11 +59,18 @@ io.on('connection', (socket) => {
   const handleLobbyJoin = (payload) => {
     const lobby = payload.lobbyId;
     const user = payload.user;
-    console.log(payload);
+
     io.in(lobby).clients((error, clients) => {
       if (error) throw error;
 
+      // get current lobby users
+      emitCurrentUsers = (users) => {
+        socket.emit("lobby users", users);
+      }
+      socketHelper.getLobbyUsers(lobby, emitCurrentUsers);
+
       socket.join(lobby);
+
       // track socketId map to room / lobby id
       socketHelper.setSocketRoom(socket.id, lobby, user._id);
 
@@ -75,7 +83,7 @@ io.on('connection', (socket) => {
   };
 
   // user disconnected
-  const userDisconnected = (userId) => {
+  const userDisconnected = (userId, isRoom) => {
     console.log('user disconnected! ', socket.id);
 
     // const room = socketToRoom[socket.id];
@@ -83,7 +91,7 @@ io.on('connection', (socket) => {
       io.to(room).emit('user disconnect', { room: room, id: socket.id });
     });
 
-    socketHelper.removeSocketObject(socket.id);
+    socketHelper.removeSocketObject(socket.id);      
 
     console.log('user removed from room');
     console.log('-------------');
@@ -91,17 +99,21 @@ io.on('connection', (socket) => {
 
   // sending signal
   const sendSignal = (payload) => {
+    console.log("send signal payload: ", payload.userId)
     io.to(payload.userToSignal).emit('user joined', {
       signal: payload.signal,
       callerID: payload.callerID,
+      userId: payload.userId
     });
   };
 
   // returning signal
   const returnSignal = (payload) => {
+    console.log("return signal payload: ", payload.userId)
     io.to(payload.callerID).emit('user answer', {
       signal: payload.signal,
       id: socket.id,
+      userId: payload.userId
     });
   };
 

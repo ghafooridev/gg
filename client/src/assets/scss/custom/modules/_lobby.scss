@@ -29,6 +29,7 @@
   border: 1px solid #e5e5e5;
   border-radius: 4px;
   padding: 1.5rem;
+  margin-left: 40px;
   &__heading {
     text-align: center;
     margin: 0;
@@ -44,6 +45,8 @@
 .user-card {
   margin: 0.75rem 0rem;
   text-align: center;
+  margin: auto;
+  width: 70%;
   &__body {
     padding: 0rem;
   }
@@ -78,7 +81,21 @@
 }
 
 .icebreak {
-  margin-bottom: 0.55rem;
+  width: 60%;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  
+  &__title {
+    font-size: 20px;
+    text-decoration: underline;
+    margin-bottom: 10px;
+  }
+  &__q {
+    font-size: 16px;
+  }
 }
 
 .chat {
@@ -86,6 +103,7 @@
     min-height: 12vh;
     margin-bottom: 1rem;
     &-list {
+      list-style-type: none;
       display: flex;
       flex-direction: column;
       max-height: 18vh;

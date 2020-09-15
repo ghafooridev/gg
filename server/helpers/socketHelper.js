@@ -10,7 +10,7 @@ const { gameSizes, ROOM_ID_LEN } = require('../config');
 function addUserRoom(roomId, userId) {
   Room.findOneAndUpdate(
     { roomId: roomId },
-    { $push: { users: userId }, $inc: { userCount: 1 } },
+    { $addToSet: { users: userId }, $inc: { userCount: 1 } },
     (err, doc, res) => {
       if (err) console.error('Error appending to room users list: ', err);
     }
@@ -22,7 +22,7 @@ function addUserLobby(lobbyId, user, lobbyFullCallback, game) {
   Lobby.findOneAndUpdate(
     { lobbyId: lobbyId },
     {
-      $push: { users: user.name },
+      $addToSet: { users: user.id },
       $inc: { userCount: 1 },
     },
     { new: true },
@@ -37,6 +37,7 @@ function addUserLobby(lobbyId, user, lobbyFullCallback, game) {
           roomId = id;
 
           // emit socket event to all users in lobby
+          removeLobby(lobbyId);
           lobbyFullCallback(roomId);
 
           const room = new Room({
@@ -116,6 +117,14 @@ function removeSocketObject(socketId) {
   });
 }
 
+// get lobby users
+function getLobbyUsers(lobbyId, callback) {
+  Lobby.findOne({ lobbyId: lobbyId }, (err, doc) => {
+    if (err || !doc) console.error("Error finding lobby: ", lobbyId);
+    callback(doc.users);
+  })
+}
+
 // delete lobby
 function removeLobby(lobbyId) {
   Lobby.findOneAndDelete({ lobbbyId: lobbyId }, (err, _) => {
@@ -167,4 +176,5 @@ module.exports = {
   addUserLobby: addUserLobby,
   removeInactiveRooms: removeInactiveRooms,
   storeChatMessage: storeChatMessage,
+  getLobbyUsers: getLobbyUsers
 };

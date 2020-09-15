@@ -90,6 +90,18 @@ router.post('/create/room', (req, res) => {
   });
 });
 
+router.get('/room/gameName', (req, res) => {
+  if (!req.query.roomId) 
+    res.status(400).json({ error: "roomId param missing." })
+
+  Room.findOne({ roomId: req.query.roomId }, (err, doc) => {
+    if (err) return res.status(400).json({ error: "error occured: "+ err })
+    if (!doc) return res.status(400).json({ error: "unable to find room with that roomId" });
+
+    return res.status(200).json({ gameName: doc.game });
+  });
+});
+
 // create a lobby and return the lobby id
 router.post('/create/lobby', (req, res) => {
   if (!req.query.game) {
@@ -114,6 +126,18 @@ router.post('/create/lobby', (req, res) => {
     res.json({ lobbyId: lobbyId });
   });
 });
+
+router.get('/lobby/gameName', (req, res) => {
+  if (!req.query.lobbyId) 
+    res.status(400).json({ error: "lobbyId param missing." })
+
+  Lobby.findOne({ lobbyId: req.query.lobbyId }, (err, doc) => {
+    if (err) return res.status(400).json({ error: "error occured: "+ err })
+    if (!doc) return res.status(400).json({ error: "unable to find lobby with that lobbyId" });
+
+    return res.status(200).json({ gameName: doc.game });
+  });
+})
 
 /*
  * ====================== USER AUTHENTICATION ROUTES ======================
@@ -163,11 +187,29 @@ router.post('/user/register', validSign, registerController);
  * ====================== END ======================
  */
 
+// get user information
+router.get('/user/getInfo', (req, res) => {
+  if(!req.query.userId) {
+    return res.status(400).json({error: "Missing userId query param."})
+  }
+
+  User.findById(req.query.userId, (err, doc) => {
+    if (err) return res.status(400).json({error: "Error occured while finding user"});
+    if (!doc) return res.status(400).json({error: "User not found with that user id"});
+
+    return res.status(200).json(doc);
+  })
+})
+
 // user joins a room
 router.put('/user/joinRoom', (req, res) => {
   // TODO: authenticate user here
   // check if the user should be allowed to be in the room
   // add user to room users array
+});
+
+router.put('/user/leaveRoom', (req, res) => {
+
 });
 
 // user joins a lobby
@@ -209,10 +251,31 @@ router.put('/user/joinLobby', (req, res) => {
           if (err) return console.error(err);
         });
 
-        res.json({ lobbyId: lobbyId });
+        res.json({ lobbyId: lobbyId, users: [] });
       });
     }
   );
+});
+
+router.put('/user/leaveLobby', (req, res) => {
+  if (!req.query.lobbyId)
+    return res.status(400).json({error: "no lobby id supplied"});
+  
+  if (!req.query.userId)
+    return res.status(400).json({error: "no user id supplied"});
+  
+  Lobby.findOneAndUpdate(
+    { lobbyId: req.query.lobbyId },
+    { $pullAll: { users: [req.query.userId] }, $inc: { userCount: -1 } },
+    (err, _, ___) => {
+      if (err) {
+        console.error(err);
+        return res.status(400).json({error: "failed to remove user: "+err});
+     }
+    }
+  );
+
+  return res.status(200).json({success: "user successfully remove from lobby"});
 });
 
 // return stats on number of users active, number of rooms, how many users in each game etc.

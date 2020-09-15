@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import GamePageFooter from 'components/Footers/GamePageFooter';
 import Messages from 'components/Messages';
 import authenticationService from 'services/authentication.service';
+import config from 'config';
 
 const Container = styled.div`
 	padding: 20px;
@@ -83,29 +84,42 @@ const videoConstraints = {
 const gameURLs = {
 	Scribble: 'https://skribbl.io/',
 	'Out of Context': 'https://www.outofcontext.party/',
-	'Secret Hitler': 'https://secrethitler.io/',
+	Drawasaurus: 'https://www.drawasaurus.org/',
 	Covidopoly: 'https://www.covidopoly.io/',
 	Mafia: 'https://mafia.gg/',
 };
 
 const Room = (props) => {
-	console.log(props);
 	const [peers, setPeers] = useState([]);
 	const socketRef = useRef();
+	
 	const [peerStreams, setPeerStreams] = useState([]);
 	const peerAnswers = useRef({});
+
+	const [peerUserMap, setPeerUserMap] = useState({});
+	const [userObjMap, setUserObjMap] = useState({});
+
 	const [muted, setMuted] = useState(false);
 	const [messages, setMessages] = useState([]);
+
 
 	const userVideo = useRef();
 	const peersRef = useRef([]);
 
 	const roomID = props.match.params.roomID;
-	// const user = props.location.state.user;
-	// const gameName = props.location.state.gameName;
+	const [gameName, setGameName] = useState();
 	const user = authenticationService.currentUserValue;
 
-	const gameName = 'Covidopoly';
+	useEffect(() => {
+		if (props.location.state && props.location.state.gameName) {
+			setGameName(props.location.state.gameName);
+		} else {
+			const requestOptions = { method: 'GET' }
+			fetch(`${config.apiUrl}/room/gameName?roomId=${roomID}`, requestOptions)
+			.then(res => res.json())
+			.then(resJson =>  setGameName(resJson.gameName));
+		}
+	})
 
 	useEffect(() => {
 		console.log('Running use effect', props);
@@ -118,7 +132,7 @@ const Room = (props) => {
 				// subscribe to room
 				socketRef.current.emit('subscribe', {
 					roomId: roomID,
-					userId: user.userId,
+					userId: user._id,
 				});
 
 				// create peers for users already in room
@@ -141,6 +155,9 @@ const Room = (props) => {
 					peersRef.current.push({ peerID: payload.callerID, peer });
 
 					setPeers((peers) => [...peers, payload.callerID]);
+
+					// add new user id
+					setPeerUserMap((mapObj) => ({...mapObj, [payload.callerID]: payload.userId}))
 				};
 
 				// handle answer from peer
@@ -151,6 +168,8 @@ const Room = (props) => {
 
 					const item = peersRef.current.find((p) => p.peerID === payload.id);
 					item.peer.signal(payload.signal);
+
+					setPeerUserMap((curPeerUserMap) => ({...curPeerUserMap, [payload.id]: payload.userId}));
 				};
 
 				// handle user disconnect event
@@ -188,6 +207,24 @@ const Room = (props) => {
 		console.log('state changed: ', peers, peerStreams);
 	}, [peers, peerStreams]);
 
+	useEffect(() => {
+		console.log('peerUserMap changed: ', peerUserMap);
+	}, [peerUserMap])
+
+	useEffect(() => {
+
+		Object.values(peerUserMap).forEach(userId => {
+			console.log(userId);
+			const requestOptions = {method: 'GET'};
+			fetch(`${config.apiUrl}/user/getInfo?userId=${userId}`, requestOptions)
+			.then(res => res.json())
+			.then(resJson => {
+				setUserObjMap((curUserObjMap) => ({...curUserObjMap, [userId]: resJson}));
+			});
+		});
+
+	}, [peerUserMap])
+
 	function createPeer(userToSignal, callerID, stream) {
 		const peer = new Peer({
 			initiator: true,
@@ -210,6 +247,7 @@ const Room = (props) => {
 					userToSignal,
 					callerID,
 					signal,
+					userId: user._id // the user object id
 				});
 			}
 		});
@@ -231,7 +269,7 @@ const Room = (props) => {
 		});
 
 		peer.on('signal', (signal) => {
-			socketRef.current.emit('returning signal', { signal, callerID });
+			socketRef.current.emit('returning signal', { signal, callerID, userId: user._id });
 		});
 
 		peer.signal(incomingSignal);
@@ -241,10 +279,6 @@ const Room = (props) => {
 
 	// TODO: update this to new structure
 	function removePeer(peerID) {
-		// console.log("Removing peer!");
-		// console.log("peers: ", peers);
-
-		debugger;
 		// remove from peerStreams state
 		setPeerStreams((userStreams) =>
 			userStreams.filter((peerStream) => peerStream.peerID !== peerID)
@@ -332,7 +366,11 @@ const Room = (props) => {
 								autoPlay={true}
 								playsInline
 							/>
-							<p>Eric, Univ. of Michigan</p>
+							{userObjMap[peerUserMap[peerID]] ? 
+								<p>{userObjMap[peerUserMap[peerID]].name} ({userObjMap[peerUserMap[peerID]].university})</p>
+								:
+								<></>
+							}
 						</StyledVideoContainer>
 					);
 				})}

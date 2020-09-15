@@ -24,6 +24,7 @@ import { Button, Container } from "reactstrap";
 // core components
 
 const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin, username}) => {
+  const [stateIsLoggedIn, setStateIsLoggedIn] = React.useState(false);
   let pageHeader = React.createRef();
 
   React.useEffect(() => {
@@ -39,6 +40,10 @@ const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin
       };
     }
   });
+
+  React.useEffect(() => {
+    setStateIsLoggedIn(isLoggedin);
+  }, [isLoggedin]);
 
   return (
     <>
@@ -62,7 +67,7 @@ const LandingPageHeader = ({handleSignin, handleSignup, handleLogout, isLoggedin
             <h3>Play games, socialize and connect with other Zoom University students.</h3>
             <h4 style={{"marginTop": "4px", "marginBottom": "50px", "fontStyle": "italic"}}>Thanks for testing our platform!</h4>
             <br />
-            {isLoggedin ? 
+            {stateIsLoggedIn ? 
               <>
                 <h4 style={{"display": "inline", "marginRight": "10px"}}>
                   Welcome <span style={{"color": "#6bd098"}}>{username}!</span></h4>

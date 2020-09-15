@@ -15,19 +15,7 @@ const GameCard = (props) => {
         const user = authenticationService.currentUserValue;
         if(user) { setIsLoggedIn(true); }
         else { setIsLoggedIn(false); }
-    }, [authenticationService.currentUserValue])
-
-    function joinLobby() {
-        fetch(`${apiUrl}/user/joinLobby?game=${title}`, {mode: "cors", method: "PUT", credentials: "same-origin"})
-        .then(response => {
-            response.json().then(json => {
-                console.log(json);
-                history.push('/lobby/'+json.lobbyId)
-            });
-            
-        });
-    }
-  }, authenticationService.currentUserValue);
+    }, [authenticationService.currentUserValue]);
 
   function joinLobby() {
     fetch(`${apiUrl}/user/joinLobby?game=${title}`, {
@@ -56,7 +44,7 @@ const GameCard = (props) => {
     }).then((response) => {
       response.json().then((json) => {
         console.log(json);
-        history.push('/room/' + json.roomId);
+        history.push({ pathname: '/room/' + json.roomId, state: { gameName: title } });
       });
     });
   }
@@ -101,7 +89,6 @@ const GameCard = (props) => {
             </CardFooter>
         </Card>
     )
-  );
 };
 
 export default GameCard;

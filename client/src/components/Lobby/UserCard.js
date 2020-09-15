@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { Badge } from 'reactstrap';
 
 import { useHistory } from 'react-router-dom';
 
@@ -25,16 +24,8 @@ const StyledVideo = styled.video`
   -moz-transform: rotateY(180deg); /* Firefox */
 `;
 
-const UserCard = ({
-  updateQueue,
-  user,
-  gameName,
-  lobbyId,
-  socketRef,
-  setJoiningGame,
-}) => {
+const UserCard = ({ user }) => {
   const userVideo = useRef();
-  const history = useHistory();
 
   // connect to video
   useEffect(() => {
@@ -50,32 +41,6 @@ const UserCard = ({
       });
   }, []);
 
-  // sockets
-  useEffect(
-    () => {
-      if (socketRef.current) {
-        socketRef.current.emit('user queue', {
-          user: user,
-          lobbyId: lobbyId,
-          gameName: gameName,
-        });
-
-        const handleGameFound = (payload) => {
-          setJoiningGame(true);
-          const roomId = payload.roomId;
-          console.log('Redirecting to game room. user = ', user, gameName);
-          history.push('/room/' + roomId, { user: user, gameName: gameName });
-        };
-
-        //socket events
-        socketRef.current.on('game found', handleGameFound);
-        socketRef.current.on('user joined lobby', updateQueue);
-      }
-      // TODO cleanup
-    },
-    // eslint-disable-next-line
-    [socketRef]
-  );
   return (
     <div className="user-card card">
       <div className="user-card__video">
@@ -99,7 +64,7 @@ const UserCard = ({
         </p>
         <p className="user-card__badges">
           <div className="label label-info mr-2">Novice</div>
-          <div className="label label-success">Alpha</div>
+          <div className="label label-success">Alpha Tester</div>
         </p>
       </div>
     </div>
