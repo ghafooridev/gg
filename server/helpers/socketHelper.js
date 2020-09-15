@@ -22,7 +22,7 @@ function addUserLobby(lobbyId, user, lobbyFullCallback, game) {
   Lobby.findOneAndUpdate(
     { lobbyId: lobbyId },
     {
-      $addToSet: { users: user.id },
+      $addToSet: { users: user._id },
       $inc: { userCount: 1 },
     },
     { new: true },

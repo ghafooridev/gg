@@ -10,7 +10,6 @@ const Stats = ({ gameName }) => {
     fetch(`${config.apiUrl}/serverstats?gameUsers=true`, requestOptions)
     .then(res => res.json())
     .then(resJson => {
-      console.log(resJson);
       resJson["activeRooms"].forEach(gameStatObj =>  {
         if (gameStatObj._id === gameName) {
           setStats(gameStatObj.total);

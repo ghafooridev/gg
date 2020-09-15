@@ -40,7 +40,7 @@ function authenticateToken(req, res, next) {
 }
 
 // middleware that is specific to this router
-router.use(function timeLog(req, res, next) {
+router.use((req, res, next) => {
   if (!process.env.PROD) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', '*');
@@ -194,7 +194,7 @@ router.get('/user/getInfo', (req, res) => {
   }
 
   User.findById(req.query.userId, (err, doc) => {
-    if (err) return res.status(400).json({error: "Error occured while finding user"});
+    if (err) return res.status(400).json({error: "Error occured while finding user with user id: " + req.query.userId});
     if (!doc) return res.status(400).json({error: "User not found with that user id"});
 
     return res.status(200).json(doc);

@@ -63,9 +63,17 @@ io.on('connection', (socket) => {
     io.in(lobby).clients((error, clients) => {
       if (error) throw error;
 
+      console.log(user);
+
       // get current lobby users
       emitCurrentUsers = (users) => {
-        socket.emit("lobby users", users);
+        if (users.toString() == [null].toString() || 
+              users.length === 0) {
+          socket.emit("lobby users", []);
+        }
+        else {
+          socket.emit("lobby users", users)
+        }
       }
       socketHelper.getLobbyUsers(lobby, emitCurrentUsers);
 
@@ -78,7 +86,7 @@ io.on('connection', (socket) => {
         io.to(lobby).emit('game found', { roomId: roomId });
       };
       socketHelper.addUserLobby(lobby, user, lobbyFullClbk, payload.game);
-      socket.to(lobby).emit('user joined lobby', user.name);
+      socket.to(lobby).emit('user joined lobby', user._id);
     });
   };
 

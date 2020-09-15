@@ -4,14 +4,12 @@ import Messages from '../Messages';
 import authenticationService from '../../services/authentication.service';
 import config from 'config';
 
-const Chat = ({ queue, gameData, socketRef }) => {
+const Chat = ({ gameData, socketRef }) => {
   const [messages, setMessages] = useState([]);
   const user = authenticationService.currentUserValue;
-  const queueRef = queue;
 
-  const [userQueue, setUserQueue] = useState([]);
-  const [nameMap, setNameMap] = useState({});
-  const [queueLen, setQueueLen] = useState(0);
+  const [queue, setQueue] = useState([user._id]);
+  const [userIdMap, setUserIdMap] = useState({[user._id]: user});
 
   // handle socket events
   useEffect(() => {
@@ -24,27 +22,55 @@ const Chat = ({ queue, gameData, socketRef }) => {
       ]);
     };
 
+    // recieve information about current lobby users
+    const handleLobbyUsers = (users) => {
+      console.log("lobby users:", users);
+      if (!users) return
+      
+      setQueue([...users, user._id]);
+    }
+
+    // update current queue
+    const updateQueue = (payload) => {
+      console.log("Update queue invoked")
+      setQueue([...queue, payload]);
+    };
+
+    // handle user disconnect event
+    const handleUserDisconnect = (payload) => {
+      setQueue(curQueue => {
+        const index = curQueue.indexOf(payload.userId);
+        if (index > -1) {
+          return curQueue.splice(index, 1);
+        }
+      });
+    }
+
+    // handle socket events
     if (socketRef.current) {
       socketRef.current.on('message notification', recieveChatMessage);
+      socketRef.current.on('lobby users', handleLobbyUsers);
+      socketRef.current.on('user joined lobby', updateQueue);
+      socketRef.current.on('user disconnect', handleUserDisconnect);      
     }
   }, [socketRef.current]);
 
-  // queue changes
+  // queue changes, fetch new user info
   useEffect(() => {
-    setUserQueue(queueRef);
-    setQueueLen(queueRef.length);
-
-    queueRef.forEach(userId => {
+    queue.forEach(userId => {
       const requestOptions =  {method: 'GET'}
-      fetch(`${config.apiUrl}/user/getInfo`, requestOptions)
+      fetch(`${config.apiUrl}/user/getInfo?userId=${userId}`, requestOptions)
       .then(res => res.json())
       .then(resJson => {
-        setNameMap({...nameMap, 
-          [userId]: resJson.name
-        });
+        console.log("FETCHED: ", resJson);
+        setUserIdMap((curUserIdMap) => 
+          ({...curUserIdMap, [userId]: resJson })
+        );
       });
     });
-  }, [queueRef])
+    console.log("CHAT queue: ", queue);
+    console.log("CHAT userIdMap: ", userIdMap);
+  }, [queue])
 
   // send chat message to lobby
   function sendMessage(message) {
@@ -62,13 +88,13 @@ const Chat = ({ queue, gameData, socketRef }) => {
       <div className="chat__queue">
         <span className="chat__queue-title">Queue</span>
         <div className="chat__queue-list">
-          <span className="chat__queue-item">{user.name}</span>
-          {userQueue.map((userId, key) => (
-            <span key={key} className="chat__queue-item">{userId}</span>
+          {queue.map((userId, key) => (
+            <span key={key} className="chat__queue-item">{ (userId in userIdMap) ? userIdMap[userId].name : "Error"} 
+              ({(userId in userIdMap) ? userIdMap[userId].university: "Error Univ"})</span>
           ))}
         </div>
         <div className="chat__queue-item--prompt">
-          Waiting for {(gameData ? gameData.minPlayers : 0) - queueLen} more
+          Waiting for {(gameData ? gameData.minPlayers : 0) - queue.length} more
           players...
         </div>
       </div>

@@ -14,9 +14,7 @@ import config from "config";
 
 const Lobby = (props) => {
   const user = authenticationService.currentUserValue;
-  const [queue, setQueue] = useState(
-    props.location.state.users ? props.location.state.users : [user.id]
-  );
+
   const [secs, setSecs] = useState(1);
   const [mins, setMins] = useState(0);
   
@@ -28,10 +26,7 @@ const Lobby = (props) => {
   const [gameName, setGameName] = useState("");
   const [gameData, setGameData] = useState();
 
-  const updateQueue = (payload) => {
-    console.log("Update queue invoked")
-    setQueue([...queue, payload]);
-  };
+  
 
   useEffect(() => {
     socketRef.current = io.connect('/');
@@ -53,33 +48,20 @@ const Lobby = (props) => {
       gameName: gameName,
     });
 
-    const handleLobbyUsers = (users) => {
-      console.log("lobby users:", users);
-      // setQueue(users);
-    }
-
     const handleGameFound = (payload) => {
       setJoiningGame(true);
       const roomId = payload.roomId;
-      console.log('Redirecting to game room. user = ', user, gameName);
+      
+      // tell the server that the user is leaving the lobby
+      const requestOptions = { method: 'PUT' };
+      fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
+
       history.push('/room/' + roomId, { user: user, gameName: gameName });
     };
 
-    const handleUserDisconnect = (payload) => {
-      setQueue(curQueue => {
-        const index = curQueue.indexOf(payload.userId);
-        if (index > -1) {
-          return curQueue.splice(index, 1);
-        }
-      });
-    }
-
     //socket events
     socketRef.current.on('game found', handleGameFound);
-    socketRef.current.on('user joined lobby', updateQueue);
-    socketRef.current.on('lobby users', handleLobbyUsers);
-    socketRef.current.on('user disconnect', handleUserDisconnect);
-
+    
     // cleanup
     return () => {
       clearInterval(interval);
@@ -142,7 +124,7 @@ const Lobby = (props) => {
           </Button>
         </div>
         <div className="lobby__col--33">
-          <Chat queue={queue} gameData={gameData} socketRef={socketRef} />
+          <Chat gameData={gameData} socketRef={socketRef} />
           {/* <Ad /> */}
         </div>
       </div>
