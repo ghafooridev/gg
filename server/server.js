@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
   };
 
   // user disconnected
-  const userDisconnected = (userId, isRoom) => {
+  const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
 
     // const room = socketToRoom[socket.id];

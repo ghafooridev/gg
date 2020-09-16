@@ -51,10 +51,6 @@ const Lobby = (props) => {
     const handleGameFound = (payload) => {
       setJoiningGame(true);
       const roomId = payload.roomId;
-      
-      // tell the server that the user is leaving the lobby
-      const requestOptions = { method: 'PUT' };
-      fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
 
       history.push('/room/' + roomId, { user: user, gameName: gameName });
     };
@@ -65,10 +61,6 @@ const Lobby = (props) => {
     // cleanup
     return () => {
       clearInterval(interval);
-      
-      const requestOptions = { method: 'PUT' };
-      fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
-
       socketRef.current.disconnect();
     };
   }, [socketRef]);
@@ -94,12 +86,7 @@ const Lobby = (props) => {
     }
   }, [secs]);
 
-  const handleLeave = () => {
-    socketRef.current.emit("disconnect", {userId: user.userId, isRoom: false});
-
-    const requestOptions = { method: 'PUT' };
-    fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
-    
+  const handleLeave = () => {    
     history.push('/');
   };
 

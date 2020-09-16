@@ -360,7 +360,7 @@ const LandingPage = (props) => {
               <Col md="4">
                 <GameCard description="Collect and steal properties from other players to establish your real-estate monopoly."
                   title="Covidopoly" subtitle="Card-based Game (5 players)" icon="nc-icon lg nc-single-copy-04" isLoggedin={isLoggedin} 
-                  comingSoon={false} />
+                  comingSoon={true} />
               </Col>
               <Col md="4">
                 <GameCard description="Play as either Townsfolk or Criminal in a social deduction game."
