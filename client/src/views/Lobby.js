@@ -10,23 +10,21 @@ import Chat from '../components/Lobby/Chat';
 import Stats from '../components/Lobby/Stats';
 import authenticationService from 'services/authentication.service.js';
 import { GAME_DATA } from '../constants';
-import config from "config";
+import config from 'config';
 
 const Lobby = (props) => {
   const user = authenticationService.currentUserValue;
 
   const [secs, setSecs] = useState(1);
   const [mins, setMins] = useState(0);
-  
+
   const history = useHistory();
   const lobbyId = props.match.params.lobbyId;
   const socketRef = useRef();
   const [joiningGame, setJoiningGame] = useState(false);
 
-  const [gameName, setGameName] = useState("");
+  const [gameName, setGameName] = useState('');
   const [gameData, setGameData] = useState();
-
-  
 
   useEffect(() => {
     socketRef.current = io.connect('/');
@@ -41,7 +39,7 @@ const Lobby = (props) => {
         }
       });
     }, 1000);
-    
+
     socketRef.current.emit('user queue', {
       user: user,
       lobbyId: lobbyId,
@@ -51,23 +49,29 @@ const Lobby = (props) => {
     const handleGameFound = (payload) => {
       setJoiningGame(true);
       const roomId = payload.roomId;
-      
+
       // tell the server that the user is leaving the lobby
       const requestOptions = { method: 'PUT' };
-      fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
+      fetch(
+        `${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`,
+        requestOptions
+      );
 
       history.push('/room/' + roomId, { user: user, gameName: gameName });
     };
 
     //socket events
     socketRef.current.on('game found', handleGameFound);
-    
+
     // cleanup
     return () => {
       clearInterval(interval);
-      
+
       const requestOptions = { method: 'PUT' };
-      fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
+      fetch(
+        `${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`,
+        requestOptions
+      );
 
       socketRef.current.disconnect();
     };
@@ -75,18 +79,21 @@ const Lobby = (props) => {
 
   useEffect(() => {
     if (props.location.state && props.location.state.gameName) {
-			setGameName(props.location.state.gameName);
-		} else {
-			const requestOptions = { method: 'GET' }
-			fetch(`${config.apiUrl}/lobby/gameName?lobbyId=${lobbyId}`, requestOptions)
-			.then(res => res.json())
-			.then(resJson =>  setGameName(resJson.gameName));
-		}
+      setGameName(props.location.state.gameName);
+    } else {
+      const requestOptions = { method: 'GET' };
+      fetch(
+        `${config.apiUrl}/lobby/gameName?lobbyId=${lobbyId}`,
+        requestOptions
+      )
+        .then((res) => res.json())
+        .then((resJson) => setGameName(resJson.gameName));
+    }
   });
 
   useEffect(() => {
     setGameData(GAME_DATA[gameName]);
-  }, [gameName])
+  }, [gameName]);
 
   useEffect(() => {
     if (secs === 0) {
@@ -95,11 +102,18 @@ const Lobby = (props) => {
   }, [secs]);
 
   const handleLeave = () => {
-    socketRef.current.emit("disconnect", {userId: user.userId, isRoom: false});
+    socketRef.current.emit('user disconnect', {
+      userId: user._id,
+      isRoom: false,
+    });
+    socketRef.current.emit('disconnect');
 
     const requestOptions = { method: 'PUT' };
-    fetch(`${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`, requestOptions);
-    
+    fetch(
+      `${config.apiUrl}/user/leaveLobby?lobbyId=${lobbyId}&userId=${user.userId}`,
+      requestOptions
+    );
+
     history.push('/');
   };
 
@@ -118,9 +132,7 @@ const Lobby = (props) => {
         </div>
         <div className="lobby__col--33 text-center">
           <Stats gameName={gameName} />
-          <UserCard
-            user={user}
-          />
+          <UserCard user={user} />
           <Icebreaker />
           <Button color="primary" onClick={handleLeave}>
             Leave Queue
