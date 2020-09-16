@@ -67,14 +67,12 @@ io.on('connection', (socket) => {
 
       // get current lobby users
       emitCurrentUsers = (users) => {
-        if (users.toString() == [null].toString() || 
-              users.length === 0) {
-          socket.emit("lobby users", []);
+        if (users.toString() == [null].toString() || users.length === 0) {
+          socket.emit('lobby users', []);
+        } else {
+          socket.emit('lobby users', users);
         }
-        else {
-          socket.emit("lobby users", users)
-        }
-      }
+      };
       socketHelper.getLobbyUsers(lobby, emitCurrentUsers);
 
       socket.join(lobby);
@@ -93,35 +91,53 @@ io.on('connection', (socket) => {
   // user disconnected
   const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
+    console.log(payload);
 
     // const room = socketToRoom[socket.id];
-    socketHelper.getSocketRoom(socket.id).then((room) => {
-      io.to(room).emit('user disconnect', { room: room, id: socket.id });
-    });
+    /*socketHelper.getSocketRoom(socket.id).then((room) => {
+      io.to(room).emit('user disconnect', {
+        room: payload.room,
+        id: payload.userId,
+      });
+    });*/
 
-    socketHelper.removeSocketObject(socket.id);      
+    socketHelper.removeSocketObject(socket.id);
 
     console.log('user removed from room');
     console.log('-------------');
   };
 
+  // send user disconnect to other users in room
+  const sendUserDisconnected = (payload) => {
+    console.log('user disconnected message! ', socket.id);
+    console.log(payload);
+
+    // const room = socketToRoom[socket.id];
+    socketHelper.getSocketRoom(socket.id).then((room) => {
+      io.to(room).emit('user disconnect', {
+        room: payload.room,
+        id: payload.userId,
+      });
+    });
+  };
+
   // sending signal
   const sendSignal = (payload) => {
-    console.log("send signal payload: ", payload.userId)
+    console.log('send signal payload: ', payload.userId);
     io.to(payload.userToSignal).emit('user joined', {
       signal: payload.signal,
       callerID: payload.callerID,
-      userId: payload.userId
+      userId: payload.userId,
     });
   };
 
   // returning signal
   const returnSignal = (payload) => {
-    console.log("return signal payload: ", payload.userId)
+    console.log('return signal payload: ', payload.userId);
     io.to(payload.callerID).emit('user answer', {
       signal: payload.signal,
       id: socket.id,
-      userId: payload.userId
+      userId: payload.userId,
     });
   };
 
@@ -153,6 +169,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', userDisconnected);
   socket.on('sending signal', sendSignal);
   socket.on('returning signal', returnSignal);
+  socket.on('user disconnect', sendUserDisconnected);
 
   socket.on('user message', sendMessage);
 });

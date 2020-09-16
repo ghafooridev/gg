@@ -12,21 +12,20 @@ function signup(email, password, name, username, university, description) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      name: name,
-      email: email,
-      password: password,
-      username: username,
-      university: university,
-      description: description,
+      name,
+      email,
+      password,
+      username,
+      university,
+      description,
     }),
   };
 
   return fetch(`${config.apiUrl}/user/register`, requestOptions)
     .then(handleResponse)
     .then((user) => {
-      console.log(user);
       localStorage.setItem('currentUser', JSON.stringify(user.userObj));
-      currentUserSubject.next(user);
+      currentUserSubject.next(user.userObj);
       return user;
     })
     .catch((err) => {
