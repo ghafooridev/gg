@@ -261,9 +261,12 @@ const LandingPage = (props) => {
               />
             </FormGroup>
             <FormText color="muted">
-                We'll never share your information with anyone else.
+              We'll never share your information with anyone else.
             </FormText>
-            <FormText color="red" style={{textAlign: "center", color: "red", fontSize:  "0.9em"}}>
+            <FormText
+              color="red"
+              style={{ textAlign: 'center', color: 'red', fontSize: '0.9em' }}
+            >
               {signupErrors}
             </FormText>
           </form>
@@ -352,20 +355,35 @@ const LandingPage = (props) => {
               Games
             </h2>
             <Row>
-            <Col md="4">
-                <GameCard description="Draw the word you get as the rest of the group tries to guess the word you got."
-                  title="Drawasaurus" subtitle="Party Game (4 players)" icon="nc-icon lg nc-ruler-pencil" isLoggedin={isLoggedin} 
-                  comingSoon={false} />
+              <Col md="4">
+                <GameCard
+                  description="Draw the word you get as the rest of the group tries to guess the word you got."
+                  title="Drawasaurus"
+                  subtitle="Party Game (4 players)"
+                  icon="nc-icon lg nc-ruler-pencil"
+                  isLoggedin={isLoggedin}
+                  comingSoon={false}
+                />
               </Col>
               <Col md="4">
-                <GameCard description="Collect and steal properties from other players to establish your real-estate monopoly."
-                  title="Covidopoly" subtitle="Card-based Game (5 players)" icon="nc-icon lg nc-single-copy-04" isLoggedin={isLoggedin} 
-                  comingSoon={false} />
+                <GameCard
+                  description="Collect and steal properties from other players to establish your real-estate monopoly."
+                  title="Covidopoly"
+                  subtitle="Card-based Game (5 players)"
+                  icon="nc-icon lg nc-single-copy-04"
+                  isLoggedin={isLoggedin}
+                  comingSoon={false}
+                />
               </Col>
               <Col md="4">
-                <GameCard description="Play as either Townsfolk or Criminal in a social deduction game."
-                  title="Mafia" subtitle="Deduction Game (5+ players)" icon="nc-icon lg nc-zoom-split" isLoggedin={isLoggedin} 
-                  comingSoon={true} />
+                <GameCard
+                  description="Play as either Townsfolk or Criminal in a social deduction game."
+                  title="Mafia"
+                  subtitle="Deduction Game (5+ players)"
+                  icon="nc-icon lg nc-zoom-split"
+                  isLoggedin={isLoggedin}
+                  comingSoon={true}
+                />
               </Col>
             </Row>
           </Container>
