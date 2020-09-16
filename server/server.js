@@ -89,7 +89,7 @@ io.on('connection', (socket) => {
   };
 
   // user disconnected
-  const userDisconnected = (payload) => {
+  const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
     console.log(payload);
 
