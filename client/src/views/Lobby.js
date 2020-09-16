@@ -101,7 +101,7 @@ const Lobby = (props) => {
       </h1>
       <div className="lobby__container">
         <div className="lobby__col--33">
-          <Rules />
+          <Rules gameName={gameName} />
         </div>
         <div className="lobby__col--33 text-center">
           <Stats gameName={gameName} />
