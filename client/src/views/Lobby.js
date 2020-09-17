@@ -54,6 +54,17 @@ const Lobby = (props) => {
       gameName: gameName,
     });
 
+<<<<<<< HEAD
+=======
+    const handleGameFound = (payload) => {
+      setJoiningGame(true);
+      const roomId = payload.roomId;
+      setTimeout(() => {
+        history.push('/room/' + roomId, { user: user, gameName: gameName });
+      }, 3000);
+    };
+
+>>>>>>> 39be9d72690c90aea6562c7e65af31d835646b47
     //socket events
     socketRef.current.on('game found', handleGameFound);
 
@@ -91,7 +102,7 @@ const Lobby = (props) => {
     }
   }, [secs]);
 
-  const handleLeave = () => {    
+  const handleLeave = () => {
     history.push('/');
   };
 

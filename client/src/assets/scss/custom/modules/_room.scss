@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+}
+.room {
+  &__container {
+    padding: 1vh 1vw;
+    width: 98vw;
+    display: flex;
+    height: 98vh;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 0 !important;
+  }
+
+  &__game-window {
+    width: 68vw;
+    height: 88vh;
+    margin-right: 1vw;
+    background-color: grey;
+  }
+
+  &__sidebar {
+    width: 30vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    .messages {
+      width: 28vw;
+      flex-grow: 1;
+      flex-basis: auto;
+
+      &__chat {
+        max-height: 75%;
+      }
+    }
+  }
+
+  &__vid-window {
+    height: fit-content;
+    width: 28vw;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__vid-container {
+    margin: 5px;
+  }
+
+  &__video {
+    width: 13vw;
+    height: 18vh;
+
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+    -moz-transform: rotateY(180deg); /* Firefox */
+  }
+}
