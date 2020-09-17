@@ -91,7 +91,6 @@ io.on('connection', (socket) => {
   // user disconnected
   const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
-    console.log(payload);
 
     // const room = socketToRoom[socket.id];
     /*socketHelper.getSocketRoom(socket.id).then((room) => {
