@@ -27,6 +27,23 @@ const Lobby = (props) => {
   const [gameData, setGameData] = useState();
 
   useEffect(() => {
+    if (props.location.state && props.location.state.gameName) {
+      console.log('inside lobby useEffect');
+      console.log(props.location);
+      console.log(gameName);
+      setGameName(props.location.state.gameName);
+    } else {
+      const requestOptions = { method: 'GET' };
+      fetch(
+        `${config.apiUrl}/lobby/gameName?lobbyId=${lobbyId}`,
+        requestOptions
+      )
+        .then((res) => res.json())
+        .then((resJson) => setGameName(resJson.gameName));
+    }
+  }, []);
+
+  useEffect(() => {
     socketRef.current = io.connect('/');
 
     // start timer
@@ -62,21 +79,7 @@ const Lobby = (props) => {
       clearInterval(interval);
       socketRef.current.disconnect();
     };
-  }, [socketRef]);
-
-  useEffect(() => {
-    if (props.location.state && props.location.state.gameName) {
-      setGameName(props.location.state.gameName);
-    } else {
-      const requestOptions = { method: 'GET' };
-      fetch(
-        `${config.apiUrl}/lobby/gameName?lobbyId=${lobbyId}`,
-        requestOptions
-      )
-        .then((res) => res.json())
-        .then((resJson) => setGameName(resJson.gameName));
-    }
-  });
+  }, [gameName]);
 
   useEffect(() => {
     setGameData(GAME_DATA[gameName]);
