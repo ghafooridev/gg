@@ -1,32 +1,51 @@
-import React from "react";
+import React from 'react';
 import { useHistory } from 'react-router';
 
 const styleObj = {
-  "width": "100%",
-  "textAlign": "center",
-  "marginTop": "20px"
-}
+  width: '100%',
+  textAlign: 'center',
+  marginTop: '10px',
+};
 
 function GamePageFooter(props) {
   const history = useHistory();
 
   function leaveRoomClick(e) {
     e.preventDefault();
-    history.push("/");
+    history.push('/');
   }
 
   return (
-    <div style={styleObj}>    
-      {props.muteText === "Mute" ?
-        <button type="button" className="btn btn-danger"
-          onClick={(e) => props.toggleAudio()}> Mute </button>
-        :
-        <button type="button" className="btn btn-primary" 
-          onClick={(e) => props.toggleAudio()}> Unmute </button>
-      }
+    <div style={styleObj}>
+      {props.muteText === 'Mute' ? (
+        <button
+          type="button"
+          className="btn btn-danger"
+          onClick={(e) => props.toggleAudio()}
+        >
+          {' '}
+          Mute{' '}
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={(e) => props.toggleAudio()}
+        >
+          {' '}
+          Unmute{' '}
+        </button>
+      )}
 
-      <button type="button" className="btn btn-warning" style={{"marginLeft": "10px"}}
-        onClick={leaveRoomClick}> Leave Room </button>
+      <button
+        type="button"
+        className="btn btn-warning"
+        style={{ marginLeft: '10px' }}
+        onClick={leaveRoomClick}
+      >
+        {' '}
+        Leave Room{' '}
+      </button>
     </div>
   );
 }
