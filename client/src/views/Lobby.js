@@ -49,8 +49,9 @@ const Lobby = (props) => {
     const handleGameFound = (payload) => {
       setJoiningGame(true);
       const roomId = payload.roomId;
-
-      history.push('/room/' + roomId, { user: user, gameName: gameName });
+      setTimeout(() => {
+        history.push('/room/' + roomId, { user: user, gameName: gameName });
+      }, 3000);
     };
 
     //socket events
@@ -87,7 +88,7 @@ const Lobby = (props) => {
     }
   }, [secs]);
 
-  const handleLeave = () => {    
+  const handleLeave = () => {
     history.push('/');
   };
 
