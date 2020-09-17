@@ -111,6 +111,7 @@ const Room = (props) => {
 	const user = authenticationService.currentUserValue;
 
 	useEffect(() => {
+		console.log(props.location.state);
 		if (props.location.state && props.location.state.gameName) {
 			setGameName(props.location.state.gameName);
 		} else {
@@ -199,6 +200,18 @@ const Room = (props) => {
 				//error alerts
 				console.log(error);
 			});
+
+			const stopVideo = () => {
+				if (userVideo.current && userVideo.current.srcObject) {
+					userVideo.current.srcObject.getTrack().forEach((track) => {
+						track.stop()
+					});
+				}
+			}
+
+			return (
+				stopVideo()
+			)
 
 		// eslint-disable-next-line
 	}, []);
@@ -353,7 +366,7 @@ const Room = (props) => {
 						poster="assets/img/FFFFFF-0.png"
 					/>
 					<p>
-						{user.name}, {user.university}
+						{user.name} ({user.university})
 					</p>
 				</StyledVideoContainer>
 				{peers.map((peerID, index) => {

@@ -26,6 +26,14 @@ const Lobby = (props) => {
   const [gameName, setGameName] = useState('');
   const [gameData, setGameData] = useState();
 
+  const handleGameFound = (payload) => {
+    setJoiningGame(true);
+    const roomId = payload.roomId;
+    
+    while (gameName.lenth === 0) {}
+    history.push('/room/' + roomId, { user: user, gameName: gameName });
+  };
+
   useEffect(() => {
     socketRef.current = io.connect('/');
 
@@ -46,13 +54,6 @@ const Lobby = (props) => {
       gameName: gameName,
     });
 
-    const handleGameFound = (payload) => {
-      setJoiningGame(true);
-      const roomId = payload.roomId;
-
-      history.push('/room/' + roomId, { user: user, gameName: gameName });
-    };
-
     //socket events
     socketRef.current.on('game found', handleGameFound);
 
@@ -65,6 +66,7 @@ const Lobby = (props) => {
 
   useEffect(() => {
     if (props.location.state && props.location.state.gameName) {
+      console.log("IN HEREEEEE", props.location.state.gameName);
       setGameName(props.location.state.gameName);
     } else {
       const requestOptions = { method: 'GET' };
@@ -75,6 +77,8 @@ const Lobby = (props) => {
         .then((res) => res.json())
         .then((resJson) => setGameName(resJson.gameName));
     }
+
+    console.log("GAME NAME SET!")
   });
 
   useEffect(() => {
