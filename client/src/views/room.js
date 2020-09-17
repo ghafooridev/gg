@@ -81,7 +81,7 @@ const Room = (props) => {
         .then((res) => res.json())
         .then((resJson) => setGameName(resJson.gameName));
     }
-  });
+  }, []);
 
   useEffect(() => {
     console.log('Running use effect', props);
