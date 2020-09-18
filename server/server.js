@@ -92,11 +92,11 @@ io.on('connection', (socket) => {
   const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
 
-    socketHelper.getSocketRoom(socket.id).then((room) => {
+    socketHelper.getSocketRoom(socket.id).then((room, userId) => {
       console.log("emitting user disconnect event to room:", room);
       io.to(room).emit('user disconnect', {
-        room: payload.room,
-        id: payload.userId,
+        room: room,
+        id: userId,
 	      socketId: socket.id
       });
     });
@@ -131,7 +131,7 @@ io.on('connection', (socket) => {
   const sendMessage = (payload) => {
     console.log('message recieved from: ', payload.sender);
 
-    socketHelper.getSocketRoom(socket.id).then((roomId) => {
+    socketHelper.getSocketRoom(socket.id).then((roomId, _) => {
       io.to(roomId).emit('message notification', {
         message: payload.message,
         sender: payload.sender,
