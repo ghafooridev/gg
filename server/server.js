@@ -92,24 +92,25 @@ io.on('connection', (socket) => {
   const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
 
-    socketHelper.getSocketRoom(socket.id).then((room, userId) => {
+    socketHelper.getSocketRoom(socket.id).then(([room, userId]) => {
+      if(!room) return;
+
       console.log("emitting user disconnect event to room:", room);
       io.to(room).emit('user disconnect', {
         room: room,
         id: userId,
-	      socketId: socket.id
+	socketId: socket.id
       });
+	
+       socketHelper.removeSocketObject(socket.id);
     });
 
-    socketHelper.removeSocketObject(socket.id);
 
-    console.log('user removed from room');
-    console.log('-------------');
   };
 
   // sending signal
   const sendSignal = (payload) => {
-    console.log('send signal payload: ', payload.userId);
+    console.log('send signal payload: ', socket.id);
     io.to(payload.userToSignal).emit('user joined', {
       signal: payload.signal,
       callerID: payload.callerID,
@@ -119,7 +120,7 @@ io.on('connection', (socket) => {
 
   // returning signal
   const returnSignal = (payload) => {
-    console.log('return signal payload: ', payload.userId);
+    console.log('return signal payload: ', socket.id);
     io.to(payload.callerID).emit('user answer', {
       signal: payload.signal,
       id: socket.id,

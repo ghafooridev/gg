@@ -64,10 +64,13 @@ function addUserLobby(lobbyId, user, lobbyFullCallback, game) {
 // socket Id => room Id
 async function getSocketRoom(socketId) {
   const doc = await Socket.findOne({ socketId: socketId }).exec();
-  if (doc) return (doc.roomId, doc.userId);
+  if (doc) {
+    console.log("in socket helper: ", doc);
+    return [doc.roomId, doc.userId];
+  }
   else {
     console.error("Failed to find socket object: ", socketId);
-    return null;
+    return [null, null];
   }
 }
 
