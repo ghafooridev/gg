@@ -132,7 +132,7 @@ io.on('connection', (socket) => {
   const sendMessage = (payload) => {
     console.log('message recieved from: ', payload.sender);
 
-    socketHelper.getSocketRoom(socket.id).then((roomId, _) => {
+    socketHelper.getSocketRoom(socket.id).then(([roomId, _]) => {
       io.to(roomId).emit('message notification', {
         message: payload.message,
         sender: payload.sender,
