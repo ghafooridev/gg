@@ -92,34 +92,19 @@ io.on('connection', (socket) => {
   const userDisconnected = () => {
     console.log('user disconnected! ', socket.id);
 
-    // const room = socketToRoom[socket.id];
-    /*socketHelper.getSocketRoom(socket.id).then((room) => {
-      io.to(room).emit('user disconnect', {
-        room: payload.room,
-        id: payload.userId,
-      });
-    });*/
-
-    socketHelper.removeSocketObject(socket.id);
-
-    console.log('user removed from room');
-    console.log('-------------');
-  };
-
-  // send user disconnect to other users in room
-  const sendUserDisconnected = (payload) => {
-    console.log('user disconnected message! ', socket.id);
-    console.log(payload);
-
-    // const room = socketToRoom[socket.id];
     socketHelper.getSocketRoom(socket.id).then((room) => {
       console.log("emitting user disconnect event to room:", room);
       io.to(room).emit('user disconnect', {
         room: payload.room,
         id: payload.userId,
-	socketId: socket.id
+	      socketId: socket.id
       });
     });
+
+    socketHelper.removeSocketObject(socket.id);
+
+    console.log('user removed from room');
+    console.log('-------------');
   };
 
   // sending signal
@@ -170,7 +155,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', userDisconnected);
   socket.on('sending signal', sendSignal);
   socket.on('returning signal', returnSignal);
-  socket.on('user disconnect', sendUserDisconnected);
 
   socket.on('user message', sendMessage);
 });
