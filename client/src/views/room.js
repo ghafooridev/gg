@@ -346,7 +346,7 @@ const Room = (props) => {
               poster="assets/img/FFFFFF-0.png"
             />
             <p>
-              {user.name}, {user.university}
+              {user.name} ({user.university})
             </p>
           </div>
           {peers.map((peerID, index) => {
