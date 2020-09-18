@@ -142,7 +142,7 @@ const Room = (props) => {
 
         // handle user disconnect event
         const processUserDisconnect = (payload) => {
-	  console.log("USER DISCONNNECTED!", payload);
+	        console.log("USER DISCONNNECTED!", payload);
           if (roomID === payload.room) {
             removePeer(payload.socketId, payload.id);
           }
@@ -173,7 +173,8 @@ const Room = (props) => {
 				if (userVideo.current && userVideo.current.srcObject) {
 					console.log("Stopping video!!!", userVideo.current.srcObject.getTracks());
 					userVideo.current.srcObject.getTracks().forEach((track) => {
-						track.stop()
+            track.stop();
+            track.enabled = false;
 					});
 
 					userVideo.current.srcObject = null;

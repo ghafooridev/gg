@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
       io.to(room).emit('user disconnect', {
         room: room,
         id: userId,
-	socketId: socket.id
+	      socketId: socket.id
       });
 	
        socketHelper.removeSocketObject(socket.id);
