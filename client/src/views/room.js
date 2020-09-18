@@ -142,8 +142,9 @@ const Room = (props) => {
 
         // handle user disconnect event
         const processUserDisconnect = (payload) => {
+	  console.log("USER DISCONNNECTED!", payload);
           if (roomID === payload.room) {
-            removePeer(payload.id);
+            removePeer(payload.socketId, payload.id);
           }
         };
 
@@ -170,15 +171,19 @@ const Room = (props) => {
 
 			const stopVideo = () => {
 				if (userVideo.current && userVideo.current.srcObject) {
-					userVideo.current.srcObject.getTrack().forEach((track) => {
+					console.log("Stopping video!!!", userVideo.current.srcObject.getTracks());
+					userVideo.current.srcObject.getTracks().forEach((track) => {
 						track.stop()
 					});
+
+					userVideo.current.srcObject = null;
 				}
 			}
 
-			return (
-				stopVideo()
-			);
+			return () => {
+				stopVideo();
+				socketRef.current.disconnect();
+			};
 
     // eslint-disable-next-line
   }, []);
@@ -263,7 +268,7 @@ const Room = (props) => {
   }
 
   // TODO: update this to new structure
-  function removePeer(peerID) {
+  function removePeer(peerID, userId) {
 		console.log("REMOVING THE PEER!");
 
     // remove from peerStreams state

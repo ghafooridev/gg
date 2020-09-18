@@ -113,9 +113,11 @@ io.on('connection', (socket) => {
 
     // const room = socketToRoom[socket.id];
     socketHelper.getSocketRoom(socket.id).then((room) => {
+      console.log("emitting user disconnect event to room:", room);
       io.to(room).emit('user disconnect', {
         room: payload.room,
         id: payload.userId,
+	socketId: socket.id
       });
     });
   };
