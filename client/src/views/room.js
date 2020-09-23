@@ -72,6 +72,9 @@ const Room = (props) => {
   const [gameName, setGameName] = useState();
   const user = authenticationService.currentUserValue;
 
+  const [joiningWithLink, setJoiningWithLink] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+
   useEffect(() => {
     if (props.location.state && props.location.state.gameName) {
       setGameName(props.location.state.gameName);
@@ -325,18 +328,25 @@ const Room = (props) => {
     }
   };
 
+  const linkSubmitted = (url) => {
+    console.log("Link submitted! url = ", url);
+    setJoiningWithLink(true);
+    setLinkUrl(url);
+  }
+
   return (
     <div className="room__container">
       <div className="room__game-window">
         <iframe
           width="100%"
           height="100%"
-          src={gameURLs[gameName]}
+          src={joiningWithLink ? linkUrl : gameURLs[gameName]}
           title="Game Browser"
         />
         <GamePageFooter
           toggleAudio={toggleAudio}
           muteText={muted ? 'Unmute' : 'Mute'}
+          linkSubmitted={linkSubmitted}
         />
       </div>
       <div className="room__sidebar">

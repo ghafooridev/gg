@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 
 const styleObj = {
@@ -9,10 +9,23 @@ const styleObj = {
 
 function GamePageFooter(props) {
   const history = useHistory();
+  const [gameUrl, setGameUrl] = useState("");
 
   function leaveRoomClick(e) {
     e.preventDefault();
     history.push('/');
+  }
+
+  function handleChange(e) {
+    e.preventDefault();
+    setGameUrl(e.target.value);
+  }
+
+  function joinWithLink(e) {
+    e.preventDefault();
+    if (gameUrl.length === 0) return
+
+    props.linkSubmitted(gameUrl);
   }
 
   return (
@@ -45,6 +58,19 @@ function GamePageFooter(props) {
       >
         {' '}
         Leave Room{' '}
+      </button>
+
+      <input type="text" placeholder="paste link here" 
+      style={{ marginLeft: '10px', width: '300px' }}
+      onChange={(e) => handleChange(e)}
+      />
+      <button
+        type="button"
+        className="btn btn-primary"
+        style={{ marginLeft: '10px' }}
+        onClick={joinWithLink}
+      >
+        Join with link
       </button>
     </div>
   );
