@@ -41,15 +41,18 @@ body {
     width: 28vw;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
   }
 
   &__vid-container {
     margin: 5px;
+    width: min-content;
+    overflow-wrap: break-word;
   }
 
   &__video {
-    width: 13vw;
-    height: 18vh;
+    width: 12vw;
+    height: 9vw;
 
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg); /* Safari and Chrome */
