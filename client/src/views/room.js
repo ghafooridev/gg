@@ -47,7 +47,7 @@ const videoConstraints = {
 const gameURLs = {
   Scribble: 'https://skribbl.io/',
   'Out of Context': 'https://www.outofcontext.party/',
-  Drawasaurus: 'https://www.drawasaurus.org/',
+  Drawasaurus: 'https://skribbl.io/',
   Covidopoly: 'https://www.covidopoly.io/',
   Mafia: 'https://mafia.gg/',
 };
