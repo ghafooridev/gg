@@ -3,13 +3,23 @@ import React, { useState, useEffect } from 'react';
 import Messages from '../Messages';
 import authenticationService from '../../services/authentication.service';
 import config from 'config';
+import { USER_COLORS } from '../../constants';
+import { getRandomInt } from '../../helpers/math';
 
 const Chat = ({ gameData, socketRef }) => {
   const [messages, setMessages] = useState([]);
+  const [randomColor, setRandColor] = useState(
+    USER_COLORS[getRandomInt(USER_COLORS.length)]
+  );
   const user = authenticationService.currentUserValue;
 
   const [queue, setQueue] = useState([user._id]);
   const [userIdMap, setUserIdMap] = useState({ [user._id]: user });
+
+  // get random color
+  useEffect(() => {
+    setRandColor(USER_COLORS[getRandomInt(USER_COLORS.length)]);
+  }, []);
 
   // handle socket events
   useEffect(() => {
@@ -18,7 +28,11 @@ const Chat = ({ gameData, socketRef }) => {
       console.log('message recieved!');
       setMessages((messages) => [
         ...messages,
-        { message: payload.message, user: payload.sender },
+        {
+          message: payload.message,
+          user: payload.sender,
+          color: payload.color,
+        },
       ]);
     };
 
@@ -83,6 +97,7 @@ const Chat = ({ gameData, socketRef }) => {
       sender: user.name,
       id: user._id,
       room: true,
+      color: randomColor,
     });
   }
 

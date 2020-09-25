@@ -7,6 +7,8 @@ import GamePageFooter from 'components/Footers/GamePageFooter';
 import Messages from 'components/Messages';
 import authenticationService from 'services/authentication.service';
 import config from 'config';
+import { USER_COLORS } from '../constants';
+import { getRandomInt } from '../helpers/math';
 
 const Video = ({ peerStreams, peerID }) => {
   const remoteStream = useRef({});
@@ -73,7 +75,11 @@ const Room = (props) => {
   const user = authenticationService.currentUserValue;
 
   const [joiningWithLink, setJoiningWithLink] = useState(false);
-  const [linkUrl, setLinkUrl] = useState("");
+  const [linkUrl, setLinkUrl] = useState('');
+
+  const [randomColor, setRandColor] = useState(
+    USER_COLORS[getRandomInt(USER_COLORS.length)]
+  );
 
   useEffect(() => {
     if (props.location.state && props.location.state.gameName) {
@@ -84,6 +90,9 @@ const Room = (props) => {
         .then((res) => res.json())
         .then((resJson) => setGameName(resJson.gameName));
     }
+
+    // get rand color for this user
+    setRandColor(USER_COLORS[getRandomInt(USER_COLORS.length)]);
   }, []);
 
   useEffect(() => {
@@ -145,7 +154,7 @@ const Room = (props) => {
 
         // handle user disconnect event
         const processUserDisconnect = (payload) => {
-	        console.log("USER DISCONNNECTED!", payload);
+          console.log('USER DISCONNNECTED!', payload);
           if (roomID === payload.room) {
             removePeer(payload.socketId, payload.id);
           }
@@ -156,7 +165,11 @@ const Room = (props) => {
           console.log('message recieved!');
           setMessages((messages) => [
             ...messages,
-            { message: payload.message, user: payload.sender },
+            {
+              message: payload.message,
+              user: payload.sender,
+              color: payload.color,
+            },
           ]);
         };
 
@@ -172,22 +185,25 @@ const Room = (props) => {
         console.log(error);
       });
 
-			const stopVideo = () => {
-				if (userVideo.current && userVideo.current.srcObject) {
-					console.log("Stopping video!!!", userVideo.current.srcObject.getTracks());
-					userVideo.current.srcObject.getTracks().forEach((track) => {
-            track.stop();
-            track.enabled = false;
-					});
+    const stopVideo = () => {
+      if (userVideo.current && userVideo.current.srcObject) {
+        console.log(
+          'Stopping video!!!',
+          userVideo.current.srcObject.getTracks()
+        );
+        userVideo.current.srcObject.getTracks().forEach((track) => {
+          track.stop();
+          track.enabled = false;
+        });
 
-					userVideo.current.srcObject = null;
-				}
-			}
+        userVideo.current.srcObject = null;
+      }
+    };
 
-			return () => {
-				stopVideo();
-				socketRef.current.disconnect();
-			};
+    return () => {
+      stopVideo();
+      socketRef.current.disconnect();
+    };
 
     // eslint-disable-next-line
   }, []);
@@ -273,7 +289,7 @@ const Room = (props) => {
 
   // TODO: update this to new structure
   function removePeer(peerID, userId) {
-		console.log("REMOVING THE PEER!");
+    console.log('REMOVING THE PEER!');
 
     // remove from peerStreams state
     setPeerStreams((userStreams) =>
@@ -313,6 +329,7 @@ const Room = (props) => {
       sender: user.name,
       id: user._id,
       room: true,
+      color: randomColor,
     });
   }
 
@@ -329,10 +346,10 @@ const Room = (props) => {
   };
 
   const linkSubmitted = (url) => {
-    console.log("Link submitted! url = ", url);
+    console.log('Link submitted! url = ', url);
     setJoiningWithLink(true);
     setLinkUrl(url);
-  }
+  };
 
   return (
     <div className="room__container">

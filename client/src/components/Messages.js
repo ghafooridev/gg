@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect, useRef } from 'react';
 import { Input, Button } from 'reactstrap';
 
 const Messages = (props) => {
   const [message, setMessage] = useState();
+  const chatRef = useRef();
+
+  // autoscroll to bottom on new message
+  // TODO maybe disable on a manual scroll until we reach the bottom manually
+  useEffect(() => {
+    chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  }, [props.messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,9 +20,11 @@ const Messages = (props) => {
     setMessage('');
   };
 
+  console.log(props.messages);
+
   return (
     <div className="messages">
-      <ul className="messages__chat">
+      <ul ref={chatRef} className="messages__chat">
         <li>
           Welcome to the game room! Feel free to share links and chat here
         </li>
@@ -24,7 +32,7 @@ const Messages = (props) => {
           return (
             <li key={index}>
               <p>
-                <div style={{ display: 'inline', color: '#8dd002' }}>
+                <div style={{ display: 'inline', color: messageObj['color'] }}>
                   {messageObj['user']}:
                 </div>{' '}
                 {messageObj['message']}
