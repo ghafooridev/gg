@@ -93,19 +93,17 @@ io.on('connection', (socket) => {
     console.log('user disconnected! ', socket.id);
 
     socketHelper.getSocketRoom(socket.id).then(([room, userId]) => {
-      if(!room) return;
+      if (!room) return;
 
-      console.log("emitting user disconnect event to room:", room);
+      console.log('emitting user disconnect event to room:', room);
       io.to(room).emit('user disconnect', {
         room: room,
         id: userId,
-	      socketId: socket.id
+        socketId: socket.id,
       });
-	
-       socketHelper.removeSocketObject(socket.id);
+
+      socketHelper.removeSocketObject(socket.id);
     });
-
-
   };
 
   // sending signal
@@ -137,6 +135,7 @@ io.on('connection', (socket) => {
         message: payload.message,
         sender: payload.sender,
         senderId: payload.id,
+        color: payload.color,
       });
 
       const isRoom = payload.room ? true : false;
