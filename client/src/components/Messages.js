@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { Input, Button } from 'reactstrap';
 
 const Messages = (props) => {
   const [message, setMessage] = useState();
+  const chatRef = useRef();
+  useEffect(() => {
+    chatRef.current.scrollTop = chatRef.current.scrollHeight;
+  }, [props.messages]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,7 +20,7 @@ const Messages = (props) => {
 
   return (
     <div className="messages">
-      <ul className="messages__chat">
+      <ul ref={chatRef} className="messages__chat">
         <li>
           Welcome to the game room! Feel free to share links and chat here
         </li>
