@@ -1,3 +1,9 @@
+<p>
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="https://i.imgur.com/xpjQ7sm.jpeg" width="200" height="200">
+  </a>
+</p>
+
 [![Build Status](https://travis-ci.org/GGchat-io/site.svg?branch=prod)](https://travis-ci.org/Zoom-University-Spiel/web-client)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -9,6 +15,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Making changes
 Refer to [Airbnb Javascript Style Guide](https://github.com/airbnb/javascript/blob/master/README.md) for server-side style guide. 
+
+1. Create your feature branch 
+    - `git checkout -b feature/contributer-name`
+1. Commit your changes 
+    - `git commit -m 'Add some AmazingFeature'`
+1. Push to the branch 
+    - `git push origin feature/AmazingFeature`
+1. Open a pull request
 
 ## Testing
 Run `yarn test`
