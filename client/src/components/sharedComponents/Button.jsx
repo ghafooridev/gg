@@ -14,6 +14,7 @@ const Button = function (props) {
 		onClick,
 		label
 	} = props;
+
 	return (
 		<ReactstrapButton
 			className={className}

@@ -4,12 +4,16 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 const socket = require('socket.io');
 const path = require('path');
 
 const { ROOM_CLEAN_INTERVAL } = require('./config');
 const api = require('./api');
+const apis = require('./apis');
 
 const http = require('http');
 const socketHelper = require('./helpers/socketHelper');
@@ -161,6 +165,7 @@ io.on('connection', (socket) => {
 
 // attach to api router
 app.use('/api', api);
+apis(app);
 
 // clean rooms periodically
 setInterval(socketHelper.removeInactiveRooms, ROOM_CLEAN_INTERVAL);

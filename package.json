@@ -13,18 +13,21 @@
     "express-validator": "^6.6.1",
     "google-auth-library": "^6.0.6",
     "jsonwebtoken": "^8.5.1",
+    "lodash.isempty": "^4.4.0",
     "mongodb": "^3.6.0",
     "mongoose": "^5.10.1",
     "node-sass": "^4.14.1",
-    "prop-types": "^15.7.2",
+    "nodemon": "^2.0.5",
+    "passport": "^0.4.1",
     "react-scripts": "^3.4.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "validator": "^13.1.17"
   },
   "scripts": {
     "start": "node server/server.js",
     "postinstall": "cd ./client && yarn",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "server": "node server/server.js",
+    "server": "nodemon server/server.js",
     "client": "cd ./client && yarn start",
     "heroku-postbuild": "cd ./client && yarn && yarn build",
     "test": "cd client && npm run test"
