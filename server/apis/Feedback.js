@@ -2,8 +2,9 @@ const express = require('express');
 const Feedback = require('../models/Feedback');
 const checkValidFeedback = require('../validations/feedback');
 const Constant = require('../utils/Constant');
-
+const {sendMail} = require('../services/SendMail')
 const router = express.Router();
+
 /*
 //@route  Post api/feedback
 //@desc   add feedback
@@ -30,6 +31,7 @@ router.post(
 		return Feedback.create(newFeedback)
 		.then(() => {
 			res.json(true);
+			sendMail(name, email, description)
 		})
 		.catch(err => {
 			res.status(400).json(err);
