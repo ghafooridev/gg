@@ -13,7 +13,7 @@ module.exports = Object.freeze({
 		},
 	}),
 	ENUMS: {
-		FEEDBACK_CATEGORY: ['CAT1', 'CAT2', 'CAT3'],
+		FEEDBACK_CATEGORY: ['Report a bug', 'Experience Issue', 'Business Inquiry','Other'],
 	},
 	VALIDATION_TYPE:{
 		INVALID:'invalid',

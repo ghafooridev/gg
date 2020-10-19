@@ -1,10 +1,11 @@
 const Constant = {
 	ENUMS: {
 		FEEDBACK_CATEGORY: [
-			{id: 'CAT1', value: 'cat1'},
-			{id: 'CAT2', value: 'cat2'},
+			{id: 'Report a bug', value: 'Report a bug'},
+			{id: 'Experience Issue', value: 'Experience Issue'},
+			{id: 'Business Inquiry', value: 'Business Inquiry'},
+			{id: 'Other', value: 'Other'},
 		]
 	}
-
 };
 export default Constant;

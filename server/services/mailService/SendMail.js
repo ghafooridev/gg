@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 
-exports.sendMail=function (name,sender,description) {
+const feedbackTemplate = require('./template/feedbackTemplate');
+
+exports.sendMail = function (name, sender, category, description) {
 	const transporter = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -11,9 +13,9 @@ exports.sendMail=function (name,sender,description) {
 
 	const mailOptions = {
 		from: sender,
-		to: 'stackjsco@gmail.com',
+		to: 'ghafooridev@gmail.com',
 		subject: `GG Chat Feedback from ${name}`,
-		text: description
+		html: feedbackTemplate(category, description),
 	};
 
 	transporter.sendMail(mailOptions, function (error, info) {
