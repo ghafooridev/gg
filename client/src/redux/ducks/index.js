@@ -2,8 +2,8 @@
  * Ducks root file to combine all reducers into one, and
  * define base actions
  */
-import user from './user';
-import chat from './chat';
+import userReducer from '../reducers/user';
+import chatReducer from '../reducers/chat';
 import { combineReducers } from 'redux';
 
 // Action Type
@@ -12,8 +12,8 @@ import { combineReducers } from 'redux';
 
 // Reducer
 const appReducer = combineReducers({
-	user,
-	chat,
+	user: userReducer,
+	chat: chatReducer,
 });
 
 const rootReducer = (state, action) => {

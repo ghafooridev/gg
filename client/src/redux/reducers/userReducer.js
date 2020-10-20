@@ -9,7 +9,7 @@ const initialState = {
 	university: 'UCSD',
 	description: 'Greasy',
 };
-const user = (state = initialState, action) => {
+const userReducer = (state = initialState, action) => {
 	switch (action) {
 		default:
 			return state;
@@ -20,4 +20,4 @@ const user = (state = initialState, action) => {
 
 // Side Effects
 
-export default user;
+export default userReducer;
