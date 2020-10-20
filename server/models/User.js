@@ -15,6 +15,7 @@ var userSchema = new Schema(
 		active: { type: Boolean, default: true },
 		inQueue: { type: Boolean, default: false },
 		inGame: { type: Boolean, default: false },
+		isVerified: { type: Boolean, default: false }
 	},
 	{ collection: 'users' }
 );

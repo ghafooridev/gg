@@ -31,7 +31,7 @@ router.post(
 		return Feedback.create(newFeedback)
 		.then(() => {
 			res.json(true);
-			sendMail(name, email, category, description)
+			sendMail('feedback',{name, email, category, description})
 		})
 		.catch(err => {
 			res.status(400).json(err);
