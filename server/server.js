@@ -9,7 +9,7 @@ const socket = require('socket.io');
 const path = require('path');
 
 const { ROOM_CLEAN_INTERVAL } = require('./config');
-const api = require('./api');
+const api = require('./api/index');
 
 const http = require('http');
 const socketHelper = require('./helpers/socketHelper');
