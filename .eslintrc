@@ -12,11 +12,17 @@
     ],
     "rules": {
       "semi": 0,
+      "consistent-return": "off",
+      "func-names": "off",
+      "no-console": "warn",
+      "no-underscore-dangle": "off",
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "prettier/prettier": [
         "error", {
-          "semi": false
+          "semi": false,
+          "endOfLine":"auto"
         }
-      ]
+      ],
+      "prefer-destructuring": ["error", {"object": false, "array": false}]
     }
   }
