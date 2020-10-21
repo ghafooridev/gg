@@ -39,21 +39,6 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// middleware that is specific to this router
-router.use((req, res, next) => {
-  if (!process.env.PROD) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', '*');
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, X-Requested-With, Content-Type, Accept'
-    );
-  }
-
-  console.log('Time: ', Date.now());
-  next();
-});
-
 // define the home route
 router.get('/', function (req, res) {
   res.send('Welcome to api v0.1');

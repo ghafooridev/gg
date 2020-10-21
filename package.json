@@ -8,6 +8,7 @@
     "body-parser": "^1.19.0",
     "concurrently": "^5.2.0",
     "dotenv": "^8.2.0",
+    "eslint-config-airbnb": "^18.2.0",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "express-validator": "^6.6.1",
@@ -30,7 +31,14 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "nodemon server/server.js",
     "client": "cd ./client && yarn start",
+    "lint": "eslint .",
     "heroku-postbuild": "cd ./client && yarn && yarn build",
     "test": "cd client && npm run test"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.1.2"
   }
 }

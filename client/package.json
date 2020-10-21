@@ -42,7 +42,11 @@
   },
   "proxy": "http://localhost:5000",
   "eslintConfig": {
-    "extends": "react-app"
+    "settings": {
+			"react": {
+				"version": "16.13.1"
+			}
+		}
   },
   "browserslist": {
     "production": [
