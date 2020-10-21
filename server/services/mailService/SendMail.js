@@ -6,14 +6,14 @@ exports.sendMail = function (name, sender, category, description) {
 	const transporter = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
-			user: 'ghafooridev@gmail.com',
-			pass: 'ghafoori123'
+			user: process.env.AUTH_EMAIL_USER,
+			pass: process.env.AUTH_EMAIL_PASS
 		}
 	});
 
 	const mailOptions = {
 		from: sender,
-		to: 'ghafooridev@gmail.com',
+		to: process.env.AUTH_EMAIL_USER,
 		subject: `GG Chat Feedback from ${name}`,
 		html: feedbackTemplate(category, description),
 	};
