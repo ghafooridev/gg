@@ -1,12 +1,10 @@
-import api from '../services/httpService';
+import api from "../services/httpService"
 
 export default {
-	add: async function (data) {
-		return await api.post({
-			url: '/feedback',
-			data
-		})
-	}
+  async add(data) {
+    return await api.post({
+      url: "/feedback",
+      data,
+    })
+  },
 }
-
-

@@ -1,6 +1,6 @@
-const FeedbackApi = require('./Feedback');
+const FeedbackApi = require("./Feedback")
 
-const api = server => {
-	server.use('/api/feedback', FeedbackApi);
-};
-module.exports = api;
+const api = (server) => {
+  server.use("/api/feedback", FeedbackApi)
+}
+module.exports = api
