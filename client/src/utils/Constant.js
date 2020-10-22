@@ -9,7 +9,9 @@ const Constant = {
 	},
 	ACTION_TYPES:{
 		SHOW_TOAST:'SHOW_TOAST',
-		HIDE_TOAST:'HIDE_TOAST'
+		HIDE_TOAST:'HIDE_TOAST',
+		SHOW_DIALOG:'SHOW_DIALOG',
+		HIDE_DIALOG:'HIDE_DIALOG'
 	}
 };
 export default Constant;
