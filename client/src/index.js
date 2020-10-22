@@ -6,11 +6,13 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 
 import store from './redux/store';
+import Toast from "./components/sharedComponents/Toast";
 
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<App />
+			<Toast/>
 		</Provider>
 	</React.StrictMode>,
 	document.getElementById('root')
