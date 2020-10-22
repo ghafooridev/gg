@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 
 import PropTypes from 'prop-types';
 
@@ -6,11 +6,22 @@ import {Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 
 const TextInput = function (props) {
 
-	const {label, placeholder, icon, addonType, rows, type, name, onChange, caption} = props;
+	const {label, placeholder, icon, addonType, rows, type, name, onChange, caption, innerRef,error} = props;
+	const [textType, setTextType] = useState(type)
 
 	const onTextChange = function (event) {
-		onChange({value: event.target.value, name})
+		if (typeof onChange === 'function') {
+			onChange({value: event.target.value, name})
+		}
 	};
+
+	const onViewPassword = function () {
+		if (textType === 'password') {
+			return setTextType('text');
+		}
+
+		setTextType('password')
+	}
 
 	return (
 		<>
@@ -23,14 +34,30 @@ const TextInput = function (props) {
 				</InputGroupAddon>}
 				<Input
 					placeholder={placeholder}
-					type={type}
+					type={textType}
 					rows={rows}
 					name={name}
 					onChange={onTextChange}
+					innerRef={innerRef}
 				/>
-
+				{type === 'password' && <InputGroupAddon addonType='append'>
+					<InputGroupText>
+						{textType === 'password' ?
+							<i
+								className="passwordIcon fas fa-eye-slash"
+								onClick={onViewPassword}
+							/> :
+							<i
+								className="passwordIcon fas fa-eye"
+								onClick={onViewPassword}
+							/>
+						}
+					</InputGroupText>
+				</InputGroupAddon>}
 			</InputGroup>
-			<small className='form-text'>{caption}</small>
+			{error?
+				<small className='form-text text-danger'>{error.message}</small>:
+				<small className='form-text'>{caption}</small>}
 		</>
 	)
 }

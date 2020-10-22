@@ -2,128 +2,92 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 
-import {
-	Button,
-	Form,
-	FormGroup,
-	FormText,
-	Label,
-	Input,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroup,
-	Container,
-	Row,
-	Col,
-	Modal,
-} from 'reactstrap';
+import {useForm} from "react-hook-form";
 
-// core components
-import LandingNavbar from '../components/Navbars/LandingNavbar.js';
-import LandingPageHeader from '../components/Headers/LandingPageHeader.js';
-import LandingFooter from '../components/Footers/LandingFooter.js';
-import GameCard from 'components/GameCard.js';
-import authenticationService from 'services/authentication.service.js';
-import Feedback from './Feedback';
-import dialogAction from "../redux/actions/dialogAction";
+import TextInput from "../components/sharedComponents/TextInput";
+import Button from "../components/sharedComponents/Button";
+import {validationMessage} from "../utils/ValidationMessage";
 
 const Register = function () {
+	const {register, handleSubmit, watch, errors} = useForm();
+	console.log('errors', errors);
+	const onSubmit = data => {
+		console.log('data', data);
+		console.log('errors', errors);
+	}
+
 	return (
 		<div>
-				<div className="modal-header no-border-header text-center">
-					<h6 className="text-muted">Welcome</h6>
-					<h3 className="modal-title text-center">GGchat</h3>
-					<p>Register your account</p>
-				</div>
-				<div className="modal-body">
-					<form onSubmit={(e) => e.preventDefault()}>
-						<FormGroup>
-							<Label for="Name">Full Name</Label>
-							<Input
-								type="text"
-								name="name"
-								id="Name"
-								placeholder="Enter Name"
-								//onChange={(e) => handleChange(e)}
-							/>
-						</FormGroup>
-						<FormGroup>
-							<Label for="username">Username</Label>
-							<Input
-								type="text"
-								name="username"
-								id="username"
-								placeholder="Enter Username"
-								//onChange={(e) => handleChange(e)}
-							/>
-						</FormGroup>
-						<FormGroup>
-							<Label for="emailAdd">Email</Label>
-							<Input
-								type="email"
-								name="email"
-								id="emailAdd"
-								placeholder="Enter Email"
-								//onChange={(e) => handleChange(e)}
-							/>
-							<FormText color="muted">
-								Please enter your .edu email address
-							</FormText>
-						</FormGroup>
-						<FormGroup>
-							<Label for="Password">Password</Label>
-							<Input
-								type="password"
-								name="password"
-								id="Password"
-								placeholder="Password"
-								autoComplete="off"
-								//onChange={(e) => handleChange(e)}
-							/>
-						</FormGroup>
-						<FormGroup>
-							<Label for="University">University Name</Label>
-							<Input
-								type="text"
-								name="university"
-								id="University"
-								placeholder="Arizona State University"
-								autoComplete="off"
-								//onChange={(e) => handleChange(e)}
-							/>
-						</FormGroup>
-						<FormGroup>
-							<Label for="Description">Description</Label>
-							<Input
-								type="text"
-								name="description"
-								id="Description"
-								placeholder="I love playing chess and surfing"
-								autoComplete="off"
-								//onChange={(e) => handleChange(e)}
-							/>
-						</FormGroup>
-						<FormText color="muted">
-							We'll never share your information with anyone else.
-						</FormText>
-						<FormText
-							color="red"
-							style={{textAlign: 'center', color: 'red', fontSize: '0.9em'}}
-						>
-							{signupErrors}
-						</FormText>
-					</form>
-				</div>
-				<div className="modal-footer">
-					<Button
-						color="primary"
-						type="submit"
-						onClick={(e) => handleSignupSubmit(e)}
-						style={{margin: 'auto'}}
-					>
-						Submit
-					</Button>
-				</div>
+			<form onSubmit={handleSubmit(onSubmit)}>
+				<TextInput
+					label='Full Name'
+					name='fullName'
+					placeholder='Enter Name'
+					icon={<i className="nc-icon nc-email-85"/>}
+					innerRef={register({
+							required: validationMessage('Full name','required'),
+							minLength: {value: 6, message:validationMessage('Full name','minLength',6)}
+						}
+					)}
+					error={errors.fullName}
+				/>
+				<TextInput
+					label='Username'
+					name='username'
+					placeholder='Enter Username'
+					icon={<i className="nc-icon nc-circle-10"/>}
+					innerRef={register({
+							required: validationMessage('Username','required'),
+						}
+					)}
+					error={errors.username}
+				/>
+				<TextInput
+					label='Email'
+					name='email'
+					placeholder='Enter Email'
+					icon={<i className="nc-icon nc-email-85"/>}
+
+					innerRef={register({
+						pattern: {
+							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+							message: validationMessage('Email address','pattern'),
+						},
+							required: validationMessage('Email address','required'),
+						}
+					)}
+					caption='	Please enter your .edu email address'
+					error={errors.email}
+				/>
+				<TextInput
+					label='Password'
+					name='password'
+					type="password"
+					placeholder='Password'
+					icon={<i className="nc-icon nc-lock-circle-open"/>}
+					innerRef={register}
+				/>
+				<TextInput
+					label='University Name'
+					name='university'
+					placeholder="Arizona State University"
+					icon={<i className="nc-icon nc-hat-3"/>}
+					innerRef={register}
+				/>
+				<TextInput
+					label='Description'
+					name='description'
+					placeholder='I love playing chess and surfing...'
+					type='textarea'
+					rows='2'
+					innerRef={register}
+				/>
+				<Button
+					label='Submit'
+					color="primary"
+					type="submit"
+				/>
+			</form>
 		</div>
 	)
 }

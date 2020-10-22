@@ -12,7 +12,8 @@ const Button = function (props) {
 		outline,
 		disabled,
 		onClick,
-		label
+		label,
+		type
 	} = props;
 
 	return (
@@ -23,6 +24,7 @@ const Button = function (props) {
 			outline={outline}
 			disabled={disabled}
 			onClick={onClick}
+			type={type}
 		>
 			{label}
 		</ReactstrapButton>
@@ -37,6 +39,7 @@ Button.propTypes = {
 	outline: PropTypes.bool,
 	color: PropTypes.oneOf(['primary', 'secondary', 'success', 'info', 'warning', 'danger', 'link']),
 	size: PropTypes.oneOf(['sm', 'lg']),
+	type:PropTypes.string
 }
 
 Button.defaultProps = {
