@@ -6,7 +6,7 @@ import {Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
 
 const TextInput = function (props) {
 
-	const {label, placeholder, icon, addonType, rows, type, name, onChange} = props;
+	const {label, placeholder, icon, addonType, rows, type, name, onChange, caption} = props;
 
 	const onTextChange = function (event) {
 		onChange({value: event.target.value, name})
@@ -28,7 +28,9 @@ const TextInput = function (props) {
 					name={name}
 					onChange={onTextChange}
 				/>
+
 			</InputGroup>
+			<small className='form-text'>{caption}</small>
 		</>
 	)
 }
@@ -41,7 +43,8 @@ TextInput.propTypes = {
 	rows: PropTypes.string,
 	type: PropTypes.string,
 	name: PropTypes.string,
-	onChange: PropTypes.func
+	onChange: PropTypes.func,
+	caption: PropTypes.string
 };
 
 TextInput.defaultProps = {
