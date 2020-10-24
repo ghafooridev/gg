@@ -4,8 +4,8 @@ import {useSelector} from "react-redux";
 import dialogAction from "../../redux/actions/dialogAction";
 
 const Dialog = function () {
-	const {show, component, title} = useSelector(state => state.dialog)
-	console.log(component, title)
+	const {show, component, title, onAction} = useSelector(state => state.dialog)
+
 	const toggle = function () {
 		dialogAction.hide()
 	}
@@ -15,7 +15,7 @@ const Dialog = function () {
 			<Modal isOpen={show} toggle={toggle}>
 				<ModalHeader toggle={toggle}>{title}</ModalHeader>
 				<ModalBody>
-					{component}
+					{component && React.cloneElement(component, {onAction})}
 				</ModalBody>
 
 			</Modal>

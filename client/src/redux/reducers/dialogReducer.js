@@ -1,14 +1,16 @@
 import Constant from "../../utils/Constant";
 
-const initialState={
-	show:false,
+const initialState = {
+	show: false,
 	component:null,
-	title:''
+	title: '',
+	onAction: () => {
+	}
 }
 
-export default function (state=initialState,action){
-	switch (action.type){
-		case Constant.ACTION_TYPES.SHOW_DIALOG:{
+export default function (state = initialState, action) {
+	switch (action.type) {
+		case Constant.ACTION_TYPES.SHOW_DIALOG: {
 			return {
 				...state,
 				...action.option,

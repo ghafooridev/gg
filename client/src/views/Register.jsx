@@ -8,10 +8,12 @@ import TextInput from "../components/sharedComponents/TextInput";
 import Button from "../components/sharedComponents/Button";
 import {validationMessage} from "../utils/ValidationMessage";
 
-const Register = function () {
+const Register = function (props) {
 	const {register, handleSubmit, watch, errors} = useForm();
-	console.log('errors', errors);
+	const {onAction} = props;
+
 	const onSubmit = data => {
+		onAction('submit', data)
 		console.log('data', data);
 		console.log('errors', errors);
 	}
@@ -23,10 +25,10 @@ const Register = function () {
 					label='Full Name'
 					name='fullName'
 					placeholder='Enter Name'
-					icon={<i className="nc-icon nc-email-85"/>}
+					icon={<i className="nc-icon nc-single-02"/>}
 					innerRef={register({
-							required: validationMessage('Full name','required'),
-							minLength: {value: 6, message:validationMessage('Full name','minLength',6)}
+							required: validationMessage('Full name', 'required'),
+							minLength: {value: 6, message: validationMessage('Full name', 'minLength', 6)}
 						}
 					)}
 					error={errors.fullName}
@@ -37,7 +39,7 @@ const Register = function () {
 					placeholder='Enter Username'
 					icon={<i className="nc-icon nc-circle-10"/>}
 					innerRef={register({
-							required: validationMessage('Username','required'),
+							required: validationMessage('Username', 'required'),
 						}
 					)}
 					error={errors.username}
@@ -47,13 +49,12 @@ const Register = function () {
 					name='email'
 					placeholder='Enter Email'
 					icon={<i className="nc-icon nc-email-85"/>}
-
 					innerRef={register({
-						pattern: {
-							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-							message: validationMessage('Email address','pattern'),
-						},
-							required: validationMessage('Email address','required'),
+							pattern: {
+								value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+								message: validationMessage('Email address', 'pattern'),
+							},
+							required: validationMessage('Email address', 'required'),
 						}
 					)}
 					caption='	Please enter your .edu email address'
@@ -65,7 +66,11 @@ const Register = function () {
 					type="password"
 					placeholder='Password'
 					icon={<i className="nc-icon nc-lock-circle-open"/>}
-					innerRef={register}
+					innerRef={register({
+							required: validationMessage('Password', 'required'),
+							minLength: {value: 5, message: validationMessage('Password', 'minLength', 5)}
+						}
+					)}
 				/>
 				<TextInput
 					label='University Name'
@@ -90,6 +95,10 @@ const Register = function () {
 			</form>
 		</div>
 	)
+}
+
+Register.propTypes = {
+	onAction: PropTypes.func
 }
 
 export default Register;
