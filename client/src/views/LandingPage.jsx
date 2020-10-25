@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState } from "react"
+import { useHistory } from "react-router-dom"
+import PropTypes from "prop-types"
 
 // reactstrap components
 import {
@@ -16,150 +18,152 @@ import {
   Row,
   Col,
   Modal,
-} from 'reactstrap';
+} from "reactstrap"
 
 // core components
-import LandingNavbar from '../components/Navbars/LandingNavbar.js';
-import LandingPageHeader from '../components/Headers/LandingPageHeader.js';
-import LandingFooter from '../components/Footers/LandingFooter.js';
-import GameCard from 'components/GameCard.js';
-import authenticationService from 'services/authentication.service.js';
+import GameCard from "../components/GameCard"
+import authenticationService from "../services/authentication.service"
+import LandingNavbar from "../components/Navbars/LandingNavbar"
+import LandingPageHeader from "../components/Headers/LandingPageHeader"
+import LandingFooter from "../components/Footers/LandingFooter"
 
-const LandingPage = (props) => {
-  const loggedInStartState = authenticationService.currentUserValue
-    ? true
-    : false;
-  const showLoginModalStartState =
-    !loggedInStartState && props.match.path === '/login' ? true : false;
-  const showSignupModalStartState =
-    !loggedInStartState && props.match.path === '/signup' ? true : false;
+const LandingPage = ({ match }) => {
+  const loggedInStartState = !!authenticationService.currentUserValue
+  const showLoginModalStartState = !!(
+    !loggedInStartState && match.path === "/login"
+  )
+  const showSignupModalStartState = !!(
+    !loggedInStartState && match.path === "/signup"
+  )
 
-  const history = useHistory();
+  const history = useHistory()
 
-  const [isLoggedin, setLoggedin] = useState(loggedInStartState);
-  const [showLoginModal, setShowLoginModal] = useState(
-    showLoginModalStartState
-  );
+  const [isLoggedin, setLoggedin] = useState(loggedInStartState)
+  const [showLoginModal, setShowLoginModal] = useState(showLoginModalStartState)
   const [showSignupModal, setShowSignupModal] = useState(
     showSignupModalStartState
-  );
+  )
 
-  const [name, setName] = useState('');
-  const [username, setUsername] = useState('');
-  const [university, setUniversity] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("")
+  const [username, setUsername] = useState("")
+  const [university, setUniversity] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [description, setDescription] = useState("")
 
-  const [signupErrors, setSignupErrors] = useState('');
-  const [loginErrors, setLoginErrors] = useState('');
+  const [signupErrors, setSignupErrors] = useState("")
+  const [loginErrors, setLoginErrors] = useState("")
 
-  document.documentElement.classList.remove('nav-open');
+  document.documentElement.classList.remove("nav-open")
 
   React.useEffect(() => {
     if (loggedInStartState) {
-      const user = authenticationService.currentUserValue;
-      setName(user.name);
-      setUsername(user.username);
-      setUniversity(user.university);
-      setEmail(user.email);
-      setDescription(user.description);
+      const user = authenticationService.currentUserValue
+      setName(user.name)
+      setUsername(user.username)
+      setUniversity(user.university)
+      setEmail(user.email)
+      setDescription(user.description)
     }
 
-    document.body.classList.add('profile-page');
+    document.body.classList.add("profile-page")
     return function cleanup() {
-      document.body.classList.remove('profile-page');
-    };
-  }, [loggedInStartState]);
-
-  function handleSignin() {
-    modalLoginOpen();
-  }
-
-  function handleSignup() {
-    modalSignupOpen();
-  }
-
-  function handleLogout() {
-    authenticationService.logout();
-    setLoggedin(false);
-    setName('');
-    setUniversity('');
-    setEmail('');
-    setDescription('');
-    setPassword('');
-    setUsername('');
-  }
+      document.body.classList.remove("profile-page")
+    }
+  }, [loggedInStartState])
 
   function modalSignupOpen() {
-    setShowSignupModal(true);
-    history.push('/signup');
+    setShowSignupModal(true)
+    history.push("/signup")
   }
 
   function modalSignupClose() {
-    setShowSignupModal(false);
-    history.push('/');
+    setShowSignupModal(false)
+    history.push("/")
   }
 
   function modalLoginOpen() {
-    setShowLoginModal(true);
-    history.push('/login');
+    setShowLoginModal(true)
+    history.push("/login")
   }
 
   function modalLoginClose() {
-    setShowLoginModal(false);
-    history.push('/');
+    setShowLoginModal(false)
+    history.push("/")
+  }
+
+  function handleSignin() {
+    modalLoginOpen()
+  }
+
+  function handleSignup() {
+    modalSignupOpen()
+  }
+
+  function handleLogout() {
+    authenticationService.logout()
+    setLoggedin(false)
+    setName("")
+    setUniversity("")
+    setEmail("")
+    setDescription("")
+    setPassword("")
+    setUsername("")
   }
 
   function handleChange(e) {
-    e.preventDefault();
-    const target = e.target;
-    const name = target.name;
-    const value = target.value;
+    e.preventDefault()
+    const target = e.target
+    const fieldName = target.name
+    const value = target.value
 
-    if (name === 'name') {
-      setName(value);
-    } else if (name === 'email') {
-      setEmail(value);
-    } else if (name === 'university') {
-      setUniversity(value);
-    } else if (name === 'description') {
-      setDescription(value);
-    } else if (name === 'password') {
-      setPassword(value);
-    } else if (name === 'username') {
-      setUsername(value);
+    if (fieldName === "name") {
+      setName(value)
+    } else if (fieldName === "email") {
+      setEmail(value)
+    } else if (fieldName === "university") {
+      setUniversity(value)
+    } else if (fieldName === "description") {
+      setDescription(value)
+    } else if (fieldName === "password") {
+      setPassword(value)
+    } else if (fieldName === "username") {
+      setUsername(value)
     }
   }
 
   function handleLoginSubmit(e) {
+    e.preventDefault()
+
     authenticationService.login(email, password).then((val) => {
-      console.log(val);
+      console.log(val)
       if (val.errors) {
-        setLoginErrors(val.errors);
+        setLoginErrors(val.errors)
       } else {
-        modalLoginClose();
-        setLoggedin(true);
-        setLoginErrors('');
+        modalLoginClose()
+        setLoggedin(true)
+        setLoginErrors("")
       }
-    });
+    })
   }
 
   function handleSignupSubmit(e) {
+    e.preventDefault()
+
     authenticationService
       .signup(email, password, name, username, university, description)
       .then((val) => {
-        console.log(val);
+        console.log(val)
         if (val.errors) {
-          setSignupErrors(val.errors);
+          setSignupErrors(val.errors)
         } else {
-          modalSignupClose();
-          setLoggedin(true);
-          setSignupErrors('');
-          const user = authenticationService.currentUserValue;
-          setName(user.name);
+          modalSignupClose()
+          setLoggedin(true)
+          setSignupErrors("")
+          const user = authenticationService.currentUserValue
+          setName(user.name)
         }
-      });
+      })
   }
 
   return (
@@ -186,7 +190,7 @@ const LandingPage = (props) => {
             type="button"
             onClick={() => modalSignupClose()}
           >
-            <span aria-hidden={true}>×</span>
+            <span aria-hidden>×</span>
           </button>
           <h6 className="text-muted">Welcome</h6>
           <h3 className="modal-title text-center">GGchat</h3>
@@ -261,11 +265,11 @@ const LandingPage = (props) => {
               />
             </FormGroup>
             <FormText color="muted">
-              We'll never share your information with anyone else.
+              We will never share your information with anyone else.
             </FormText>
             <FormText
               color="red"
-              style={{ textAlign: 'center', color: 'red', fontSize: '0.9em' }}
+              style={{ textAlign: "center", color: "red", fontSize: "0.9em" }}
             >
               {signupErrors}
             </FormText>
@@ -276,7 +280,7 @@ const LandingPage = (props) => {
             color="primary"
             type="submit"
             onClick={(e) => handleSignupSubmit(e)}
-            style={{ margin: 'auto' }}
+            style={{ margin: "auto" }}
           >
             Submit
           </Button>
@@ -296,7 +300,7 @@ const LandingPage = (props) => {
             type="button"
             onClick={() => modalLoginClose()}
           >
-            <span aria-hidden={true}>×</span>
+            <span aria-hidden>×</span>
           </button>
           <h6 className="text-muted">Welcome</h6>
           <h3 className="modal-title text-center">GGchat</h3>
@@ -330,7 +334,7 @@ const LandingPage = (props) => {
             </FormGroup>
             <FormText
               color="red"
-              style={{ textAlign: 'center', color: 'red', fontSize: '0.9em' }}
+              style={{ textAlign: "center", color: "red", fontSize: "0.9em" }}
             >
               {loginErrors}
             </FormText>
@@ -341,7 +345,7 @@ const LandingPage = (props) => {
             color="primary"
             type="submit"
             onClick={(e) => handleLoginSubmit(e)}
-            style={{ margin: 'auto' }}
+            style={{ margin: "auto" }}
           >
             Submit
           </Button>
@@ -372,7 +376,7 @@ const LandingPage = (props) => {
                   subtitle="Card-based Game (5 players)"
                   icon="nc-icon lg nc-single-copy-04"
                   isLoggedin={isLoggedin}
-                  comingSoon={true}
+                  comingSoon
                 />
               </Col>
               <Col md="4">
@@ -382,7 +386,7 @@ const LandingPage = (props) => {
                   subtitle="Deduction Game (5+ players)"
                   icon="nc-icon lg nc-zoom-split"
                   isLoggedin={isLoggedin}
-                  comingSoon={true}
+                  comingSoon
                 />
               </Col>
             </Row>
@@ -392,7 +396,7 @@ const LandingPage = (props) => {
           ) : (
             <div
               className="section section-dark section-footer"
-              style={{ fontSize: '1.4em' }}
+              style={{ fontSize: "1.4em" }}
             >
               <a href="/login">Login</a> to play games
             </div>
@@ -450,7 +454,15 @@ const LandingPage = (props) => {
 
       <LandingFooter />
     </>
-  );
-};
+  )
+}
 
-export default LandingPage;
+LandingPage.propTypes = {
+  match: PropTypes.shape(PropTypes.any),
+}
+
+LandingPage.defaultProps = {
+  match: {},
+}
+
+export default LandingPage

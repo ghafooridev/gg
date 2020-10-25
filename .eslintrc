@@ -1,28 +1,50 @@
 {
-    "extends": [
-      "react-app",
-      "airbnb",
-      "plugin:jsx-a11y/recommended",
-      "prettier",
-      "prettier/react"
+  "extends": [
+    "react-app",
+    "airbnb",
+    "plugin:jsx-a11y/recommended",
+    "prettier",
+    "prettier/react"
+  ],
+  "plugins": [
+    "jsx-a11y",
+    "prettier"
+  ],
+  "rules": {
+    "semi": 0,
+    "consistent-return": "off",
+    "func-names": "off",
+    "no-console": "warn",
+    "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
     ],
-    "plugins": [
-      "jsx-a11y",
-      "prettier"
+    "prettier/prettier": [
+      "error",
+      {
+        "semi": false,
+        "endOfLine": "auto"
+      }
     ],
-    "rules": {
-      "semi": 0,
-      "consistent-return": "off",
-      "func-names": "off",
-      "no-console": "warn",
-      "no-underscore-dangle": "off",
-      "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-      "prettier/prettier": [
-        "error", {
-          "semi": false,
-          "endOfLine":"auto"
-        }
-      ],
-      "prefer-destructuring": ["error", {"object": false, "array": false}]
-    }
+    "prefer-destructuring": [
+      "error",
+      {
+        "object": false,
+        "array": false
+      }
+    ],
+    "no-param-reassign": "off",
+    "react/jsx-no-bind": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "react/no-array-index-key": "off",
+    "react/require-default-props": "off"
   }
+}
