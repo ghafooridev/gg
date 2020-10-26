@@ -1,16 +1,10 @@
-<p>
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="https://i.imgur.com/xpjQ7sm.jpeg" width="200" height="200">
-  </a>
-</p>
-
 [![Build Status](https://travis-ci.org/GGchat-io/site.svg?branch=prod)](https://travis-ci.org/Zoom-University-Spiel/web-client)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Setting up
 1. Clone the repository on your local machine
-1. Aquire the `.env` files for client and server from the main devs
+1. Acquire the `.env` files for client and server from the main devs
 1. Run `yarn` to install package dependencies 
 
 ## Making changes

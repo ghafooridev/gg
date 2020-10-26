@@ -13,7 +13,6 @@ const path = require('path');
 
 const { ROOM_CLEAN_INTERVAL } = require('./config');
 const api = require('./api');
-const apis = require('./apis');
 
 const http = require('http');
 const socketHelper = require('./helpers/socketHelper');
@@ -165,7 +164,6 @@ io.on('connection', (socket) => {
 
 // attach to api router
 app.use('/api', api);
-apis(app);
 
 // clean rooms periodically
 setInterval(socketHelper.removeInactiveRooms, ROOM_CLEAN_INTERVAL);

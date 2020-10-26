@@ -1,5 +1,5 @@
-const FeedbackApi = require('./Feedback');
-const UserApi = require('./User');
+const FeedbackApi = require('../api/Feedback');
+const UserApi = require('../api/User');
 
 const api = server => {
 	server.use('/api/feedback', FeedbackApi);

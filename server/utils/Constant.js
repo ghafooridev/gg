@@ -17,7 +17,8 @@ module.exports = Object.freeze({
 	},
 	VALIDATION_TYPE:{
 		INVALID:'invalid',
-		REQUIRED:'required'
+		REQUIRED:'required',
+		LENGTH:'length'
 	},
 	MESSAGES:{
 		INVALID_ACTIVATION_LINK:'Your verification link may have expired. Please click on resend for verify your Email.',
