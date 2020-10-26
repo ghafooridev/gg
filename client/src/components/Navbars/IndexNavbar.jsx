@@ -16,9 +16,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React from "react"
 // nodejs library that concatenates strings
-import classnames from "classnames";
+import classnames from "classnames"
 // reactstrap components
 import {
   Button,
@@ -29,16 +29,16 @@ import {
   NavLink,
   Nav,
   Container,
-} from "reactstrap";
+} from "reactstrap"
 
 function IndexNavbar() {
-  const [navbarColor, setNavbarColor] = React.useState("navbar-transparent");
-  const [navbarCollapse, setNavbarCollapse] = React.useState(false);
+  const [navbarColor, setNavbarColor] = React.useState("navbar-transparent")
+  const [navbarCollapse, setNavbarCollapse] = React.useState(false)
 
   const toggleNavbarCollapse = () => {
-    setNavbarCollapse(!navbarCollapse);
-    document.documentElement.classList.toggle("nav-open");
-  };
+    setNavbarCollapse(!navbarCollapse)
+    document.documentElement.classList.toggle("nav-open")
+  }
 
   React.useEffect(() => {
     const updateNavbarColor = () => {
@@ -46,21 +46,21 @@ function IndexNavbar() {
         document.documentElement.scrollTop > 299 ||
         document.body.scrollTop > 299
       ) {
-        setNavbarColor("");
+        setNavbarColor("")
       } else if (
         document.documentElement.scrollTop < 300 ||
         document.body.scrollTop < 300
       ) {
-        setNavbarColor("navbar-transparent");
+        setNavbarColor("navbar-transparent")
       }
-    };
+    }
 
-    window.addEventListener("scroll", updateNavbarColor);
+    window.addEventListener("scroll", updateNavbarColor)
 
     return function cleanup() {
-      window.removeEventListener("scroll", updateNavbarColor);
-    };
-  });
+      window.removeEventListener("scroll", updateNavbarColor)
+    }
+  })
   return (
     <Navbar className={classnames("fixed-top", navbarColor)} expand="lg">
       <Container>
@@ -74,6 +74,7 @@ function IndexNavbar() {
             Paper Kit React
           </NavbarBrand>
           <button
+            type="submit"
             aria-expanded={navbarCollapse}
             className={classnames("navbar-toggler navbar-toggler", {
               toggled: navbarCollapse,
@@ -158,7 +159,7 @@ function IndexNavbar() {
         </Collapse>
       </Container>
     </Navbar>
-  );
+  )
 }
 
-export default IndexNavbar;
+export default IndexNavbar

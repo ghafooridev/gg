@@ -1,4 +1,5 @@
 // env vars
+
 const dotenv = require("dotenv")
 
 dotenv.config()
@@ -8,6 +9,7 @@ const express = require("express")
 const user = require("./userApi")
 const room = require("./roomApi")
 const lobby = require("./lobbyApi")
+const feedback = require("./Feedback")
 
 const router = express.Router()
 
@@ -40,5 +42,6 @@ router.get("/hello", function (req, res) {
 router.use("/user", user)
 router.use("/room", room)
 router.use("/lobby", lobby)
+router.use("/feedback", feedback)
 
 module.exports = router

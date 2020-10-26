@@ -16,7 +16,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React from "react"
 
 // reactstrap components
 import {
@@ -32,29 +32,29 @@ import {
   Container,
   Row,
   Col,
-} from "reactstrap";
+} from "reactstrap"
 
 // core components
-import ExamplesNavbar from "components/Navbars/ExamplesNavbar.js";
-import ProfilePageHeader from "components/Headers/ProfilePageHeader.js";
-import DemoFooter from "components/Footers/DemoFooter.js";
+import ExamplesNavbar from "../components/Navbars/ExamplesNavbar"
+import ProfilePageHeader from "../components/Headers/ProfilePageHeader"
+import DemoFooter from "../components/Footers/DemoFooter"
 
 function ProfilePage() {
-  const [activeTab, setActiveTab] = React.useState("1");
+  const [activeTab, setActiveTab] = React.useState("1")
 
   const toggle = (tab) => {
     if (activeTab !== tab) {
-      setActiveTab(tab);
+      setActiveTab(tab)
     }
-  };
+  }
 
-  document.documentElement.classList.remove("nav-open");
+  document.documentElement.classList.remove("nav-open")
   React.useEffect(() => {
-    document.body.classList.add("landing-page");
+    document.body.classList.add("landing-page")
     return function cleanup() {
-      document.body.classList.remove("landing-page");
-    };
-  });
+      document.body.classList.remove("landing-page")
+    }
+  })
   return (
     <>
       <ExamplesNavbar />
@@ -98,7 +98,7 @@ function ProfilePage() {
                   <NavLink
                     className={activeTab === "1" ? "active" : ""}
                     onClick={() => {
-                      toggle("1");
+                      toggle("1")
                     }}
                   >
                     Follows
@@ -108,7 +108,7 @@ function ProfilePage() {
                   <NavLink
                     className={activeTab === "2" ? "active" : ""}
                     onClick={() => {
-                      toggle("2");
+                      toggle("2")
                     }}
                   >
                     Following
@@ -193,7 +193,7 @@ function ProfilePage() {
       </div>
       <DemoFooter />
     </>
-  );
+  )
 }
 
-export default ProfilePage;
+export default ProfilePage
