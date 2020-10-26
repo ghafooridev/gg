@@ -1,109 +1,106 @@
 // handle user register, login, email activation, password reset endpoints
 
-const User = require('./models/User');
+const crypto = require("crypto")
 
-const Token = require('./models/Token');
-const {sendMails} = require('./services/mailService/SendMail')
-const crypto = require('crypto');
-const {EmailActivationToken} = require('./controllers/TokenController')
+const expressJwt = require("express-jwt")
+const _ = require("lodash")
+const { OAuth2Client } = require("google-auth-library")
 
-const expressJwt = require('express-jwt');
-const _ = require('lodash');
-const {OAuth2Client} = require('google-auth-library');
+const { validationResult } = require("express-validator")
+const jwt = require("jsonwebtoken")
+const { EmailActivationToken } = require("./controllers/TokenController")
+const Token = require("./models/Token")
+const { sendMails } = require("./services/mailService/SendMail")
+const User = require("./models/User")
 
-const {validationResult} = require('express-validator');
-const jwt = require('jsonwebtoken');
-
-const {errorHandler} = require('./helpers/dbErrorHandling');
+const { errorHandler } = require("./helpers/dbErrorHandling")
 // const sgMail = require('@sendgrid/mail');
 // sgMail.setApiKey(process.env.MAIL_KEY);
 
 exports.registerController = (req, res) => {
-	console.log(req.body);
-	const {name, username, email, password, university} = req.body;
-	const errors = validationResult(req);
+  console.log(req.body)
+  const { name, username, email, password, university } = req.body
+  const errors = validationResult(req)
 
-	if (!errors.isEmpty()) {
-		const firstError = errors.array().map(error => error.msg)[0];
-		return res.status(422).json({
-			errors: firstError
-		});
-	} else {
-		User.findOne({
-			email: email
-		}).exec((err, user) => {
-			if (user) {
-				return res.status(400).json({
-					errors: 'Email is taken'
-				});
-			} else {
-				const user = new User({
-					name: name,
-					username: username,
-					email: email,
-					password: password,
-					university: university
-				});
+  if (!errors.isEmpty()) {
+    const firstError = errors.array().map((error) => error.msg)[0]
+    return res.status(422).json({
+      errors: firstError,
+    })
+  }
+  User.findOne({
+    email,
+  }).exec((err, user) => {
+    if (user) {
+      return res.status(400).json({
+        errors: "Email is taken",
+      })
+    } else {
+      const user = new User({
+        name,
+        username,
+        email,
+        password,
+        university,
+      })
 
-				user.save((err, user) => {
-					if (err) {
-						console.log('Save error', errorHandler(err));
-						return res.status(401).json({
-							errors: errorHandler(err)
-						});
-					} else {
-						EmailActivationToken(user,req,res);
-						return res.status(200).json({
-							success: true,
-							userObj: user,
-							message: 'Signup success'
-						});
-					}
-				});
-			}
-		});
-	}
+      user.save((err, user) => {
+        if (err) {
+          console.log("Save error", errorHandler(err))
+          return res.status(401).json({
+            errors: errorHandler(err),
+          })
+        }
+        EmailActivationToken(user, req, res)
+        return res.status(200).json({
+          success: true,
+          userObj: user,
+          message: "Signup success",
+        })
+      })
+    }
+  })
 
-	//   const token = jwt.sign(
-	//     {
-	//       name,
-	//       email,
-	//       password
-	//     },
-	//     process.env.JWT_ACCOUNT_ACTIVATION,
-	//     {
-	//       expiresIn: '5m'
-	//     }
-	//   );
+  //   const token = jwt.sign(
+  //     {
+  //       name,
+  //       email,
+  //       password
+  //     },
+  //     process.env.JWT_ACCOUNT_ACTIVATION,
+  //     {
+  //       expiresIn: '5m'
+  //     }
+  //   );
 
-	//   const emailData = {
-	//     from: process.env.EMAIL_FROM,
-	//     to: email,
-	//     subject: 'Account activation link',
-	//     html: `
-	//               <h1>Please use the following to activate your account</h1>
-	//               <p>${process.env.CLIENT_URL}/api/user/activate/${token}</p>
-	//               <hr />
-	//               <p>This email may containe sensetive information</p>
-	//               <p>${process.env.CLIENT_URL}</p>
-	//           `
-	//   };
+  //   const emailData = {
+  //     from: process.env.EMAIL_FROM,
+  //     to: email,
+  //     subject: 'Account activation link',
+  //     html: `
+  //               <h1>Please use the following to activate your account</h1>
+  //               <p>${process.env.CLIENT_URL}/api/user/activate/${token}</p>
+  //               <hr />
+  //               <p>This email may containe sensetive information</p>
+  //               <p>${process.env.CLIENT_URL}</p>
+  //           `
+  //   };
 
-	//   sgMail
-	//     .send(emailData)
-	//     .then(sent => {
-	//       return res.json({
-	//         message: `Email has been sent to ${email}`
-	//       });
-	//     })
-	//     .catch(err => {
-	//       return res.status(400).json({
-	//         success: false,
-	//         errors: errorHandler(err)
-	//       });
-	//     });
-	// }
-};
+  //   sgMail
+  //     .send(emailData)
+  //     .then(sent => {
+  //       return res.json({
+  //         message: `Email has been sent to ${email}`
+  //       });
+  //     })
+  //     .catch(err => {
+  //       return res.status(400).json({
+  //         success: false,
+  //         errors: errorHandler(err)
+  //       });
+  //     });
+  // }
+}
 
 // exports.activationController = (req, res) => {
 //   const { token } = req.body;

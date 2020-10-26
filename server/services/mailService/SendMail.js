@@ -1,9 +1,9 @@
-const nodemailer = require('nodemailer');
-const Promise = require('es6-promise').Promise;
-const feedbackTemplate = require('./template/feedbackTemplate');
-const activationTemplate = require('./template/activationTemplate');
+const nodemailer = require("nodemailer")
+const Promise = require("es6-promise").Promise
+const feedbackTemplate = require("./template/feedbackTemplate")
+const activationTemplate = require("./template/activationTemplate")
 
-exports.sendMail = function (name, sender, category, description) {
+exports.sendMail = function (mailTypes, options) {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -12,39 +12,32 @@ exports.sendMail = function (name, sender, category, description) {
     },
   })
 
-	return new Promise((resolve, reject) => {
-		const mailOptions = {};
-		const types = {
-			feedback: () => {
-				const {sender, category, description} = options;
-				mailOptions.from = sender;
-				mailOptions.to = process.env.AUTH_EMAIL_USER;
-				mailOptions.subject = `GG Chat Feedback from ${name}`;
-				mailOptions.html = feedbackTemplate(category, description);
-			},
-			activation: () => {
-				const {name, host, email, token} = options;
-				mailOptions.from = process.env.AUTH_EMAIL_USER;
-				mailOptions.to = email;
-				mailOptions.subject = `Activation Email From GG Chat`;
-				mailOptions.html = activationTemplate(name, host, email, token);
-			}
-		}
-		if (types[mailTypes]) {
-			types[mailTypes]();
-
-			transporter.sendMail(mailOptions, function (error, info) {
-				console.log('???', error, info)
-
-				if (error) {
-					console.log('>>>>>>>', error);
-					return reject(error)
-				} else {
-					console.log('Email sent: ' + info.response);
-					return resolve(info.response)
-				}
-
-			});
-		}
-	})
+  return new Promise((resolve, reject) => {
+    const mailOptions = {}
+    const types = {
+      feedback: () => {
+        const { sender, category, description } = options
+        mailOptions.from = sender
+        mailOptions.to = process.env.AUTH_EMAIL_USER
+        mailOptions.subject = `GG Chat Feedback from ${name}`
+        mailOptions.html = feedbackTemplate(category, description)
+      },
+      activation: () => {
+        const { name, host, email, token } = options
+        mailOptions.from = process.env.AUTH_EMAIL_USER
+        mailOptions.to = email
+        mailOptions.subject = `Activation Email From GG Chat`
+        mailOptions.html = activationTemplate(name, host, email, token)
+      },
+    }
+    if (types[mailTypes]) {
+      types[mailTypes]()
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          return reject(error)
+        }
+        return resolve(info.response)
+      })
+    }
+  })
 }
