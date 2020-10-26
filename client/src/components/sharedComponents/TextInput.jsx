@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import {Input, InputGroup, InputGroupAddon, InputGroupText} from "reactstrap";
+import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap"
 
 const TextInput = function (props) {
 
@@ -75,9 +75,9 @@ TextInput.propTypes = {
 };
 
 TextInput.defaultProps = {
-	addonType: 'prepend',
-	rows: '1',
-	type: 'text'
-};
+  addonType: "prepend",
+  rows: "1",
+  type: "text",
+}
 
 export default TextInput

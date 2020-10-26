@@ -3,14 +3,14 @@ const Promise = require('es6-promise').Promise;
 const feedbackTemplate = require('./template/feedbackTemplate');
 const activationTemplate = require('./template/activationTemplate');
 
-exports.sendMails = function (mailTypes, options) {
-	const transporter = nodemailer.createTransport({
-			service: 'Gmail',
-			auth: {
-				user: 'ghafooridev@gmail.com',
-				pass: 'ghafoori123'
-			}
-		});
+exports.sendMail = function (name, sender, category, description) {
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.AUTH_EMAIL_USER,
+      pass: process.env.AUTH_EMAIL_PASS,
+    },
+  })
 
 	return new Promise((resolve, reject) => {
 		const mailOptions = {};
@@ -18,13 +18,13 @@ exports.sendMails = function (mailTypes, options) {
 			feedback: () => {
 				const {sender, category, description} = options;
 				mailOptions.from = sender;
-				mailOptions.to = 'ghafooridev@gmail.com';
+				mailOptions.to = process.env.AUTH_EMAIL_USER;
 				mailOptions.subject = `GG Chat Feedback from ${name}`;
 				mailOptions.html = feedbackTemplate(category, description);
 			},
 			activation: () => {
 				const {name, host, email, token} = options;
-				mailOptions.from = 'ghafooridev@gmail.com';
+				mailOptions.from = process.env.AUTH_EMAIL_USER;
 				mailOptions.to = email;
 				mailOptions.subject = `Activation Email From GG Chat`;
 				mailOptions.html = activationTemplate(name, host, email, token);

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react"
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types"
 
-import ReactstrapButton from 'reactstrap/lib/Button';
+import ReactstrapButton from "reactstrap/lib/Button"
 
 const Button = function (props) {
 	const {
@@ -43,7 +43,7 @@ Button.propTypes = {
 }
 
 Button.defaultProps = {
-	size: 'lg'
+  size: "lg",
 }
 
-export default Button;
+export default Button

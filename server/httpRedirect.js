@@ -1,14 +1,15 @@
 // set up plain http server
-var express = require('express');
-var app = express();
-var http = require('http');
+const express = require("express")
 
-var server = http.createServer(app);
+const app = express()
+const http = require("http")
+
+const server = http.createServer(app)
 
 // set up a route to redirect http to https
-app.get('*', function(req, res) {
-  res.redirect('https://' + req.headers.host + req.url);
+app.get("*", function (req, res) {
+  res.redirect(`https://${req.headers.host}${req.url}`)
 })
 
 // have it listen on 80
-server.listen(80);
+server.listen(80)
