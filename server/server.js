@@ -1,11 +1,12 @@
-require("dotenv").config()
-const express = require("express")
-
-const app = express()
-const bodyParser = require("body-parser")
-
-app.use(express.json())
-app.use(bodyParser.json())
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 const socketio = require("socket.io")
 const path = require("path")
@@ -14,8 +15,8 @@ const http = require("http")
 const fs = require("fs")
 const https = require("https")
 
-const { ROOM_CLEAN_INTERVAL } = require("./config")
-const api = require("./api/index")
+const { ROOM_CLEAN_INTERVAL } = require('./config');
+const api = require('./api');
 
 const socketHelper = require("./helpers/socketHelper")
 

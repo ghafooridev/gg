@@ -5,7 +5,7 @@
 
 // Reducers
 const initialState = {};
-const chat = (state = initialState, action) => {
+const chatReducer = (state = initialState, action) => {
 	switch (action) {
 		default:
 			return state;
@@ -16,4 +16,4 @@ const chat = (state = initialState, action) => {
 
 // Side Effects
 
-export default chat;
+export default chatReducer;
