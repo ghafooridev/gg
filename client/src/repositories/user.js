@@ -1,4 +1,4 @@
-import api from "../services /httpService"
+import api from "../services/httpService"
 
 export default {
   async register(data) {
