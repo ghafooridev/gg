@@ -30,6 +30,8 @@ import Feedback from "./Feedback"
 import dialogAction from "../redux/actions/dialogAction"
 import Register from "./Register"
 import userRepository from "../repositories/user"
+import AlertAction from "../redux/actions/AlertAction"
+import Constant from "../utils/Constant"
 
 const LandingPage = ({ match }) => {
   const loggedInStartState = !!authenticationService.currentUserValue
@@ -76,7 +78,6 @@ const LandingPage = ({ match }) => {
     }
   }, [loggedInStartState])
 
-
   function modalSignupOpen() {
     dialogAction.show({
       component: <Register />,
@@ -84,17 +85,16 @@ const LandingPage = ({ match }) => {
       onAction: (type, data) => {
         if (type === "submit") {
           userRepository.register(data).then((result) => {
-            console.log("result", result)
+            if (result) {
+              AlertAction.show({
+                type: "success",
+                text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+              })
+            }
           })
         }
       },
     })
-    history.push("/signup")
-  }
-
-  function modalSignupClose() {
-    setShowSignupModal(false)
-    history.push("/")
   }
 
   function modalLoginOpen() {
@@ -160,23 +160,6 @@ const LandingPage = ({ match }) => {
         setLoginErrors("")
       }
     })
-  }
-
-  function handleSignupSubmit(e) {
-    authenticationService
-      .signup(email, password, name, username, university, description)
-      .then((val) => {
-        console.log(val)
-        if (val.errors) {
-          setSignupErrors(val.errors)
-        } else {
-          modalSignupClose()
-          setLoggedin(true)
-          setSignupErrors("")
-          const user = authenticationService.currentUserValue
-          setName(user.name)
-        }
-      })
   }
 
   return (

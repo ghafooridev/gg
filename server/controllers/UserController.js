@@ -3,6 +3,7 @@ const Token = require("../models/Token")
 const Constant = require("../utils/Constant")
 const checkValidFeedback = require("../validations/User")
 const { EmailActivationToken } = require("./TokenController")
+const { getUiAddress } = require("../utils/util")
 const userDTO = require("../dto/user")
 
 exports.confirmationEmail = function (req, res) {
@@ -20,17 +21,16 @@ exports.confirmationEmail = function (req, res) {
       }
       // user is already verified
       if (user.isVerified) {
-        return res.redirect(`http://localhost:3000`)
+        return res.redirect(getUiAddress())
       }
       // verify user
-
       user.isVerified = true
       user.save(function (err) {
         if (err) {
           return res.status(400).json(err)
         }
 
-        return res.redirect("http://localhost:3000")
+        return res.redirect(getUiAddress())
       })
     })
   })

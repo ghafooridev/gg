@@ -14,8 +14,6 @@ const Register = function (props) {
 
   const onSubmit = (data) => {
     onAction("submit", data)
-    console.log("data", data)
-    console.log("errors", errors)
   }
 
   return (
@@ -48,16 +46,15 @@ const Register = function (props) {
         <TextInput
           label="Email"
           name="email"
-          placeholder="Enter Email"
+          placeholder="username@yourdomain.edu"
           icon={<i className="nc-icon nc-email-85" />}
           innerRef={register({
             pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
               message: validationMessage("Email address", "pattern"),
             },
             required: validationMessage("Email address", "required"),
           })}
-          caption="	Please enter your .edu email address"
           error={errors.email}
         />
         <TextInput
@@ -89,7 +86,7 @@ const Register = function (props) {
           rows="2"
           innerRef={register}
         />
-        <Button label="Submit" color="primary" type="submit" />
+        <Button label="Submit" color="primary" type="submit" size="xs" />
       </form>
     </div>
   )

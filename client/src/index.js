@@ -6,14 +6,14 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 
 import store from './redux/store';
-import Toast from "./components/sharedComponents/Toast";
+import Alert from "./components/sharedComponents/Alert";
 import Dialog from "./components/sharedComponents/Dialog";
 
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
 			<App />
-			<Toast/>
+			<Alert/>
 			<Dialog/>
 		</Provider>
 	</React.StrictMode>,

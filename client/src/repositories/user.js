@@ -1,12 +1,14 @@
-import api from '../services/httpService';
+import api from "../services /httpService"
 
 export default {
-	register: async function (data) {
-		return await api.post({
-			url: '/user/register',
-			data
-		})
-	}
+  async register(data) {
+    try {
+      return await api.post({
+        url: "/user/register",
+        data,
+      })
+    } catch (error) {
+      //throw new TypeError(error)
+    }
+  },
 }
-
-

@@ -1,15 +1,7 @@
 module.exports = Object.freeze({
   ERROR: Object.freeze({
-    UNAUTHORIZED: {
-      code: 401,
-      text: "Username or Password is incorrect",
-      info: "Authorization",
-    },
-    INVALID_PARAMS: {
-      code: 422,
-      text: "Invalid parameter",
-      info: "Validation",
-    },
+    UNAUTHORIZED: "Username or Password is incorrect",
+    INVALID_PARAMS: "Invalid parameter",
   }),
   ENUMS: {
     FEEDBACK_CATEGORY: [

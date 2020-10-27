@@ -43,10 +43,10 @@
   "proxy": "http://localhost:5000",
   "eslintConfig": {
     "settings": {
-			"react": {
-				"version": "16.13.1"
-			}
-		}
+      "react": {
+        "version": "16.13.1"
+      }
+    }
   },
   "browserslist": {
     "production": [

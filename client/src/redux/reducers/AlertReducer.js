@@ -7,14 +7,14 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case Constant.ACTION_TYPES.SHOW_TOAST: {
+    case Constant.ACTION_TYPES.SHOW_ALERT: {
       return {
         ...state,
         ...action.option,
         show: true,
       }
     }
-    case Constant.ACTION_TYPES.HIDE_TOAST: {
+    case Constant.ACTION_TYPES.HIDE_ALERT: {
       return {
         ...state,
         show: false,
