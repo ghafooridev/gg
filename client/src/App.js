@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 
 import "./App.css"
@@ -13,8 +13,13 @@ import "./assets/scss/custom/main.scss"
 import Room from "./views/Room"
 import LandingPage from "./views/LandingPage"
 import Lobby from "./views/Lobby"
+import Storage from "./services/Storage"
+import userRepository from "./repositories/user"
+import Constant from "./utils/Constant";
 
 function App() {
+
+
   return (
     <BrowserRouter>
       <Switch>

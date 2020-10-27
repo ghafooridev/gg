@@ -2,6 +2,7 @@ const express = require("express")
 const {
   confirmationEmail,
   registerUser,
+  currentUser
 } = require("../controllers/UserController")
 
 const router = express.Router()
@@ -19,5 +20,12 @@ router.get("/confirmation/:email/:token", confirmationEmail)
  * @access public
  */
 router.post("/register", registerUser)
+
+/*
+ * @route  get api/user/currentUser/:userId
+ * @desc   get current User
+ * @access public
+ */
+router.get("/currentUser/:userId", currentUser)
 
 module.exports = router

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import { useHistory } from "react-router-dom"
 import PropTypes from "prop-types"
 
@@ -32,6 +32,7 @@ import Register from "./Register"
 import userRepository from "../repositories/user"
 import AlertAction from "../redux/actions/AlertAction"
 import Constant from "../utils/Constant"
+import Storage from "../services/Storage"
 
 const LandingPage = ({ match }) => {
   const loggedInStartState = !!authenticationService.currentUserValue
@@ -77,6 +78,21 @@ const LandingPage = ({ match }) => {
       document.body.classList.remove("profile-page")
     }
   }, [loggedInStartState])
+
+  const getCurrentUser = function () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const userId = urlParams.get("token")
+    if (userId) {
+      userRepository.getCurrentUser(userId).then((user) => {
+        Storage.push(Constant.STORAGE.CURRENT_USER, JSON.stringify(user))
+        setUsername(user.username)
+      })
+    }
+  }
+
+  useEffect(() => {
+    getCurrentUser()
+  }, [])
 
   function modalSignupOpen() {
     dialogAction.show({
@@ -162,6 +178,15 @@ const LandingPage = ({ match }) => {
     })
   }
 
+  const GetUsernameCurrentUser = function () {
+    debugger
+    const user=Storage.pull(Constant.STORAGE.CURRENT_USER);
+    if (user) {
+     return setUsername(user.username)
+    }
+    setUsername(null)
+  }
+
   return (
     <>
       <LandingNavbar />
@@ -170,7 +195,7 @@ const LandingPage = ({ match }) => {
         handleSignup={handleSignup}
         handleLogout={handleLogout}
         isLoggedin={isLoggedin}
-        username={name}
+        username={username}
       />
 
       <Modal

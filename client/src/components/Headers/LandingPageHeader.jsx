@@ -92,7 +92,7 @@ const LandingPageHeader = ({
               Thanks for testing our platform!
             </h4>
             <br />
-            {stateIsLoggedIn ? (
+            {username ? (
               <>
                 <h4 style={{ display: 'inline', marginRight: '10px' }}>
                   Welcome <span style={{ color: '#6bd098' }}>{username}!</span>
@@ -104,7 +104,7 @@ const LandingPageHeader = ({
                   outline
                   onClick={handleLogout}
                 >
-                  <i className="fa fa-sign-in" aria-hidden="true"></i>
+                  <i className="fas fa-sign-in-alt" aria-hidden="true"></i>
                   Logout
                 </Button>
               </>
@@ -117,7 +117,7 @@ const LandingPageHeader = ({
                   outline
                   onClick={handleSignup}
                 >
-                  <i className="fa fa-paper-plane" aria-hidden="true"></i>
+                  <i className="fas fa-sign-in-alt" aria-hidden="true"></i>
                   Sign Up
                 </Button>
                 <Button

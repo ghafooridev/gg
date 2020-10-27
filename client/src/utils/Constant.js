@@ -13,6 +13,9 @@ const Constant = {
     SHOW_DIALOG: "SHOW_DIALOG",
     HIDE_DIALOG: "HIDE_DIALOG",
   },
+  STORAGE: {
+    CURRENT_USER: "CURRENT_USER",
+  },
   MESSAGES: {
     SEND_ACTIVATION_LINK:
       "An activation link has been sent to your email address",

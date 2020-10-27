@@ -21,7 +21,7 @@ exports.confirmationEmail = function (req, res) {
       }
       // user is already verified
       if (user.isVerified) {
-        return res.redirect(getUiAddress())
+        return res.redirect(`${getUiAddress()}?token=${token._userId}`)
       }
       // verify user
       user.isVerified = true
@@ -30,7 +30,7 @@ exports.confirmationEmail = function (req, res) {
           return res.status(400).json(err)
         }
 
-        return res.redirect(getUiAddress())
+        return res.redirect(`${getUiAddress()}?token=${token._userId}`)
       })
     })
   })
@@ -49,22 +49,34 @@ exports.registerUser = function (req, res) {
       return res.status(422).json(Constant.MESSAGES.REGISTER_DUPLICATE_EMAIL)
     }
 
-    const newUser = {
-      name,
-      username,
-      password,
-      email,
-      university,
-      description,
+  const newUser = {
+    name,
+    username,
+    password,
+    email,
+    university,
+    description,
+  }
+
+  User.create(newUser)
+    .then((user) => {
+      EmailActivationToken(user, req, res)
+      return res.json(userDTO(user))
+    })
+    .catch((err) => {
+      res.status(400).json(err)
+    })
+   })
+}
+
+exports.currentUser = function (req, res) {
+  const userId = req.param("userId")
+
+  User.findOne({ _id: userId }).then((user) => {
+    if (!user) {
+      return res.status(422).json(Constant.MESSAGES.USER_NOT_FOUND)
     }
 
-    User.create(newUser)
-      .then((user) => {
-        EmailActivationToken(user, req, res)
-        return res.json(userDTO(user))
-      })
-      .catch((err) => {
-        res.status(400).json(err)
-      })
+    return res.json(userDTO(user))
   })
 }
