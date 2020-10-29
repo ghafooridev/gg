@@ -24,7 +24,6 @@ module.exports = (data) => {
       Constant.VALIDATION_TYPE.LENGTH
     )
   }
-
   if (validator.isEmpty(setToString(data.password))) {
     error.password = validationMessage(
       "password",
@@ -38,7 +37,14 @@ module.exports = (data) => {
   if (validator.isEmpty(setToString(data.email))) {
     error.email = validationMessage("email", Constant.VALIDATION_TYPE.REQUIRED)
   }
-  console.log(error)
+
+  if (validator.isEmpty(setToString(data.university))) {
+    error.university = validationMessage(
+      "university",
+      Constant.VALIDATION_TYPE.REQUIRED
+    )
+  }
+
   return {
     error,
     isValid: empty(error),

@@ -2,7 +2,7 @@ const express = require("express")
 const {
   confirmationEmail,
   registerUser,
-  currentUser
+  currentUser,
 } = require("../controllers/UserController")
 
 const router = express.Router()

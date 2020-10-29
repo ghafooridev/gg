@@ -9,7 +9,7 @@ import Button from "../components/sharedComponents/Button"
 import { validationMessage } from "../utils/ValidationMessage"
 
 const Register = function (props) {
-  const { register, handleSubmit, watch, errors } = useForm()
+  const { register, handleSubmit, errors } = useForm()
   const { onAction } = props
 
   const onSubmit = (data) => {
@@ -26,10 +26,6 @@ const Register = function (props) {
           icon={<i className="nc-icon nc-single-02" />}
           innerRef={register({
             required: validationMessage("Full name", "required"),
-            minLength: {
-              value: 6,
-              message: validationMessage("Full name", "minLength", 6),
-            },
           })}
           error={errors.name}
         />
@@ -76,7 +72,9 @@ const Register = function (props) {
           name="university"
           placeholder="Arizona State University"
           icon={<i className="nc-icon nc-hat-3" />}
-          innerRef={register}
+          innerRef={register({
+            required: validationMessage("University name", "required"),
+          })}
         />
         <TextInput
           label="Description"

@@ -49,24 +49,24 @@ exports.registerUser = function (req, res) {
       return res.status(422).json(Constant.MESSAGES.REGISTER_DUPLICATE_EMAIL)
     }
 
-  const newUser = {
-    name,
-    username,
-    password,
-    email,
-    university,
-    description,
-  }
+    const newUser = {
+      name,
+      username,
+      password,
+      email,
+      university,
+      description,
+    }
 
-  User.create(newUser)
-    .then((user) => {
-      EmailActivationToken(user, req, res)
-      return res.json(userDTO(user))
-    })
-    .catch((err) => {
-      res.status(400).json(err)
-    })
-   })
+    User.create(newUser)
+      .then((user) => {
+        EmailActivationToken(user, req, res)
+        return res.json(userDTO(user))
+      })
+      .catch((err) => {
+        res.status(400).json(err)
+      })
+  })
 }
 
 exports.currentUser = function (req, res) {

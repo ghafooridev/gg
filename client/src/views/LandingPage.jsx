@@ -106,6 +106,7 @@ const LandingPage = ({ match }) => {
                 type: "success",
                 text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
               })
+              dialogAction.hide()
             }
           })
         }
@@ -203,18 +204,17 @@ const LandingPage = ({ match }) => {
         toggle={() => setShowLoginModal(false)}
         modalClassName="modal-register"
       >
-        <div className="modal-header no-border-header text-center">
+        <div className="modal-header no-border-header text-center" style={{display:"flex",justifyContent:"space-between"}}>
           <button
             aria-label="Close"
             className="close"
             data-dismiss="modal"
             type="button"
+            style={{padding:0,margin:0}}
             onClick={() => modalLoginClose()}
           >
             <span aria-hidden>×</span>
           </button>
-          <h6 className="text-muted">Welcome</h6>
-          <h3 className="modal-title text-center">GGchat</h3>
           <p>Log in to your account</p>
         </div>
         <div className="modal-body">

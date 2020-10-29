@@ -14,7 +14,6 @@ export default {
         return Promise.resolve(response)
       })
       .catch((error) => {
-        // TODO: handle error globally here
         AlertAction.show({
           type: "danger",
           text: error.response.data,
@@ -30,7 +29,6 @@ export default {
         return Promise.resolve(response.data)
       })
       .catch((error) => {
-        // TODO: handle error globally here
         AlertAction.show({
           type: "danger",
           text: error.response.data,
