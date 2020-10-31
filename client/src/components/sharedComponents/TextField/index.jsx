@@ -1,10 +1,11 @@
 import React, { useEffect } from "react"
 
 import MuiTextField from "@material-ui/core/TextField"
-import { Grid } from "@material-ui/core"
 import InputAdornment from "@material-ui/core/InputAdornment"
 
 import PropTypes from "prop-types"
+
+import clsx from "clsx"
 
 import { styles } from "./TextField.Style"
 
@@ -37,30 +38,28 @@ const TextField = function (props) {
   }, [defaultValue])
 
   return (
-    <Grid item xs={6}>
-      <MuiTextField
-        label={label}
-        variant="outlined"
-        multiline={rows && rows > 1}
-        rows={rows}
-        name={name}
-        inputRef={inputRef}
-        style={style}
-        classes={{
-          root: classes.root,
-        }}
-        className={className}
-        onChange={onTextChange}
-        startAdornment={
-          icon && (
-            <InputAdornment position="start">
-              <i className="material-icons">{icon}</i>
-            </InputAdornment>
-          )
-        }
-        {...props}
-      />
-    </Grid>
+    <MuiTextField
+      label={label}
+      variant="outlined"
+      multiline={rows && rows > 1}
+      rows={rows}
+      name={name}
+      inputRef={inputRef}
+      style={style}
+      classes={{
+        root: classes.root,
+      }}
+      className={className}
+      onChange={onTextChange}
+      InputProps={{
+        startAdornment: icon && (
+          <InputAdornment position="start">
+            <i className={clsx("material-icons",classes.icon)}>{icon}</i>
+          </InputAdornment>
+        ),
+      }}
+      {...props}
+    />
   )
 }
 
