@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "axios": "^0.20.0",
     "babel-loader": "^8.1.0",
     "classnames": "2.2.6",
-
+    "clsx": "^1.1.1",
     "moment": "2.26.0",
     "node-sass": "4.14.1",
     "nouislider": "14.5.0",
@@ -30,7 +31,6 @@
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.1.1",
     "use-immer": "^0.4.1"
-
   },
   "scripts": {
     "start": "webpack-dev-server --open --mode development",

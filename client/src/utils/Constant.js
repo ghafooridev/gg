@@ -20,7 +20,7 @@ const Constant = {
     SEND_ACTIVATION_LINK:
       "An activation link has been sent to your email address",
     SEND_FEEDBACK:
-      "Your comment has been sent to us ,Thanks for reporting feedback",
+      "Your feedback has been sent to us ,Thanks for reporting feedback",
   },
 }
 export default Constant
