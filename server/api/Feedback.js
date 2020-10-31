@@ -1,39 +1,42 @@
-const express = require("express")
-const Feedback = require("../models/Feedback")
-const checkValidFeedback = require("../validations/feedback")
-const Constant = require("../utils/Constant")
-const { sendMail } = require("../services/mailService/SendMail")
-
-const router = express.Router()
+const express = require('express');
+const Feedback = require('../models/Feedback');
+const checkValidFeedback = require('../validations/feedback');
+const Constant = require('../utils/Constant');
+const {sendMail} = require('../services/mailService/SendMail')
+const router = express.Router();
 
 /*
- * @route  Post api/feedback
- * @desc   add feedback
- * @access public
- */
-router.post("/", (req, res) => {
-  const { isValid } = checkValidFeedback(req.body)
-  const { name, email, description, category } = req.body
+//@route  Post api/feedback
+//@desc   add feedback
+//@access public
+*/
+router.post(
+	'/',
+	(req, res) => {
 
-  if (!isValid) {
-    return res.status(422).json(Constant.ERROR.INVALID_PARAMS)
-  }
+		const {isValid} = checkValidFeedback(req.body);
+		const {name, email, description, category} = req.body;
 
-  const newFeedback = {
-    name,
-    email,
-    description,
-    category,
-  }
+		if (!isValid) {
+			return res.status(422).json(Constant.ERROR.INVALID_PARAMS);
+		}
 
-  return Feedback.create(newFeedback)
-    .then(() => {
-      res.json(true)
-      sendMail(name, email, category, description)
-    })
-    .catch((err) => {
-      res.status(400).json(err)
-    })
-})
+		const newFeedback = {
+			name,
+			email,
+			description,
+			category
+		};
 
-module.exports = router
+		return Feedback.create(newFeedback)
+		.then(() => {
+			res.json(true);
+			sendMail('feedback',{name, email, category, description})
+		})
+		.catch(err => {
+			res.status(400).json(err);
+		});
+	},
+);
+
+module.exports = router;

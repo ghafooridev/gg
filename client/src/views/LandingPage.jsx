@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState } from "react"
+import React, {useEffect, useState} from "react"
 import { useHistory } from "react-router-dom"
 import PropTypes from "prop-types"
 
@@ -21,12 +21,18 @@ import {
 } from "reactstrap"
 
 // core components
-import LandingNavbar from '../components/Navbars/LandingNavbar';
-import LandingPageHeader from '../components/Headers/LandingPageHeader';
-import LandingFooter from '../components/Footers/LandingFooter';
-import GameCard from '../components/GameCard';
-import authenticationService from '../services/authentication.service.js';
-import Feedback from './Feedback';
+import LandingNavbar from "../components/Navbars/LandingNavbar"
+import LandingPageHeader from "../components/Headers/LandingPageHeader"
+import LandingFooter from "../components/Footers/LandingFooter"
+import GameCard from "../components/GameCard"
+import authenticationService from "../services/authentication.service.js"
+import Feedback from "./Feedback"
+import dialogAction from "../redux/actions/dialogAction"
+import Register from "./Register"
+import userRepository from "../repositories/user"
+import AlertAction from "../redux/actions/AlertAction"
+import Constant from "../utils/Constant"
+import Storage from "../services/Storage"
 
 const LandingPage = ({ match }) => {
   const loggedInStartState = !!authenticationService.currentUserValue
@@ -73,14 +79,39 @@ const LandingPage = ({ match }) => {
     }
   }, [loggedInStartState])
 
-  function modalSignupOpen() {
-    setShowSignupModal(true)
-    history.push("/signup")
+  const getCurrentUser = function () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const userId = urlParams.get("token")
+    if (userId) {
+      userRepository.getCurrentUser(userId).then((user) => {
+        Storage.push(Constant.STORAGE.CURRENT_USER, JSON.stringify(user))
+        setUsername(user.username)
+      })
+    }
   }
 
-  function modalSignupClose() {
-    setShowSignupModal(false)
-    history.push("/")
+  useEffect(() => {
+    getCurrentUser()
+  }, [])
+
+  function modalSignupOpen() {
+    dialogAction.show({
+      component: <Register />,
+      title: "Register your account",
+      onAction: (type, data) => {
+        if (type === "submit") {
+          userRepository.register(data).then((result) => {
+            if (result) {
+              AlertAction.show({
+                type: "success",
+                text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+              })
+              dialogAction.hide()
+            }
+          })
+        }
+      },
+    })
   }
 
   function modalLoginOpen() {
@@ -148,23 +179,13 @@ const LandingPage = ({ match }) => {
     })
   }
 
-  function handleSignupSubmit(e) {
-    e.preventDefault()
-
-    authenticationService
-      .signup(email, password, name, username, university, description)
-      .then((val) => {
-        console.log(val)
-        if (val.errors) {
-          setSignupErrors(val.errors)
-        } else {
-          modalSignupClose()
-          setLoggedin(true)
-          setSignupErrors("")
-          const user = authenticationService.currentUserValue
-          setName(user.name)
-        }
-      })
+  const GetUsernameCurrentUser = function () {
+    debugger
+    const user=Storage.pull(Constant.STORAGE.CURRENT_USER);
+    if (user) {
+     return setUsername(user.username)
+    }
+    setUsername(null)
   }
 
   return (
@@ -175,136 +196,25 @@ const LandingPage = ({ match }) => {
         handleSignup={handleSignup}
         handleLogout={handleLogout}
         isLoggedin={isLoggedin}
-        username={name}
+        username={username}
       />
-
-      <Modal
-        isOpen={showSignupModal}
-        toggle={() => setShowSignupModal(false)}
-        modalClassName="modal-register"
-      >
-        <div className="modal-header no-border-header text-center">
-          <button
-            aria-label="Close"
-            className="close"
-            data-dismiss="modal"
-            type="button"
-            onClick={() => modalSignupClose()}
-          >
-            <span aria-hidden>×</span>
-          </button>
-          <h6 className="text-muted">Welcome</h6>
-          <h3 className="modal-title text-center">GGchat</h3>
-          <p>Register your account</p>
-        </div>
-        <div className="modal-body">
-          <form onSubmit={(e) => e.preventDefault()}>
-            <FormGroup>
-              <Label for="Name">Full Name</Label>
-              <Input
-                type="text"
-                name="name"
-                id="Name"
-                placeholder="Enter Name"
-                onChange={(e) => handleChange(e)}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="username">Username</Label>
-              <Input
-                type="text"
-                name="username"
-                id="username"
-                placeholder="Enter Username"
-                onChange={(e) => handleChange(e)}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="emailAdd">Email</Label>
-              <Input
-                type="email"
-                name="email"
-                id="emailAdd"
-                placeholder="Enter Email"
-                onChange={(e) => handleChange(e)}
-              />
-              <FormText color="muted">
-                Please enter your .edu email address
-              </FormText>
-            </FormGroup>
-            <FormGroup>
-              <Label for="Password">Password</Label>
-              <Input
-                type="password"
-                name="password"
-                id="Password"
-                placeholder="Password"
-                autoComplete="off"
-                onChange={(e) => handleChange(e)}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="University">University Name</Label>
-              <Input
-                type="text"
-                name="university"
-                id="University"
-                placeholder="Arizona State University"
-                autoComplete="off"
-                onChange={(e) => handleChange(e)}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for="Description">Description</Label>
-              <Input
-                type="text"
-                name="description"
-                id="Description"
-                placeholder="I love playing chess and surfing"
-                autoComplete="off"
-                onChange={(e) => handleChange(e)}
-              />
-            </FormGroup>
-            <FormText color="muted">
-              We will never share your information with anyone else.
-            </FormText>
-            <FormText
-              color="red"
-              style={{ textAlign: "center", color: "red", fontSize: "0.9em" }}
-            >
-              {signupErrors}
-            </FormText>
-          </form>
-        </div>
-        <div className="modal-footer">
-          <Button
-            color="primary"
-            type="submit"
-            onClick={(e) => handleSignupSubmit(e)}
-            style={{ margin: "auto" }}
-          >
-            Submit
-          </Button>
-        </div>
-      </Modal>
 
       <Modal
         isOpen={showLoginModal}
         toggle={() => setShowLoginModal(false)}
         modalClassName="modal-register"
       >
-        <div className="modal-header no-border-header text-center">
+        <div className="modal-header no-border-header text-center" style={{display:"flex",justifyContent:"space-between"}}>
           <button
             aria-label="Close"
             className="close"
             data-dismiss="modal"
             type="button"
+            style={{padding:0,margin:0}}
             onClick={() => modalLoginClose()}
           >
             <span aria-hidden>×</span>
           </button>
-          <h6 className="text-muted">Welcome</h6>
-          <h3 className="modal-title text-center">GGchat</h3>
           <p>Log in to your account</p>
         </div>
         <div className="modal-body">
@@ -403,7 +313,7 @@ const LandingPage = ({ match }) => {
             </div>
           )}
         </div>
-       <Feedback/>
+        <Feedback />
       </div>
 
       <LandingFooter />

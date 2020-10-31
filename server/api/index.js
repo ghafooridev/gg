@@ -6,7 +6,7 @@ dotenv.config()
 
 // import all the api endpoints
 const express = require("express")
-const user = require("./userApi")
+const user = require("./User")
 const room = require("./roomApi")
 const lobby = require("./lobbyApi")
 const feedback = require("./Feedback")

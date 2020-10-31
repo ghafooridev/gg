@@ -3,8 +3,11 @@
   position: fixed;
   bottom: 20px;
   left: 20px;
-  z-index: 1000;
-  //background-color: #51BCDA;
-  min-width: 200px;
+  z-index: 10000;
+  width: auto;
   color: #fff;
+}
+.passwordIcon{
+  cursor: pointer;
+  color: gray;
 }

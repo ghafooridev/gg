@@ -11,7 +11,7 @@ import feedbackRepository from "../repositories/feedback"
 import DropDown from "../components/sharedComponents/DropDown"
 import Constant from "../utils/Constant"
 
-import ToastAction from "../redux/actions/ToastAction"
+import AlertAction from "../redux/actions/AlertAction"
 
 const Feedback = function () {
   const [state, setState] = useImmer({
@@ -29,7 +29,7 @@ const Feedback = function () {
   const onFeedbackSend = function () {
     feedbackRepository.add(state).then((data) => {
       if (data) {
-        ToastAction.show({ text: "Email is sent" })
+        AlertAction.show({type:"success", text: Constant.MESSAGES.SEND_FEEDBACK })
       }
     })
   }

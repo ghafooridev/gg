@@ -1,8 +1,8 @@
 import api from "../services/httpService"
 
 export default {
-  async add(data) {
-    return await api.post({
+  add(data) {
+    return api.post({
       url: "/feedback",
       data,
     })

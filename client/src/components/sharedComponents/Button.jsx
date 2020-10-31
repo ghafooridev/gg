@@ -5,7 +5,16 @@ import PropTypes from "prop-types"
 import ReactstrapButton from "reactstrap/lib/Button"
 
 const Button = function (props) {
-  const { className, color, size, outline, disabled, onClick, label } = props
+  const {
+    className,
+    color,
+    size,
+    outline,
+    disabled,
+    onClick,
+    label,
+    type,
+  } = props
 
   return (
     <ReactstrapButton
@@ -15,6 +24,7 @@ const Button = function (props) {
       outline={outline}
       disabled={disabled}
       onClick={onClick}
+      type={type}
     >
       {label}
     </ReactstrapButton>
@@ -37,6 +47,7 @@ Button.propTypes = {
     "link",
   ]),
   size: PropTypes.oneOf(["sm", "lg"]),
+  type: PropTypes.string,
 }
 
 Button.defaultProps = {

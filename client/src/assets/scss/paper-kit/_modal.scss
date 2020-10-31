@@ -2,7 +2,7 @@
     border-bottom: 1px solid $medium-gray;
     padding: 20px;
     text-align: center;
-    display: block !important;
+    display: flex;
 
     &.no-border-header{
         border-bottom: 0 none !important;

@@ -4,20 +4,21 @@ const { SALT_WORK_FACTOR } = require("../config")
 
 const Schema = mongoose.Schema
 
-const userSchema = new Schema(
-  {
-    name: { type: String, required: true },
-    username: { type: String, required: true, index: { unique: true } },
-    password: { type: String, required: true },
-    email: { type: String, required: true },
-    university: { type: String, required: true },
-    description: { type: String, required: false },
-    active: { type: Boolean, default: true },
-    inQueue: { type: Boolean, default: false },
-    inGame: { type: Boolean, default: false },
-  },
-  { collection: "users" }
-)
+var userSchema = new Schema(
+	{
+		name: { type: String, required: true },
+		username: { type: String, required: true, index: { unique: true } },
+		password: { type: String, required: true },
+		email: { type: String, required: true },
+		university: { type: String, required: true },
+		description: { type: String, required: false },
+		active: { type: Boolean, default: true },
+		inQueue: { type: Boolean, default: false },
+		inGame: { type: Boolean, default: false },
+		isVerified: { type: Boolean, default: false }
+	},
+	{ collection: 'users' }
+);
 
 userSchema.pre("save", function (next) {
   const user = this

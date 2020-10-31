@@ -1,11 +1,16 @@
 // handle user register, login, email activation, password reset endpoints
 
-// const expressJwt = require("express-jwt")
+const crypto = require("crypto")
+
+const expressJwt = require("express-jwt")
 const _ = require("lodash")
-// const { OAuth2Client } = require("google-auth-library")
+const { OAuth2Client } = require("google-auth-library")
 
 const { validationResult } = require("express-validator")
-// const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken")
+const { EmailActivationToken } = require("./controllers/TokenController")
+const Token = require("./models/Token")
+const { sendMails } = require("./services/mailService/SendMail")
 const User = require("./models/User")
 
 const { errorHandler } = require("./helpers/dbErrorHandling")
@@ -23,78 +28,79 @@ exports.registerController = (req, res) => {
       errors: firstError,
     })
   }
-
   User.findOne({
     email,
-  }).exec((err, curUser) => {
-    if (curUser) {
+  }).exec((err, user) => {
+    if (user) {
       return res.status(400).json({
         errors: "Email is taken",
       })
-    }
-
-    const user = new User({
-      name,
-      username,
-      email,
-      password,
-      university,
-    })
-
-    user.save((error, usr) => {
-      if (error) {
-        console.log("Save error", errorHandler(error))
-        return res.status(401).json({
-          errors: errorHandler(error),
-        })
-      }
-      return res.status(200).json({
-        success: true,
-        userObj: usr,
-        message: "Signup success",
+    } else {
+      const user = new User({
+        name,
+        username,
+        email,
+        password,
+        university,
       })
-    })
+
+      user.save((err, user) => {
+        if (err) {
+          console.log("Save error", errorHandler(err))
+          return res.status(401).json({
+            errors: errorHandler(err),
+          })
+        }
+        EmailActivationToken(user, req, res)
+        return res.status(200).json({
+          success: true,
+          userObj: user,
+          message: "Signup success",
+        })
+      })
+    }
   })
+
+  //   const token = jwt.sign(
+  //     {
+  //       name,
+  //       email,
+  //       password
+  //     },
+  //     process.env.JWT_ACCOUNT_ACTIVATION,
+  //     {
+  //       expiresIn: '5m'
+  //     }
+  //   );
+
+  //   const emailData = {
+  //     from: process.env.EMAIL_FROM,
+  //     to: email,
+  //     subject: 'Account activation link',
+  //     html: `
+  //               <h1>Please use the following to activate your account</h1>
+  //               <p>${process.env.CLIENT_URL}/api/user/activate/${token}</p>
+  //               <hr />
+  //               <p>This email may containe sensetive information</p>
+  //               <p>${process.env.CLIENT_URL}</p>
+  //           `
+  //   };
+
+  //   sgMail
+  //     .send(emailData)
+  //     .then(sent => {
+  //       return res.json({
+  //         message: `Email has been sent to ${email}`
+  //       });
+  //     })
+  //     .catch(err => {
+  //       return res.status(400).json({
+  //         success: false,
+  //         errors: errorHandler(err)
+  //       });
+  //     });
+  // }
 }
-//   const token = jwt.sign(
-//     {
-//       name,
-//       email,
-//       password
-//     },
-//     process.env.JWT_ACCOUNT_ACTIVATION,
-//     {
-//       expiresIn: '5m'
-//     }
-//   );
-
-//   const emailData = {
-//     from: process.env.EMAIL_FROM,
-//     to: email,
-//     subject: 'Account activation link',
-//     html: `
-//               <h1>Please use the following to activate your account</h1>
-//               <p>${process.env.CLIENT_URL}/api/user/activate/${token}</p>
-//               <hr />
-//               <p>This email may containe sensetive information</p>
-//               <p>${process.env.CLIENT_URL}</p>
-//           `
-//   };
-
-//   sgMail
-//     .send(emailData)
-//     .then(sent => {
-//       return res.json({
-//         message: `Email has been sent to ${email}`
-//       });
-//     })
-//     .catch(err => {
-//       return res.status(400).json({
-//         success: false,
-//         errors: errorHandler(err)
-//       });
-//     });
-// }
 
 // exports.activationController = (req, res) => {
 //   const { token } = req.body;

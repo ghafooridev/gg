@@ -2,19 +2,21 @@ import Constant from "../../utils/Constant"
 
 const initialState = {
   show: false,
-  text: "",
+  component: null,
+  title: "",
+  onAction: () => {},
 }
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case Constant.ACTION_TYPES.SHOW_TOAST: {
+    case Constant.ACTION_TYPES.SHOW_DIALOG: {
       return {
         ...state,
         ...action.option,
         show: true,
       }
     }
-    case Constant.ACTION_TYPES.HIDE_TOAST: {
+    case Constant.ACTION_TYPES.HIDE_DIALOG: {
       return {
         ...state,
         show: false,
