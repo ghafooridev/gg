@@ -2,6 +2,17 @@ import { makeStyles } from "@material-ui/core/styles"
 import BG from "src/assets/images/bg1.jpg"
 
 export const styles = makeStyles((theme) => ({
+  leftPanel: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+    "& img": {
+      width: "100%",
+    },
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   background: {
     backgroundImage: `url(${BG})`,
     backgroundPosition: "center",
@@ -22,8 +33,8 @@ export const styles = makeStyles((theme) => ({
     width: 100,
     height: 100,
     position: "absolute",
-    top: "-15%",
-    left: "37%",
+    top: "-12%",
+    left: "43%",
   },
   welcome: {
     textAlign: "center",
@@ -39,12 +50,12 @@ export const styles = makeStyles((theme) => ({
   footer: {
     display: "flex",
     justifyContent: "space-between",
-    backgroundColor: theme.palette.grey[100],
     padding: "0 !important",
     borderRadius: 50,
     margin: "0 5px",
   },
   footerLink: {
+    cursor: "pointer",
     minWidth: 50,
     width: 50,
     backgroundColor: theme.palette.primary.main,
@@ -53,7 +64,7 @@ export const styles = makeStyles((theme) => ({
     borderRadius: 100,
     height: 50,
     padding: 0,
-    transition: "all 0.5s",
+    transition: "all 1s",
     letterSpacing: 1,
     display: "flex",
     justifyContent: "center",

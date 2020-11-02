@@ -2,6 +2,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 const rootStyle = function (type, theme) {
   return {
+    cursor: "pointer",
     backgroundColor: theme.palette[type].main,
     color: "#fff",
     border: "none",

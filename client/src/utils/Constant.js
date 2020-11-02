@@ -22,5 +22,10 @@ const Constant = {
     SEND_FEEDBACK:
       "Your feedback has been sent to us ,Thanks for reporting feedback",
   },
+  LOGIN_PAGE: {
+    SIGN_IN: "SIGN_IN",
+    REGISTER: "REGISTER",
+    FORGET: "FORGET",
+  },
 }
 export default Constant

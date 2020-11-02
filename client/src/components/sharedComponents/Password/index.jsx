@@ -31,7 +31,7 @@ const TextField = function (props) {
     setData(data)
 
     if (typeof onChange === "function") {
-      onChange(value)
+      onChange({ name, value })
     }
   }
 
@@ -63,7 +63,7 @@ const TextField = function (props) {
         endAdornment: (
           <InputAdornment position="end">
             <i
-              style={{cursor:'pointer'}}
+              style={{ cursor: "pointer" }}
               className={clsx("material-icons", classes.icon)}
               onClick={onChangeViewClick}
             >

@@ -33,7 +33,7 @@ const TextField = function (props) {
     setData(data)
 
     if (typeof onChange === "function") {
-      onChange(value)
+      onChange({ name, value })
     }
   }
 
@@ -87,7 +87,7 @@ TextField.propTypes = {
 }
 
 TextField.defaultProps = {
-  rows: 1,
+  rows: "1",
   type: "text",
 }
 
