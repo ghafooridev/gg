@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 
-import { Grid, Typography } from "@material-ui/core"
+import { Fade, Grid, Typography } from "@material-ui/core"
 
 import { useForm } from "react-hook-form"
 
@@ -35,60 +35,62 @@ const SignIn = function () {
       <Grid item xs={12} className={classes.leftPanel}>
         <img alt="logo" src={SignInLogo} />
       </Grid>
-      <Grid item xs={12}>
-        <Typography variant="h4" className={classes.welcome}>
-          Welcome
-        </Typography>
-        <Typography
-          variant="body2"
-          className={classes.loginText}
-          color="textSecondary"
-        >
-          log in to your account
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              name="username"
-              label="Username"
-              icon="account_circle"
-              inputRef={register({
-                required: validationMessage("Username", "required"),
-              })}
-              error={errors.username}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Password
-              name="password"
-              label="Password"
-              icon="lock_open"
-              inputRef={register({
-                required: validationMessage("Password", "required"),
-              })}
-              error={errors.password}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              label="submit"
-              type="primary"
-              className={classes.submitButton}
-              onClick={handleSubmit(onSubmit)}
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.footer}>
-            <div className={classes.footerLink} onClick={onForgetPassword}>
-              <Typography variant="button">Forget Password</Typography>
-              <i className="material-icons">vpn_key</i>
-            </div>
-            <div className={classes.footerLink} onClick={onRegister}>
-              <Typography variant="button">create new account</Typography>
-              <i className="material-icons">person_add</i>
-            </div>
+      <Fade in timeout={1000}>
+        <Grid item xs={12}>
+          <Typography variant="h4" className={classes.welcome}>
+            Welcome
+          </Typography>
+          <Typography
+            variant="body2"
+            className={classes.loginText}
+            color="textSecondary"
+          >
+            log in to your account
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                name="username"
+                label="Username"
+                icon="account_circle"
+                inputRef={register({
+                  required: validationMessage("Username", "required"),
+                })}
+                error={errors.username}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Password
+                name="password"
+                label="Password"
+                icon="lock_open"
+                inputRef={register({
+                  required: validationMessage("Password", "required"),
+                })}
+                error={errors.password}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                label="submit"
+                type="primary"
+                className={classes.submitButton}
+                onClick={handleSubmit(onSubmit)}
+              />
+            </Grid>
+            <Grid item xs={12} className={classes.footer}>
+              <div className={classes.footerLink} onClick={onForgetPassword}>
+                <Typography variant="button">Forget Password</Typography>
+                <i className="material-icons">vpn_key</i>
+              </div>
+              <div className={classes.footerLink} onClick={onRegister}>
+                <Typography variant="button">create new account</Typography>
+                <i className="material-icons">person_add</i>
+              </div>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Fade>
     </>
   )
 }

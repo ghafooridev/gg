@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext} from "react"
 
-import { Container, Fade, Paper } from "@material-ui/core"
+import { Container, Paper } from "@material-ui/core"
 
 import Logo from "src/assets/images/logo_light.png"
 
@@ -32,12 +32,10 @@ const Login = function () {
     <div>
       <div className={classes.background} />
       <Container maxWidth="md" className={classes.container}>
-        <Fade in timeout={1000}>
-          <Paper className={classes.paper} style={{ display: "flex" }}>
-            <img alt="logo" src={Logo} className={classes.logo} />
-            {renderTemplate()}
-          </Paper>
-        </Fade>
+        <Paper className={classes.paper} style={{ display: "flex" }}>
+          <img alt="logo" src={Logo} className={classes.logo} />
+          {renderTemplate()}
+        </Paper>
       </Container>
     </div>
   )

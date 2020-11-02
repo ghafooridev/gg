@@ -18,6 +18,7 @@ export const styles = makeStyles((theme) => ({
     backgroundPosition: "center",
     height: "100vh",
     filter: "opacity(30%)",
+    backgroundSize: "cover",
   },
   container: {
     position: "absolute",
@@ -52,7 +53,7 @@ export const styles = makeStyles((theme) => ({
     justifyContent: "space-between",
     padding: "0 !important",
     borderRadius: 50,
-    margin: "0 5px",
+    margin: 10,
   },
   footerLink: {
     cursor: "pointer",
@@ -76,10 +77,7 @@ export const styles = makeStyles((theme) => ({
       display: "blcok",
     },
     "&:hover": {
-      border: `${theme.palette.primary.main} 1px solid`,
-      color: theme.palette.primary.main,
-      backgroundColor: "#fff",
-      width: "80%",
+      width: "90%",
       padding: 0,
       textTransform: "uppercase",
       "& span": {
