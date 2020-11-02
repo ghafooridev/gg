@@ -21,6 +21,10 @@ const TextField = function (props) {
     icon,
     rows,
     defaultValue,
+    caption,
+    error,
+    placeholder,
+    type,
   } = props
   const [data, setData] = React.useState(defaultValue)
 
@@ -46,6 +50,10 @@ const TextField = function (props) {
       name={name}
       inputRef={inputRef}
       style={style}
+      type={type}
+      placeholder={placeholder}
+      error={!!error}
+      helperText={error ? error.message : caption}
       classes={{
         root: classes.root,
       }}
@@ -54,11 +62,10 @@ const TextField = function (props) {
       InputProps={{
         startAdornment: icon && (
           <InputAdornment position="start">
-            <i className={clsx("material-icons",classes.icon)}>{icon}</i>
+            <i className={clsx("material-icons", classes.icon)}>{icon}</i>
           </InputAdornment>
         ),
       }}
-      {...props}
     />
   )
 }
@@ -66,7 +73,7 @@ const TextField = function (props) {
 TextField.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  inputRef: PropTypes.string,
+  inputRef: PropTypes.func,
   rows: PropTypes.string,
   type: PropTypes.string,
   name: PropTypes.string,
@@ -74,7 +81,7 @@ TextField.propTypes = {
   className: PropTypes.string,
   onChange: PropTypes.func,
   caption: PropTypes.string,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  error: PropTypes.object,
   icon: PropTypes.string,
   defaultValue: PropTypes.string,
 }

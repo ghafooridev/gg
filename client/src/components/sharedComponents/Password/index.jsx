@@ -19,10 +19,11 @@ const TextField = function (props) {
     className,
     onChange,
     icon,
-    rows,
-    defaultValue,
+    caption,
+    error,
+    placeholder,
   } = props
-  const [data, setData] = React.useState(defaultValue)
+  const [data, setData] = React.useState("")
   const [isPassword, setIsPassword] = React.useState(true)
 
   const onTextChange = function (event) {
@@ -37,21 +38,17 @@ const TextField = function (props) {
   const onChangeViewClick = function () {
     setIsPassword(!isPassword)
   }
-
-  useEffect(() => {
-    setData(defaultValue || "")
-  }, [defaultValue])
-
   return (
     <MuiTextField
       label={label}
       variant="outlined"
-      multiline={rows && rows > 1}
-      rows={rows}
       name={name}
       type={isPassword ? "password" : "text"}
       inputRef={inputRef}
       style={style}
+      placeholder={placeholder}
+      error={!!error}
+      helperText={error ? error.message : caption}
       classes={{
         root: classes.root,
       }}
@@ -82,7 +79,7 @@ const TextField = function (props) {
 TextField.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
-  inputRef: PropTypes.string,
+  inputRef: PropTypes.func,
   rows: PropTypes.string,
   name: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
@@ -91,12 +88,6 @@ TextField.propTypes = {
   caption: PropTypes.string,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   icon: PropTypes.string,
-  defaultValue: PropTypes.string,
-}
-
-TextField.defaultProps = {
-  rows: 1,
-  type: "text",
 }
 
 export default TextField

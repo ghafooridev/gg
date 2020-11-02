@@ -1,5 +1,6 @@
 import React from "react"
 
+import ThemeContextProvider from "src/Contexts/Theme"
 // import "./assets/css/bootstrap.min.css"
 // import "./assets/scss/paper-kit.scss"
 // import "./assets/demo/demo.css"
@@ -9,13 +10,9 @@ import Router from "./Router"
 
 function App() {
   return (
-    // <ThemeContextProvider>
-    //   <ErrorContextProvider>
-    //     <SnackbarProvider maxSnack={3}>
-    <Router />
-    //     </SnackbarProvider>
-    //   </ErrorContextProvider>
-    // </ThemeContextProvider>
+    <ThemeContextProvider>
+      <Router />
+    </ThemeContextProvider>
   )
 }
 

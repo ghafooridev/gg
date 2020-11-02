@@ -1,6 +1,12 @@
 import React, { useEffect } from "react"
 
-import { Container, Grid, Paper, Typography } from "@material-ui/core"
+import {
+  Container,
+  Fade,
+  Grid,
+  Paper,
+  Typography,
+} from "@material-ui/core"
 
 import { useForm } from "react-hook-form"
 
@@ -14,78 +20,79 @@ import { styles } from "./Login.Style"
 const Login = function () {
   const classes = styles()
   const { register, handleSubmit, errors } = useForm()
+
+  const onSubmit = function (data) {
+    console.log(data)
+  }
+
+  const onRegister = function () {}
+
+  const onForgetPassword = function () {}
+
   return (
     <div>
       <div className={classes.background} />
-      <Container maxWidth="xs" className={classes.container}>
-        <Paper className={classes.paper} elevation={3}>
-          <img alt="logo" src={Logo} className={classes.logo} />
-          <Typography variant="h4" className={classes.welcome}>
-            Welcome
-          </Typography>
-          <Typography
-            variant="body2"
-            className={classes.loginText}
-            color="textSecondary"
-          >
-            log in to your account
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                name="username"
-                label="Username"
-                icon="account_circle"
-                innerRef={register({
-                  required: validationMessage("Username", "required"),
-                })}
-                error={errors.username}
-              />
+      <Fade timeout={1000} in>
+        <Container maxWidth="xs" className={classes.container}>
+          <Paper className={classes.paper} elevation={3}>
+            <img alt="logo" src={Logo} className={classes.logo} />
+            <Typography variant="h4" className={classes.welcome}>
+              Welcome
+            </Typography>
+            <Typography
+              variant="body2"
+              className={classes.loginText}
+              color="textSecondary"
+            >
+              log in to your account
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  name="username"
+                  label="Username"
+                  icon="account_circle"
+                  inputRef={register({
+                    required: validationMessage("Username", "required"),
+                  })}
+                  error={errors.username}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Password
+                  name="password"
+                  label="Password"
+                  icon="lock_open"
+                  inputRef={register({
+                    required: validationMessage("Password", "required"),
+                  })}
+                  error={errors.password}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button
+                  label="submit"
+                  type="primary"
+                  className={classes.submitButton}
+                  onClick={handleSubmit(onSubmit)}
+                />
+              </Grid>
+              <Grid item xs={12} className={classes.footer}>
+                <div className={classes.footerLink} onClick={onForgetPassword}>
+                  <Typography variant="button">Forget Password</Typography>
+                  <i className="material-icons">vpn_key</i>
+                </div>
+                <div className={classes.footerLink} onClick={onRegister}>
+                  <Typography variant="button">create new account</Typography>
+                  <i className="material-icons">person_add</i>
+                </div>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Password
-                name="password"
-                label="Password"
-                icon="lock_open"
-                innerRef={register({
-                  required: validationMessage("Password", "required"),
-                })}
-                error={errors.password}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                label="submit"
-                type="primary"
-                className={classes.submitButton}
-              />
-            </Grid>
-          </Grid>
-        </Paper>
-      </Container>
+          </Paper>
+        </Container>
+      </Fade>
     </div>
   )
 }
-//
-// Login.propTypes = {
-//   label: PropTypes.string,
-//   placeholder: PropTypes.string,
-//   inputRef: PropTypes.string,
-//   rows: PropTypes.string,
-//   type: PropTypes.string,
-//   name: PropTypes.string,
-//   style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
-//   className: PropTypes.string,
-//   onChange: PropTypes.func,
-//   caption: PropTypes.string,
-//   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-//   icon: PropTypes.string,
-//   defaultValue: PropTypes.string,
-// }
-//
-// Login.defaultProps = {
-//   rows: 1,
-//   type: "text",
-// }
 
 export default Login
