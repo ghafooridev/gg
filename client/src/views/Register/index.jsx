@@ -2,61 +2,84 @@ import React from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
-import { useHistory } from "react-router-dom"
-
 import { useForm } from "react-hook-form"
 
 import TextField from "src/components/sharedComponents/TextField"
 import Password from "src/components/sharedComponents/Password"
 import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button/index"
-import SignInLogo from "src/assets/images/login.png"
 import Constant from "src/utils/Constant"
 import userRepository from "src/repositories/user"
-import Storage from "src/services/Storage"
+import AlertAction from "src/redux/actions/AlertAction"
+import RegisterLogo from "src/assets/images/register.png"
+import { useHistory } from "react-router-dom"
 import LoginContainer from "src/components/sharedComponents/LoginContainer"
-import { styles } from "./Login.Style"
+import { styles } from "./Register.Style"
 
-const Login = function () {
+const Register = function () {
   const classes = styles()
   const { register, handleSubmit, errors } = useForm()
   const history = useHistory()
 
   const onSubmit = function (data) {
-    userRepository.login(data).then((user) => {
-      if (user) {
-        Storage.push(Constant.STORAGE.CURRENT_USER, JSON.stringify(user.data))
-        history.push("home")
+    userRepository.register(data).then((result) => {
+      if (result) {
+        AlertAction.show({
+          type: "success",
+          text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+        })
       }
     })
   }
 
-  const onRegister = function () {
-    history.push("register")
-  }
-
-  const onForgetPassword = function () {
-    history.push("forget-password")
+  const onBackToLogin = function () {
+    history.push("login")
   }
 
   return (
     <LoginContainer>
       <Grid item xs={12} className={classes.leftPanel}>
-        <img alt="logo" src={SignInLogo} />
+        <img alt="logo" src={RegisterLogo} />
       </Grid>
 
       <Grid item xs={12}>
         <Typography variant="h4" className={classes.title}>
-          Welcome
+          Sign Up
         </Typography>
         <Typography
           variant="body2"
           className={classes.subTitle}
           color="textSecondary"
         >
-          log in to your account
+          Create a New account
         </Typography>
         <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              name="name"
+              label="Full name"
+              icon="account_circle"
+              inputRef={register({
+                required: validationMessage("Full Name", "required"),
+              })}
+              error={errors.name}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              name="email"
+              label="Email"
+              icon="mail"
+              inputRef={register({
+                // pattern: {
+                //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
+                //   message: validationMessage("Email address", "pattern"),
+                // },
+                required: validationMessage("Email address", "required"),
+              })}
+              error={errors.email}
+            />
+          </Grid>
           <Grid item xs={12}>
             <TextField
               name="username"
@@ -80,22 +103,31 @@ const Login = function () {
             />
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              name="university"
+              label="University"
+              icon="account_circle"
+              inputRef={register({
+                required: validationMessage("University", "required"),
+              })}
+              error={errors.university}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Button
-              label="submit"
+              label="create new account"
               type="primary"
               className={classes.submitButton}
               onClick={handleSubmit(onSubmit)}
             />
           </Grid>
-          <Grid item xs={12} className={classes.footer}>
-            <div className={classes.footerLink} onClick={onForgetPassword}>
-              <Typography variant="button">Forget Password</Typography>
-              <i className="material-icons">vpn_key</i>
-            </div>
-            <div className={classes.footerLink} onClick={onRegister}>
-              <Typography variant="button">create new account</Typography>
-              <i className="material-icons">person_add</i>
-            </div>
+          <Grid item xs={12}>
+            <Button
+              label="back to login page"
+              type="grey"
+              className={classes.submitButton}
+              onClick={onBackToLogin}
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -103,4 +135,4 @@ const Login = function () {
   )
 }
 
-export default Login
+export default Register

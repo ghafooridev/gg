@@ -13,6 +13,7 @@ const rootStyle = function (type, theme) {
     transition: "all 0.5s",
     letterSpacing: 1,
     textTransform: "uppercase",
+    fontWeight: "bold",
     "&:hover": {
       border: `${theme.palette[type].main} 1px solid`,
       color: theme.palette[type].main,

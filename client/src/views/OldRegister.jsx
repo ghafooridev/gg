@@ -8,7 +8,7 @@ import TextInput from "../components/sharedComponents/TextInput"
 import Button from "../components/sharedComponents/Button"
 import { validationMessage } from "../utils/ValidationMessage"
 
-const Register = function (props) {
+const OldRegister = function (props) {
   const { register, handleSubmit, errors } = useForm()
   const { onAction } = props
 
@@ -90,8 +90,8 @@ const Register = function (props) {
   )
 }
 
-Register.propTypes = {
+OldRegister.propTypes = {
   onAction: PropTypes.func,
 }
 
-export default Register
+export default OldRegister

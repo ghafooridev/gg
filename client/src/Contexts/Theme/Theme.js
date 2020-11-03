@@ -27,8 +27,8 @@ export default {
       main: "#4caf50",
       dark: "#388e3c",
     },
-    gray: {
-      100: "#F9F9F9",
+    grey: {
+      main: "#8d8d8d",
     },
   },
   typography: {
