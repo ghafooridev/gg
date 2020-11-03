@@ -11,6 +11,8 @@ import Button from "src/components/sharedComponents/Button/index"
 import RegisterLogo from "src/assets/images/register.png"
 import Constant from "src/utils/Constant"
 import LoginContext from "src/views/Login/Context/LoginContext"
+import userRepository from "src/repositories/user"
+import AlertAction from "src/redux/actions/AlertAction"
 import { styles } from "./Login.Style"
 
 const Register = function () {
@@ -19,7 +21,14 @@ const Register = function () {
   const { changePage } = useContext(LoginContext)
 
   const onSubmit = function (data) {
-    console.log(data)
+    userRepository.register(data).then((result) => {
+      if (result) {
+        AlertAction.show({
+          type: "success",
+          text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+        })
+      }
+    })
   }
 
   const onBackToLogin = function () {
@@ -50,13 +59,28 @@ const Register = function () {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
-                name="fullName"
+                name="name"
                 label="Full name"
                 icon="account_circle"
                 inputRef={register({
                   required: validationMessage("Full Name", "required"),
                 })}
-                error={errors.fullName}
+                error={errors.name}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                name="email"
+                label="Email"
+                icon="mail"
+                inputRef={register({
+                  // pattern: {
+                  //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
+                  //   message: validationMessage("Email address", "pattern"),
+                  // },
+                  required: validationMessage("Email address", "required"),
+                })}
+                error={errors.email}
               />
             </Grid>
             <Grid item xs={12}>

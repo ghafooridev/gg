@@ -21,7 +21,7 @@ exports.confirmationEmail = function (req, res) {
       }
       // user is already verified
       if (user.isVerified) {
-        return res.redirect(`${getUiAddress()}?token=${token._userId}`)
+        return res.redirect(`${getUiAddress()}/login?token=${token._userId}`)
       }
       // verify user
       user.isVerified = true
@@ -30,7 +30,7 @@ exports.confirmationEmail = function (req, res) {
           return res.status(400).json(err)
         }
 
-        return res.redirect(`${getUiAddress()}?token=${token._userId}`)
+        return res.redirect(`${getUiAddress()}/login?token=${token._userId}`)
       })
     })
   })

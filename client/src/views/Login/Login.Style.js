@@ -34,7 +34,7 @@ export const styles = makeStyles((theme) => ({
     width: 100,
     height: 100,
     position: "absolute",
-    top: "-12%",
+    top: "-9%",
     left: "43%",
   },
   welcome: {

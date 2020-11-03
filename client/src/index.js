@@ -1,11 +1,11 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
+import Alert from "src/components/sharedComponents/Alert"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 
 import store from "./redux/store"
-import Alert from "./components/sharedComponents/Alert"
 import Dialog from "./components/sharedComponents/Dialog"
 
 ReactDOM.render(
