@@ -19,10 +19,10 @@ module.exports = Object.freeze({
   MESSAGES: {
     INVALID_ACTIVATION_LINK:
       "Your verification link may have expired. Please click on resend for verify your Email.",
-    USER_NOT_FOUND:
-      "We were unable to find a user for this verification. Please SignUp",
+    USER_NOT_FOUND: "We were unable to find a user for this verification",
     SEND_ACTIVATION_EMAIL:
       "A verification email has been sent to your Email. It will be expire after one day",
     REGISTER_DUPLICATE_EMAIL: "This Email address hase been taken",
+    NOT_VERIFIED_USER: "Your account has been not verified",
   },
 })

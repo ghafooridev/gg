@@ -21,4 +21,26 @@ export default {
       // throw new TypeError(error)
     }
   },
+
+  resetPassword(data) {
+    try {
+      return api.post({
+        url: "/user/resetPassword",
+        data,
+      })
+    } catch (error) {
+      // throw new TypeError(error)
+    }
+  },
+
+  login(data) {
+    try {
+      return api.post({
+        url: "/user/login",
+        data,
+      })
+    } catch (error) {
+      // throw new TypeError(error)
+    }
+  },
 }

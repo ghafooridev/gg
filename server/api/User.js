@@ -3,6 +3,10 @@ const {
   confirmationEmail,
   registerUser,
   currentUser,
+  resetPassword,
+  loginUser,
+  allUsers,
+  removeUser,
 } = require("../controllers/UserController")
 
 const router = express.Router()
@@ -22,10 +26,38 @@ router.get("/confirmation/:email/:token", confirmationEmail)
 router.post("/register", registerUser)
 
 /*
+ * @route  put api/user/resetPassword
+ * @desc   reset user password
+ * @access public
+ */
+router.post("/resetPassword", resetPassword)
+
+/*
+ * @route  post api/user/login
+ * @desc   login user to system
+ * @access public
+ */
+router.post("/login", loginUser)
+
+/*
  * @route  get api/user/currentUser/:userId
  * @desc   get current User
  * @access public
  */
-router.get("/currentUser/:userId", currentUser)
+router.get("/:userId", currentUser)
+
+/*
+ * @route  get api/user/allUsers
+ * @desc   get all Users
+ * @access public
+ */
+router.get("/", allUsers)
+
+/*
+ * @route  delete api/user/:userId
+ * @desc   remove a user by user id
+ * @access public
+ */
+router.delete("/:userId", removeUser)
 
 module.exports = router

@@ -1,6 +1,5 @@
-const activationTemplate = function (name, host, email, token) {
-	return (
-		`<div>
+const activationRegisterTemplate = function (name, host, email, token) {
+  return `<div>
 			<b>Hello ${name}</b>
 			<hr/>
 			<br>
@@ -10,7 +9,6 @@ const activationTemplate = function (name, host, email, token) {
 			<br>
 			Thank you
 		</div>`
-	)
 }
 
-module.exports = activationTemplate;
+module.exports = activationRegisterTemplate

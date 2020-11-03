@@ -10,6 +10,9 @@ import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button/index"
 import SignInLogo from "src/assets/images/login.png"
 import Constant from "src/utils/Constant"
+import userRepository from "src/repositories/user"
+import { useHistory } from "react-router-dom"
+import Storage from "src/services/Storage"
 import LoginContext from "./Context/LoginContext"
 import { styles } from "./Login.Style"
 
@@ -17,9 +20,15 @@ const SignIn = function () {
   const classes = styles()
   const { register, handleSubmit, errors } = useForm()
   const { changePage } = useContext(LoginContext)
+  const history = useHistory()
 
   const onSubmit = function (data) {
-    console.log(data)
+    userRepository.login(data).then((user) => {
+      if (user) {
+        Storage.push(Constant.STORAGE.CURRENT_USER, JSON.stringify(user.data))
+        history.push("home")
+      }
+    })
   }
 
   const onRegister = function () {

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react"
 
-import {  Fade, Grid, Typography } from "@material-ui/core"
+import { Fade, Grid, Typography } from "@material-ui/core"
 
 import { useForm } from "react-hook-form"
 
@@ -11,6 +11,8 @@ import Button from "src/components/sharedComponents/Button/index"
 import ForgetLogo from "src/assets/images/forget.png"
 import Constant from "src/utils/Constant"
 import LoginContext from "src/views/Login/Context/LoginContext"
+import userRepository from "src/repositories/user"
+import AlertAction from "src/redux/actions/AlertAction"
 import { styles } from "./Login.Style"
 
 const Forget = function () {
@@ -20,7 +22,14 @@ const Forget = function () {
   const [passwordValue, setPasswordValue] = useState("")
 
   const onSubmit = function (data) {
-    console.log(data)
+    userRepository.resetPassword(data).then((result) => {
+      if (result) {
+        AlertAction.show({
+          type: "success",
+          text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+        })
+      }
+    })
   }
 
   const onRegister = function () {

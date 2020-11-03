@@ -21,6 +21,8 @@ const Constant = {
       "An activation link has been sent to your email address",
     SEND_FEEDBACK:
       "Your feedback has been sent to us ,Thanks for reporting feedback",
+    RESET_PASSWORD:
+      "Your password has been reset successfully,an activation link has been sent to your email address ",
   },
   LOGIN_PAGE: {
     SIGN_IN: "SIGN_IN",

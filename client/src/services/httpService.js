@@ -15,7 +15,7 @@ export default {
       })
       .catch((error) => {
         AlertAction.show({
-          type: "danger",
+          type: "error",
           text: error.response.data,
         })
         return Promise.reject(error)
@@ -30,7 +30,7 @@ export default {
       })
       .catch((error) => {
         AlertAction.show({
-          type: "danger",
+          type: "error",
           text: error.response.data,
         })
         return Promise.reject(error)
