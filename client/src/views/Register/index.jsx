@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form"
 
 import TextField from "src/components/sharedComponents/TextField"
 import Password from "src/components/sharedComponents/Password"
-import Selector from "src/components/sharedComponents/Selector"
 import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button/index"
 import Constant from "src/utils/Constant"
@@ -15,15 +14,23 @@ import AlertAction from "src/redux/actions/AlertAction"
 import RegisterLogo from "src/assets/images/register.png"
 import { useHistory } from "react-router-dom"
 import LoginContainer from "src/components/sharedComponents/LoginContainer"
+import UniversitySelector from "src/components/sharedComponents/UnivercitySelector"
+import { findCollegeId } from "src/helpers/utils"
 import { styles } from "./Register.Style"
-import collegeList from 'src/assets/json/colleges.json'
+
 const Register = function () {
   const classes = styles()
-  const { register, control, handleSubmit, errors } = useForm()
+  const { register, handleSubmit, errors } = useForm()
   const history = useHistory()
 
   const onSubmit = function (data) {
-    userRepository.register(data).then((result) => {
+    let newData = data
+    const university = findCollegeId(data.university)
+    if (university) {
+      newData = { ...data, university }
+    }
+
+    userRepository.register(newData).then((result) => {
       if (result) {
         AlertAction.show({
           type: "success",
@@ -104,7 +111,7 @@ const Register = function () {
             />
           </Grid>
           <Grid item xs={12}>
-            {/* <TextField */}
+            {/* <Selector */}
             {/*  name="university" */}
             {/*  label="University" */}
             {/*  icon="account_circle" */}
@@ -112,15 +119,14 @@ const Register = function () {
             {/*    required: validationMessage("University", "required"), */}
             {/*  })} */}
             {/*  error={errors.university} */}
-            <Selector
+            {/*  options={collegeList} */}
+            {/* /> */}
+            <UniversitySelector
               name="university"
-              label="University"
-              icon="account_circle"
               inputRef={register({
                 required: validationMessage("University", "required"),
               })}
               error={errors.university}
-              options={collegeList}
             />
           </Grid>
           <Grid item xs={12}>

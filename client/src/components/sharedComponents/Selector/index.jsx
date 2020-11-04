@@ -131,7 +131,6 @@ Selector.propTypes = {
   name: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   className: PropTypes.string,
-  onChange: PropTypes.func,
   caption: PropTypes.string,
   error: PropTypes.object,
   icon: PropTypes.string,
@@ -143,11 +142,5 @@ Selector.propTypes = {
   options: PropTypes.array,
 }
 
-// Selector.defaultProps = {
-//   defaultValue: {
-//     text: "",
-//     value: "",
-//   },
-// }
 
 export default Selector

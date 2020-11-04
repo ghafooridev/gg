@@ -2,6 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
 import Alert from "src/components/sharedComponents/Alert"
+import ThemeContextProvider from "src/Contexts/Theme"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 
@@ -10,9 +11,11 @@ import Dialog from "./components/sharedComponents/Dialog"
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
-    <Alert />
-    <Dialog />
+    <ThemeContextProvider>
+      <App />
+      <Alert />
+      <Dialog />
+    </ThemeContextProvider>
   </Provider>,
   document.getElementById("root")
 )
