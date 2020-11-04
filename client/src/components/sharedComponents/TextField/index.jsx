@@ -25,6 +25,7 @@ const TextField = function (props) {
     error,
     placeholder,
     type,
+    testId,
   } = props
   const [data, setData] = React.useState(defaultValue)
 
@@ -59,6 +60,9 @@ const TextField = function (props) {
       }}
       className={className}
       onChange={onTextChange}
+      inputProps={{
+        "data-testId": testId,
+      }}
       InputProps={{
         startAdornment: icon && (
           <InputAdornment position="start">
@@ -84,6 +88,7 @@ TextField.propTypes = {
   error: PropTypes.object,
   icon: PropTypes.string,
   defaultValue: PropTypes.string,
+  testId: PropTypes.string,
 }
 
 TextField.defaultProps = {
