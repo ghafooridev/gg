@@ -61,7 +61,7 @@ const TextField = function (props) {
       className={className}
       onChange={onTextChange}
       inputProps={{
-        "data-testId": testId,
+        "data-testid": testId || name,
       }}
       InputProps={{
         startAdornment: icon && (

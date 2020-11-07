@@ -124,7 +124,7 @@ exports.loginUser = function (req, res) {
             university: user.university,
           }
           jwt.sign(payload, secretOrKey, { expiresIn: 3600 }, (err, token) => {
-            res.json({token: `Bearer ${token}`,...userDTO(user)})
+            res.json({ token: `Bearer ${token}`, ...userDTO(user) })
           })
         } else {
           return res.status(401).json(Constant.ERROR.UNAUTHORIZED)

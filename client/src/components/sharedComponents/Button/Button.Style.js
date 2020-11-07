@@ -7,7 +7,7 @@ const rootStyle = function (type, theme) {
     color: "#fff",
     border: "none",
     borderRadius: 100,
-    minWidth: 140,
+    minWidth: 120,
     height: 50,
     padding: 10,
     transition: "all 0.5s",

@@ -34,7 +34,7 @@
     "client": "cd ./client && yarn start",
     "lint": "eslint .",
     "heroku-postbuild": "cd ./client && yarn && yarn build",
-    "test": "cd client && npm run test"
+    "test": "cd client && yarn test"
   },
   "devDependencies": {
     "eslint-config-prettier": "^6.13.0",

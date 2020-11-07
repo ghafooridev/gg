@@ -4,8 +4,10 @@ import { BrowserRouter, Route, Switch } from "react-router-dom"
 import Login from "src/views/Login"
 import Register from "src/views/Register"
 import ForgetPassword from "src/views/ForgetPassword"
+import SiteContainer from "src/components/SiteContainer"
+import Home from "src/views/Home"
+
 import Room from "./views/Room"
-import LandingPage from "./views/LandingPage"
 import Lobby from "./views/Lobby"
 
 const Router = function () {
@@ -16,12 +18,12 @@ const Router = function () {
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/forget-password" component={ForgetPassword} />
-          {/* <Drawer> */}
-          <Route exact path="/" component={LandingPage} />
-          <Route path="/home" exact component={LandingPage} />
-          <Route path="/room/:roomID" component={Room} />
-          <Route path="/lobby/:lobbyId" component={Lobby} />
-          {/* </Drawer> */}
+          <SiteContainer>
+            <Route exact path="/" component={Home} />
+            <Route path="/home" exact component={Home} />
+            <Route path="/room/:roomID" component={Room} />
+            <Route path="/lobby/:lobbyId" component={Lobby} />
+          </SiteContainer>
         </Switch>
       </div>
     </BrowserRouter>

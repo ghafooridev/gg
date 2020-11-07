@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles"
-import BG from "src/assets/images/bg1.jpg"
+import BG from "../../../assets/images/bg1.jpg"
 
 export const styles = makeStyles((theme) => ({
   leftPanel: {
