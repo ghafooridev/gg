@@ -1,4 +1,4 @@
-import React  from "react"
+import React from "react"
 
 import PropTypes from "prop-types"
 
@@ -12,12 +12,12 @@ const GameBox = function (props) {
   return (
     <div>
       <figure
-        className={clsx("snip1104", classes.color,classes.panel)}
+        className={clsx("snip1104", classes.color, classes.panel)}
         onClick={() => {
           alert("x")
         }}
       >
-        <img src={image} alt={label} className={classes.image}/>
+        <img src={image} alt={label} className={classes.image} />
         <figcaption>
           <h2 className={classes.color}>{label}</h2>
         </figcaption>

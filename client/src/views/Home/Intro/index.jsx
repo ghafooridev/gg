@@ -4,7 +4,7 @@ import { Grid, Typography } from "@material-ui/core"
 import Button from "src/components/sharedComponents/Button"
 import { styles } from "./Intro.Style"
 import Gif from "../../../assets/images/gif2.gif"
-
+import CollegeSlider from './CallegeSlider'
 const Intro = function () {
   const classes = styles()
 
@@ -12,7 +12,7 @@ const Intro = function () {
     <div>
       <Grid container className={classes.root}>
         <Grid item xs={12} sm={6} className={classes.leftPanel}>
-          <img src={Gif} />
+          <img alt="animation" src={Gif} />
         </Grid>
         <Grid item xs={12} sm={6} className={classes.rightPanel}>
           <Typography variant="h4" className={classes.title}>
@@ -31,6 +31,7 @@ const Intro = function () {
           <Button label="play now" type="primary" className={classes.button} />
         </Grid>
       </Grid>
+      <CollegeSlider/>
     </div>
   )
 }

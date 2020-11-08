@@ -14,7 +14,7 @@ const Landing = function () {
 
   return (
     <div className={classes.root}>
-      <Grid item xs={6} className={classes.title}>
+      <Grid item sm={6} xs={12} className={classes.title}>
         <Typography variant="h4">
           Play games, socialize, and connect with other Zoom university students
         </Typography>
