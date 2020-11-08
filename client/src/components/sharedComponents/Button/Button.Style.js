@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles"
 
-const rootStyle = function (type, theme) {
+const rootStyle = function (props, theme) {
+  const { type, icon, label } = props
   return {
     cursor: "pointer",
     backgroundColor: theme.palette[type].main,
@@ -14,14 +15,19 @@ const rootStyle = function (type, theme) {
     letterSpacing: 1,
     textTransform: "uppercase",
     fontWeight: "bold",
+    outline: "none",
     "&:hover": {
       border: `${theme.palette[type].main} 1px solid`,
       color: theme.palette[type].main,
       backgroundColor: "#fff",
     },
+    "& span": {
+      display: icon && label ? "flex" : "block",
+      alignItems: "center",
+    },
   }
 }
 
 export const styles = makeStyles((theme) => ({
-  root: (props) => rootStyle(props.type, theme),
+  root: (props) => rootStyle(props, theme),
 }))

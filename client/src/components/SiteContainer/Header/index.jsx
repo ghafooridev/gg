@@ -1,22 +1,54 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useState } from "react"
 
-import Button from "src/components/sharedComponents/Button"
+import { useHistory } from "react-router-dom"
+
 import { Grid } from "@material-ui/core"
+
 import { Squash as Hamburger } from "hamburger-react"
+
 import clsx from "clsx"
+
+import isEmpty from "lodash.isempty"
+
+import ThemeContext from "src/Contexts/Theme/ThemeContext"
+import Button from "src/components/sharedComponents/Button"
+import { useSelector } from "react-redux"
+import HeaderProfile from "./HeaderProfile"
 import { styles } from "./Header.Style"
 import Logo from "../../../assets/images/logo_light.png"
 
 const Header = function () {
+  const currentUser = useSelector((state) => state.user)
+
+  const { toggleTheme, theme } = useContext(ThemeContext)
+  const mode = theme.Theme.palette.type
+
+  const history = useHistory()
+
   const [isOpen, setOpen] = useState(false)
+
   const classes = styles(isOpen)
 
   const onToggleHamburger = function (toggle) {
     setOpen(toggle)
   }
 
-  const onMenuClick = function (page) {
-    console.log(page)
+  const onMenuClick = function (type) {
+    const types = {
+      signIn: () => {
+        history.push("login")
+      },
+      signUp: () => {
+        history.push("register")
+      },
+      inviteFriend: () => {
+        alert("not implemented")
+      },
+    }
+
+    if (types[type]) {
+      return types[type]()
+    }
   }
 
   return (
@@ -36,27 +68,53 @@ const Header = function () {
           <Grid
             item
             className={clsx(
-              "buttonGroupToggle",
+              classes.buttonGroupToggle,
               isOpen ? classes.buttonGroupCollapse : classes.buttonGroupExpand
             )}
           >
+            {!isEmpty(currentUser) && (
+              <Button
+                label="Invite Friends"
+                type="grey"
+                className={classes.button}
+                onClick={() => onMenuClick("inviteFriends")}
+              />
+            )}
+            {!isEmpty(currentUser) && <HeaderProfile user={currentUser} />}
+            {isEmpty(currentUser) && (
+              <Button
+                label="Sign In"
+                type="grey"
+                className={classes.button}
+                onClick={() => onMenuClick("signIn")}
+              />
+            )}
+            {isEmpty(currentUser) && (
+              <Button
+                label="Sign Up"
+                type="grey"
+                className={classes.button}
+                onClick={() => onMenuClick("signUp")}
+              />
+            )}
             <Button
-              label="Invite Friends"
               type="grey"
-              className={classes.button}
-              onClick={() => onMenuClick("inviteFriends")}
-            />
-            <Button
-              label="Sign In"
-              type="grey"
-              className={classes.button}
-              onClick={() => onMenuClick("signIn")}
-            />
-            <Button
-              label="Sign Up"
-              type="grey"
-              className={classes.button}
-              onClick={() => onMenuClick("signUp")}
+              icon={
+                mode === "dark" ? (
+                  <i
+                    className="material-icons"
+                    style={{ paddingTop: 3, color: "gold" }}
+                  >
+                    wb_sunny
+                  </i>
+                ) : (
+                  <i className="material-icons" style={{ paddingTop: 3 }}>
+                    brightness_3
+                  </i>
+                )
+              }
+              className={classes.modeButton}
+              onClick={toggleTheme}
             />
           </Grid>
         </div>

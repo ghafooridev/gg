@@ -36,7 +36,7 @@ const Intro = function () {
         showArrows={false}
         breakPoints={breakPoints}
         onChange={(currentItem) => {
-          if (currentItem.index === 4) {
+          if (currentItem.index === 3) {
             carousel.current.goTo(0)
           }
         }}

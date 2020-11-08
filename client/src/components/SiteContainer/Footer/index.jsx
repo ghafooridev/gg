@@ -7,8 +7,10 @@ const Footer = function () {
   const classes = styles()
 
   return (
-    <AppBar className={classes.root} position="fixed">
-      Footer
+    <AppBar className={classes.root}>
+      <span className="copyright">
+        © {new Date().getFullYear()}, made by GG chat Team
+      </span>
     </AppBar>
   )
 }

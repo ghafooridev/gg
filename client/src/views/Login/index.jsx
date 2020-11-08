@@ -10,10 +10,8 @@ import TextField from "src/components/sharedComponents/TextField"
 import Password from "src/components/sharedComponents/Password"
 import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button"
-import Constant from "src/utils/Constant"
-import userRepository from "src/repositories/user"
-import Storage from "src/services/Storage"
 import LoginContainer from "src/components/sharedComponents/LoginContainer"
+import userAction from "src/redux/actions/UserAction"
 import SignInLogo from "../../assets/images/login.png"
 import { styles } from "./Login.Style"
 
@@ -23,11 +21,8 @@ const Login = function () {
   const history = useHistory()
 
   const onSubmit = function (data) {
-    userRepository.login(data).then((user) => {
-      if (user) {
-        Storage.push(Constant.STORAGE.CURRENT_USER, JSON.stringify(user.data))
-        history.push("home")
-      }
+    userAction.login(data).then(() => {
+      history.push("home")
     })
   }
 
@@ -42,7 +37,7 @@ const Login = function () {
   return (
     <LoginContainer>
       <Grid item xs={12} className={classes.leftPanel}>
-        <img alt="logo" src={SignInLogo} />
+        <img alt="logo" src={SignInLogo}/>
       </Grid>
 
       <Grid item xs={12}>

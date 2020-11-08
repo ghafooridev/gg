@@ -7,13 +7,13 @@ import clsx from "clsx"
 import { styles } from "./Button.Style"
 
 const Button = function (props) {
-  const { label, style, className, onClick, type } = props
+  const { label, style, className, onClick, icon } = props
 
   const classes = styles(props)
 
-  const onButtonClick = function () {
+  const onButtonClick = function (event) {
     if (typeof onClick === "function") {
-      onClick()
+      onClick(event)
     }
   }
 
@@ -24,7 +24,10 @@ const Button = function (props) {
       style={style}
       className={clsx(classes.root, className)}
     >
-      {label}
+      <span>
+        {icon}
+        {label}
+      </span>
     </button>
   )
 }

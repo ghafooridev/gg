@@ -29,6 +29,7 @@ export default {
         return Promise.resolve(response.data)
       })
       .catch((error) => {
+        console.log(error.response)
         AlertAction.show({
           type: "error",
           text: error.response.data,
