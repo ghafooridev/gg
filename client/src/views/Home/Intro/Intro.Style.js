@@ -2,8 +2,7 @@ import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
   root: {
-    margin: "50px 0",
-    // display:"flex"
+    margin: "100px 0",
   },
   leftPanel: {
     "& img": {
@@ -17,11 +16,22 @@ export const styles = makeStyles((theme) => ({
   },
   rightPanel: {
     padding: 50,
-		[theme.breakpoints.down("xs")]: {
-			padding:'20px 0'
-		},
+    [theme.breakpoints.down("xs")]: {
+      padding: "20px 0",
+    },
   },
   button: {
     marginTop: 30,
+  },
+  userInfoPanel: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+    },
+  },
+  userInfoTitle: {
+    margin: "50px 0 20px",
   },
 }))

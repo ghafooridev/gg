@@ -24,6 +24,7 @@ const rootStyle = function (props, theme) {
     "& span": {
       display: icon && label ? "flex" : "block",
       alignItems: "center",
+      justifyContent: "center",
     },
   }
 }

@@ -107,9 +107,9 @@ exports.resetPassword = function (req, res) {
 }
 
 exports.loginUser = function (req, res) {
-  const { userName, password } = req.body
+  const { username, password } = req.body
 
-  User.findOne({ userName }).then((user) => {
+  User.findOne({ username }).then((user) => {
     if (user) {
       if (!user.isVerified) {
         return res.status(422).json(Constant.MESSAGES.NOT_VERIFIED_USER)

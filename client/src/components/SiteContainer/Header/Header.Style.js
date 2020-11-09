@@ -7,7 +7,6 @@ export const styles = makeStyles((theme) => ({
     backgroundColor: theme.palette.type === "light" ? "#fff" : "#303030",
     position: "sticky",
     zIndex: 1000,
-    paddingTop: 10,
   },
   container: {
     alignItems: "center",

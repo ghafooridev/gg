@@ -28,7 +28,11 @@ export default {
       dark: "#388e3c",
     },
     grey: {
+      lighter: "#f9F9F9",
+      light: "#a1a1a1",
       main: "#8d8d8d",
+      dark: "#5a5a5a",
+      darker: "#424242",
     },
   },
   typography: {

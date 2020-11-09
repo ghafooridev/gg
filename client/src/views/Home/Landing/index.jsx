@@ -1,51 +1,19 @@
 import React from "react"
 
-import { Grid, Typography } from "@material-ui/core"
-import GameBox from "src/components/sharedComponents/GameBox"
-import Button from "src/components/sharedComponents/Button"
+import AsGuest from "src/views/Home/Landing/Content/AsGuest"
+import { useSelector } from "react-redux"
+import isEmpty from "lodash.isempty"
+import AsUser from "src/views/Home/Landing/Content/AsUser"
 import { styles } from "./Landing.Style"
-import Covidopoly from "../../../assets/images/covidopoly.jpg"
-import Pictionary from "../../../assets/images/pictionary.jpg"
-import ForbiddenIsland from "../../../assets/images/forbiden_island.jpg"
-import Mafia from "../../../assets/images/mafia.jpg"
 
 const Landing = function () {
+  const currentUser = useSelector((state) => state.user)
+
   const classes = styles()
 
   return (
     <div className={classes.root}>
-      <Grid item sm={6} xs={12} className={classes.title}>
-        <Typography variant="h4">
-          Play games, socialize, and connect with other Zoom university students
-        </Typography>
-      </Grid>
-      <Button
-        label="play now"
-        type="primary"
-        className={classes.submitButton}
-      />
-      <Grid item xs={12} className={classes.gameList}>
-        <GameBox
-          color="primary"
-          image={Covidopoly}
-          label="Covidopoly"
-        />
-        <GameBox
-          color="warning"
-          image={Mafia}
-          label="Mafia"
-        />
-        <GameBox
-          color="info"
-          image={Pictionary}
-          label="Pictionary"
-        />
-        <GameBox
-          color="success"
-          image={ForbiddenIsland}
-          label="Forbidden Island"
-        />
-      </Grid>
+      {isEmpty(currentUser) ? <AsGuest /> : <AsUser />}
     </div>
   )
 }

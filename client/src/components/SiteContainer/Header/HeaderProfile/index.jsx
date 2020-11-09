@@ -32,7 +32,7 @@ export default function SimplePopover({ user }) {
   const onSettingClick = function () {}
 
   return (
-    <div>
+    <>
       <Button
         label={user.username}
         type="grey"
@@ -77,6 +77,6 @@ export default function SimplePopover({ user }) {
           </Grid>
         </Grid>
       </Popover>
-    </div>
+    </>
   )
 }
