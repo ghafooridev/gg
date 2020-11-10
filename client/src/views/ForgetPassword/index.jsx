@@ -44,6 +44,14 @@ const Forget = function () {
     <LoginContainer>
       <Grid item xs={12} className={classes.leftPanel}>
         <img alt="logo" src={ForgetLogo} />
+        <a
+          href="https://www.freepikcompany.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          Image created by freepikcompany.com
+        </a>
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h4" className={classes.title}>
@@ -64,10 +72,10 @@ const Forget = function () {
               label="Email"
               icon="mail"
               inputRef={register({
-                // pattern: {
-                //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
-                //   message: validationMessage("Email address", "pattern"),
-                // },
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
+                  message: validationMessage("Email address", "pattern"),
+                },
                 required: validationMessage("Email address", "required"),
               })}
               error={errors.email}

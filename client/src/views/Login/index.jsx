@@ -37,7 +37,15 @@ const Login = function () {
   return (
     <LoginContainer>
       <Grid item xs={12} className={classes.leftPanel}>
-        <img alt="logo" src={SignInLogo}/>
+        <img alt="logo" src={SignInLogo} />
+        <a
+          href="https://www.freepikcompany.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          Image created by freepikcompany.com
+        </a>
       </Grid>
 
       <Grid item xs={12}>

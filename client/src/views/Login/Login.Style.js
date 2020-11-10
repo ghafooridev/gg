@@ -11,6 +11,7 @@ export const styles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "column",
   },
 
   title: {
@@ -64,6 +65,15 @@ export const styles = makeStyles((theme) => ({
       "& i": {
         display: "none",
       },
+    },
+  },
+  link: {
+    fontSize: 10,
+    color: theme.palette.grey.main,
+    cursor: "pointer",
+    textDecoration: "none",
+    "&:hover": {
+      color: theme.palette.primary.main,
     },
   },
 }))

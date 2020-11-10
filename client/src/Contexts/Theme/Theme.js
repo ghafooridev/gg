@@ -36,8 +36,20 @@ export default {
     },
   },
   typography: {
-    fontFamily: "Roboto",
+    fontFamily: "Asap",
     fontSize: 14,
+    h2: {
+      fontWeight: 600,
+      fontSize: 48,
+    },
+    h4: {
+      fontWeight: 600,
+      fontSize: 36,
+    },
+    h6: {
+      fontWeight: 400,
+      fontSize: 18,
+    },
   },
   direction: "ltr",
   spacing: 5,

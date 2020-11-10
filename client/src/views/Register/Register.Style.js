@@ -2,13 +2,14 @@ import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
   leftPanel: {
+    display: "flex",
+    flexDirection: "column",
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
     "& img": {
       width: "100%",
     },
-    display: "flex",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -22,5 +23,14 @@ export const styles = makeStyles((theme) => ({
   },
   submitButton: {
     width: "100%",
+  },
+  link: {
+    fontSize: 10,
+    color: theme.palette.grey.main,
+    cursor: "pointer",
+    textDecoration: "none",
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
   },
 }))

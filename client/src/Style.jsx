@@ -2,6 +2,9 @@ import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
   "@global": {
+    "*": {
+      fontFamily: "Asap",
+    },
     "*::-webkit-scrollbar": {
       width: 7,
     },

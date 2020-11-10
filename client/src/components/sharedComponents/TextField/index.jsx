@@ -31,7 +31,7 @@ const TextField = function (props) {
 
   const onTextChange = function (event) {
     const { value } = event.target
-    setData(data)
+    setData(value)
 
     if (typeof onChange === "function") {
       onChange({ name, value })

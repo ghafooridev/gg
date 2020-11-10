@@ -8,14 +8,15 @@ import Card from "src/components/sharedComponents/Card"
 
 import { styles } from "../Landing.Style"
 
-const AsUser = function () {
+const AsUser = function (props) {
   const classes = styles()
+  const { user } = props
 
   return (
     <>
       <Card className={classes.jumbotron}>
         <Grid item xs={12}>
-          <Typography variant="h4">Hey xxx !</Typography>
+          <Typography variant="h2">Hey {user.name} !</Typography>
           <Typography variant="h6">
             Welcome back to GGchat. let's play ...
           </Typography>

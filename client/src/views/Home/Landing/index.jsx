@@ -13,7 +13,7 @@ const Landing = function () {
 
   return (
     <div className={classes.root}>
-      {isEmpty(currentUser) ? <AsGuest /> : <AsUser />}
+      {isEmpty(currentUser) ? <AsGuest /> : <AsUser user={currentUser} />}
     </div>
   )
 }

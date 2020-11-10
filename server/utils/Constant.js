@@ -23,6 +23,6 @@ module.exports = Object.freeze({
     SEND_ACTIVATION_EMAIL:
       "A verification email has been sent to your Email. It will be expire after one day",
     REGISTER_DUPLICATE_EMAIL: "This Email address hase been taken",
-    NOT_VERIFIED_USER: "Your account has been not verified",
+    NOT_VERIFIED_USER: "Your account has not been verified",
   },
 })

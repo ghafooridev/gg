@@ -1,4 +1,4 @@
-import React  from "react"
+import React from "react"
 
 import PropTypes from "prop-types"
 
@@ -7,7 +7,7 @@ import clsx from "clsx"
 import { styles } from "./Button.Style"
 
 const Button = function (props) {
-  const { label, style, className, onClick, icon } = props
+  const { label, style, className, onClick, icon, htmlType } = props
 
   const classes = styles(props)
 
@@ -19,7 +19,7 @@ const Button = function (props) {
 
   return (
     <button
-      type="button"
+      type={htmlType}
       onClick={onButtonClick}
       style={style}
       className={clsx(classes.root, className)}
@@ -38,10 +38,12 @@ Button.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   className: PropTypes.string,
   onClick: PropTypes.func,
+  htmlType: PropTypes.string,
 }
 
 Button.defaultProps = {
-  color: "primary",
+  type: "primary",
+  htmlType: "button",
 }
 
 export default Button

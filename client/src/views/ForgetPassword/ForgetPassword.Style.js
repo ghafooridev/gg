@@ -11,6 +11,7 @@ export const styles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    flexDirection: "column",
   },
   title: {
     textAlign: "center",
@@ -22,5 +23,14 @@ export const styles = makeStyles((theme) => ({
   },
   submitButton: {
     width: "100%",
+  },
+  link: {
+    fontSize: 10,
+    color: theme.palette.grey.main,
+    cursor: "pointer",
+    textDecoration: "none",
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
   },
 }))

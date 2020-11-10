@@ -11,7 +11,7 @@ const AsGuest = function () {
   return (
     <div className={classes.root}>
       <Grid item sm={6} xs={12} className={classes.title}>
-        <Typography variant="h4">
+        <Typography variant="h2">
           Play games, socialize, and connect with other Zoom university students
         </Typography>
       </Grid>
