@@ -52,7 +52,7 @@ export const styles = makeStyles((theme) => ({
       marginLeft: 10,
     },
   },
-  pictionaryPanel:{
+  pictionaryPanel: {
     margin: "0 20px",
-  }
+  },
 }))

@@ -10,6 +10,8 @@ import Card from "src/components/sharedComponents/Card"
 import InfoBox from "src/components/sharedComponents/InfoBox"
 import { styles } from "../Pictionary.Style"
 
+import PictionaryFrame from "../PictionaryFrame"
+
 const PictionaryGame = function () {
   const classes = styles()
 
@@ -30,7 +32,9 @@ const PictionaryGame = function () {
           </Card>
         </Grid>
         <Grid item xs={6} className={classes.pictionaryPanel}>
-          <Card className={classes.itemCard} />
+          <Card className={classes.itemCard}>
+            <PictionaryFrame />
+          </Card>
         </Grid>
         <Grid item xs={3} className={classes.col}>
           <Card className={classes.itemCard}>
