@@ -9,11 +9,11 @@ import { styles } from "./InfoBox.Style"
 import Gif from "../../../assets/images/gif2.gif"
 
 const InfoBox = function (props) {
-  const { labels, gameCount, point, title, subTitle } = props
+  const { labels, gameCount, point, title, subTitle, className } = props
   const classes = styles()
 
   return (
-    <Paper  className={classes.root}>
+    <Paper className={clsx(classes.root, className)}>
       <Grid item xs={12} className={classes.top}>
         <Grid item xs={2} className={classes.topLeft}>
           <img alt="image" src={Gif} />

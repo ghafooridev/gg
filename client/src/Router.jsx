@@ -7,8 +7,8 @@ import ForgetPassword from "src/views/ForgetPassword"
 import SiteContainer from "src/components/SiteContainer"
 import Home from "src/views/Home"
 
-import Room from "./views/Room"
-import Lobby from "./views/Lobby"
+import PictionaryLobby from "src/views/Pictionary/PictionaryLobby"
+import PictionaryGame from "src/views/Pictionary/PictionaryGame"
 
 const Router = function () {
   return (
@@ -21,8 +21,8 @@ const Router = function () {
           <SiteContainer>
             <Route exact path="/" component={Home} />
             <Route path="/home" exact component={Home} />
-            <Route path="/room/:roomID" component={Room} />
-            <Route path="/lobby/:lobbyId" component={Lobby} />
+            <Route path="/pictionary-lobby" exact component={PictionaryLobby} />
+            <Route path="/pictionary-game" exact component={PictionaryGame} />
           </SiteContainer>
         </Switch>
       </div>

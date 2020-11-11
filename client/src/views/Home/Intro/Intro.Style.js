@@ -34,4 +34,13 @@ export const styles = makeStyles((theme) => ({
   userInfoTitle: {
     margin: "50px 0 20px",
   },
+  infoBox: {
+    width: "24%",
+    [theme.breakpoints.down("sm")]: {
+      width: "49%",
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
+  },
 }))

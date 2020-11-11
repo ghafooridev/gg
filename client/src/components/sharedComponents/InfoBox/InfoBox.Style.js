@@ -2,13 +2,12 @@ import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
   root: {
-    width: "24%",
     padding: 10,
     marginBottom: 10,
     boxShadow: "none",
     border: `1px solid ${theme.palette.grey.light}`,
     [theme.breakpoints.down("sm")]: {
-      width: "49%",
+      width: "100%",
       marginBottom: 10,
     },
     [theme.breakpoints.down("xs")]: {

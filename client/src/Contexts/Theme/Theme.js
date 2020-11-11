@@ -46,6 +46,10 @@ export default {
       fontWeight: 600,
       fontSize: 36,
     },
+    h5: {
+      fontWeight: 600,
+      fontSize: 22,
+    },
     h6: {
       fontWeight: 400,
       fontSize: 18,

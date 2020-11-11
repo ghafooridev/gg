@@ -4,6 +4,8 @@ import PropTypes from "prop-types"
 
 import clsx from "clsx"
 
+import { useHistory } from "react-router-dom"
+
 import Button from "src/components/sharedComponents/Button"
 import Covidopoly from "../../../assets/images/covidopoly.jpg"
 import Pictionary from "../../../assets/images/pictionary.jpg"
@@ -15,6 +17,7 @@ import { styles } from "./GameBox.Style"
 const GameBox = function (props) {
   const classes = styles(props)
   const { label, isUser, type } = props
+  const history = useHistory()
 
   const loadGameImage = function () {
     const types = {
@@ -27,6 +30,10 @@ const GameBox = function (props) {
     if (types[type]) {
       return types[type]
     }
+  }
+
+  const onPlayClick = function () {
+    history.push(`${type}-lobby`)
   }
 
   return (
@@ -42,6 +49,7 @@ const GameBox = function (props) {
           label="play now"
           type="primary"
           className={classes.userPlayButton}
+          onClick={onPlayClick}
         />
       )}
     </div>
