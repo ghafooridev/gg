@@ -6,12 +6,13 @@ import { Grid } from "@material-ui/core"
 
 import Button from "src/components/sharedComponents/Button"
 import userAction from "src/redux/actions/UserAction"
+import { useHistory } from "react-router-dom"
 import { styles } from "./HeaderProfile.Style"
 import Profile from "../../../../assets/images/profile.jpg"
 
 export default function SimplePopover({ user }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
-
+  const history = useHistory()
   const classes = styles()
 
   const onProfileClick = (event) => {
@@ -26,6 +27,7 @@ export default function SimplePopover({ user }) {
   const id = open ? "simple-popover" : undefined
 
   const onLogOutClick = function () {
+    history.push("home")
     userAction.logout()
   }
 

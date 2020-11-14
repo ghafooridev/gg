@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
@@ -10,7 +10,7 @@ import Card from "src/components/sharedComponents/Card"
 import Messages from "src/components/sharedComponents/ChatBox/Messages"
 import { styles } from "./ChatBox.Style"
 
-const ChatBox = function ({ messages, onSendClick ,username}) {
+const ChatBox = function ({ messages, onSendClick, username }) {
   const classes = styles()
   const [message, setMessage] = useState("")
 
@@ -31,10 +31,15 @@ const ChatBox = function ({ messages, onSendClick ,username}) {
         Chat
       </Typography>
       <Grid item xs={12} className={classes.chatBox}>
-        <Messages messages={messages} username={username}/>
+        <Messages messages={messages} username={username} />
       </Grid>
       <Grid item xs={12} className={classes.chatEntry}>
-        <TextField label="Type here ..." onChange={onChange} />
+        <TextField
+          defaultValue={message}
+          label="Type here ..."
+          onChange={onChange}
+          onEnter={onClick}
+        />
         <Button label="send" onClick={onClick} />
       </Grid>
     </Card>

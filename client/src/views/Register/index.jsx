@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
@@ -22,6 +22,7 @@ const Register = function () {
   const classes = styles()
   const { register, handleSubmit, errors, reset } = useForm()
   const history = useHistory()
+  const [loading, setLoading] = useState(false)
 
   const onSubmit = function (data, e) {
     let newData = data
@@ -29,16 +30,22 @@ const Register = function () {
     if (university) {
       newData = { ...data, university }
     }
-
-    userRepository.register(newData).then((result) => {
-      if (result) {
-        AlertAction.show({
-          type: "success",
-          text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
-        })
-        e.target.reset()
-      }
-    })
+    setLoading(true)
+    userRepository
+      .register(newData)
+      .then((result) => {
+        setLoading(false)
+        if (result) {
+          AlertAction.show({
+            type: "success",
+            text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+          })
+          e.target.reset()
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const onBackToLogin = function () {
@@ -145,6 +152,7 @@ const Register = function () {
                 type="primary"
                 htmlType="submit"
                 className={classes.submitButton}
+                loading={loading}
               />
             </Grid>
             <Grid item xs={12}>

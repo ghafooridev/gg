@@ -5,6 +5,7 @@ export const styles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   toolbar: {
+    width:600,
     margin: "10px 0",
     display: "flex",
     justifyContent: "space-between",

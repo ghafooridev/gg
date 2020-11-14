@@ -12,41 +12,56 @@ import { useHistory } from "react-router-dom"
 import queryString from "query-string"
 import io from "socket.io-client"
 import ChatBox from "src/components/sharedComponents/ChatBox"
+import Constant from "src/utils/Constant"
 import { styles } from "../Pictionary.Style"
 
 const ENDPOINT = "localhost:5000"
 let socket
 
 const PictionaryLobby = function () {
+  const { username, game } = queryString.parse(location.search)
+
   const classes = styles()
   const history = useHistory()
 
   const [messages, setMessages] = useState([])
+  const [users, setUsers] = useState([])
 
   const onPlayClick = function () {
-    history.push("pictionary-game?123")
+    history.push(`pictionary-game?username=${username}&game=${game}`)
   }
 
   const onSendClick = function (message) {
-    socket.emit("sendMessage", message, () => {})
+    socket.emit("sendMessage", { username, message }, () => {})
   }
-  const { username, game } = queryString.parse(location.search)
-  useEffect(() => {
 
+  const onLeaveClick = function () {
+    socket.emit("leave", { username, game })
+    socket.off()
+    history.push("home")
+  }
+
+  useEffect(() => {
     socket = io(ENDPOINT)
-    socket.emit("join", { username, game }, () => {})
+    socket.emit("join", { username, game })
 
     return () => {
       socket.emit("disconnect")
       socket.off()
     }
-  }, [])
+  }, [game, username])
 
   useEffect(() => {
-    socket.on("message", (text) => {
-      setMessages([...messages, text])
+    socket.on("message", (message) => {
+      setMessages([...messages, message])
     })
   }, [messages])
+
+  useEffect(() => {
+    socket.on("updateUserList", (users) => {
+      setUsers(users)
+    })
+  }, [users])
 
   return (
     <Grid container className={classes.root}>
@@ -62,6 +77,7 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
+        disabled={Constant.GAMES.PICTIONARY_MIN_USER >= users.length}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item xs={12} className={classes.col}>
@@ -81,11 +97,18 @@ const PictionaryLobby = function () {
         <Grid item xs={12} className={classes.middleCol}>
           <Card className={classes.itemCard}>
             <Typography variant="h5" className={classes.title}>
-              IN QUEUE (2/3)
+              IN QUEUE ({users.length}/{Constant.GAMES.PICTIONARY_MIN_USER})
             </Typography>
-            <InfoBox title="Brad" subTitle="UCLA" labels />
-            <InfoBox title="john doe" subTitle="oxford university" labels />
-            <Button label="leave queue" />
+            {users.map((item, index) => {
+              return (
+                <InfoBox
+                  key={index}
+                  title={item.username}
+                  subTitle={item.university}
+                />
+              )
+            })}
+            <Button label="leave queue" onClick={onLeaveClick} />
           </Card>
         </Grid>
         <Grid item xs={12} className={classes.col}>
@@ -100,7 +123,11 @@ const PictionaryLobby = function () {
             />
             <Button label="submit" />
           </Card>
-          <ChatBox messages={messages} username={username} onSendClick={onSendClick} />
+          <ChatBox
+            messages={messages}
+            username={username}
+            onSendClick={onSendClick}
+          />
         </Grid>
       </Grid>
     </Grid>

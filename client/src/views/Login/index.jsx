@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
@@ -19,11 +19,19 @@ const Login = function () {
   const classes = styles()
   const { register, handleSubmit, errors } = useForm()
   const history = useHistory()
+  const [loading, setLoading] = useState(false)
 
   const onSubmit = function (data) {
-    userAction.login(data).then(() => {
-      history.push("home")
-    })
+    setLoading(true)
+    userAction
+      .login(data)
+      .then(() => {
+        setLoading(false)
+        history.push("home")
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const onRegister = function () {
@@ -80,6 +88,7 @@ const Login = function () {
                 required: validationMessage("Password", "required"),
               })}
               error={errors.password}
+              onEnter={handleSubmit(onSubmit)}
             />
           </Grid>
           <Grid item xs={12}>
@@ -88,6 +97,7 @@ const Login = function () {
               type="primary"
               className={classes.submitButton}
               onClick={handleSubmit(onSubmit)}
+              loading={loading}
             />
           </Grid>
           <Grid item xs={12} className={classes.footer}>

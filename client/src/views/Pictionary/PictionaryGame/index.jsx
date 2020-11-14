@@ -8,11 +8,13 @@ import Button from "src/components/sharedComponents/Button"
 
 import Card from "src/components/sharedComponents/Card"
 import InfoBox from "src/components/sharedComponents/InfoBox"
+import queryString from "query-string"
 import { styles } from "../Pictionary.Style"
 
 import PictionaryFrame from "../PictionaryFrame/Canvas"
 
 const PictionaryGame = function () {
+  const { username, game } = queryString.parse(location.search)
   const classes = styles()
 
   return (
@@ -33,7 +35,7 @@ const PictionaryGame = function () {
         </Grid>
         <Grid item xs={6} className={classes.pictionaryPanel}>
           <Card className={classes.itemCard}>
-            <PictionaryFrame />
+            <PictionaryFrame username={username} game={game} />
           </Card>
         </Grid>
         <Grid item xs={3} className={classes.col}>

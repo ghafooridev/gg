@@ -4,10 +4,21 @@ import PropTypes from "prop-types"
 
 import clsx from "clsx"
 
+import { CircularProgress } from "@material-ui/core"
+
 import { styles } from "./Button.Style"
 
 const Button = function (props) {
-  const { label, style, className, onClick, icon, htmlType } = props
+  const {
+    label,
+    style,
+    className,
+    onClick,
+    icon,
+    htmlType,
+    loading,
+    disabled,
+  } = props
 
   const classes = styles(props)
 
@@ -23,10 +34,15 @@ const Button = function (props) {
       onClick={onButtonClick}
       style={style}
       className={clsx(classes.root, className)}
+      disabled={disabled}
     >
       <span>
-        {icon}
-        {label}
+        {loading ? (
+          <CircularProgress size={15} className={classes.loading} />
+        ) : (
+          icon
+        )}
+        {loading ? "loading..." : label}
       </span>
     </button>
   )
@@ -39,6 +55,8 @@ Button.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
   htmlType: PropTypes.string,
+  loading: PropTypes.bool,
+  disabled: PropTypes.bool,
 }
 
 Button.defaultProps = {

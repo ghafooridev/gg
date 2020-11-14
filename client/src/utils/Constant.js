@@ -31,5 +31,8 @@ const Constant = {
     REGISTER: "REGISTER",
     FORGET: "FORGET",
   },
+  GAMES: {
+    PICTIONARY_MIN_USER: 3,
+  },
 }
 export default Constant

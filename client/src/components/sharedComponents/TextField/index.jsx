@@ -3,7 +3,7 @@ import React, { useEffect } from "react"
 import MuiTextField from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"
 
-import PropTypes from "prop-types"
+import PropTypes, { func } from "prop-types"
 
 import clsx from "clsx"
 
@@ -26,6 +26,7 @@ const TextField = function (props) {
     placeholder,
     type,
     testId,
+    onEnter,
   } = props
   const [data, setData] = React.useState(defaultValue)
 
@@ -38,6 +39,17 @@ const TextField = function (props) {
     }
   }
 
+  const onkeypress = function (event) {
+    const { value } = event.target
+    if (
+      value.trim().length &&
+      event.key === "Enter" &&
+      typeof onEnter === "function"
+    ) {
+      onEnter(value)
+    }
+  }
+
   useEffect(() => {
     setData(defaultValue || "")
   }, [defaultValue])
@@ -45,6 +57,7 @@ const TextField = function (props) {
   return (
     <MuiTextField
       label={label}
+      value={data}
       variant="outlined"
       multiline={rows && rows > 1}
       rows={rows}
@@ -60,6 +73,7 @@ const TextField = function (props) {
       }}
       className={className}
       onChange={onTextChange}
+      onKeyPress={onkeypress}
       inputProps={{
         "data-testid": testId || name,
       }}
@@ -89,6 +103,7 @@ TextField.propTypes = {
   icon: PropTypes.string,
   defaultValue: PropTypes.string,
   testId: PropTypes.string,
+  onEnter: PropTypes.func,
 }
 
 TextField.defaultProps = {

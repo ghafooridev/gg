@@ -1,8 +1,9 @@
-import React, { Component } from "react"
+import React, { Component, useEffect, useRef, useState } from "react"
 import clsx from "clsx"
 import { Grid } from "@material-ui/core"
-import { styles } from "./PictionaryFrame.Style"
 import io from "socket.io-client"
+import { styles } from "./PictionaryFrame.Style"
+
 const PALETTE = {
   BLACK: "#000",
   YELLOW: "#F2C94C",
@@ -19,205 +20,195 @@ const SIZE = {
 let socket
 
 const ENDPOINT = "localhost:5000"
-const Point = function ({ size, color, className, onClick }) {
+
+const Canvas = function ({ username, game }) {
   const classes = styles()
-  return (
-    <div
-      // className={clsx(
-      //   className,
-      //   classes.point,
-      //   classes[size],
-      //   (color === brushColor ||
-      //     (size && SIZE[size.toUpperCase()] === brushSize)) &&
-      //     classes.selected
-      // )}
-      // style={{ backgroundColor: color || brushColor }}
-      onClick={onClick}
-    />
-  )
-}
+  const canvas = useRef(null)
+  let ctx
+  let brushColor = PALETTE.BLACK
+  let brushSize = SIZE.MD
+  let isPainting = false
 
-class Canvas extends Component {
-  constructor(props) {
-    super(props)
+  let line = []
+  let prevPos = { offsetX: 0, offsetY: 0 }
 
-    this.onMouseDown = this.onMouseDown.bind(this)
-    this.onMouseMove = this.onMouseMove.bind(this)
-    this.endPaintEvent = this.endPaintEvent.bind(this)
-
-    // this.pusher = new Pusher("PUSHER_KEY", {
-    //   cluster: "eu",
-    // })
-    this.isPainting = false
-
-    this.userStrokeStyle = "#EE92C2"
-
-    this.guestStrokeStyle = "#F0C987"
-
-    this.line = []
-
-    // userId = v4()
-
-    this.prevPos = { offsetX: 0, offsetY: 0 }
+  const onClickColor = function (pointColor) {
+    brushColor = pointColor
   }
 
-  onMouseDown({ nativeEvent }) {
-    const { offsetX, offsetY } = nativeEvent
-    this.isPainting = true
-    this.prevPos = { offsetX, offsetY }
+  const onClickSize = function (pointSize) {
+    brushSize = pointSize
   }
 
-  onMouseMove({ nativeEvent }) {
-    if (this.isPainting) {
-      const { offsetX, offsetY } = nativeEvent
-      const offSetData = { offsetX, offsetY }
-      this.position = {
-        start: { ...this.prevPos },
-        stop: { ...offSetData },
-      }
-      this.line = this.line.concat(this.position)
-      this.paint(this.prevPos, offSetData, this.userStrokeStyle)
-    }
+  const onClearClick = function () {
+    ctx = canvas.current.getContext("2d")
+    ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, 600, 500)
   }
 
-  endPaintEvent() {
-    if (this.isPainting) {
-      this.isPainting = false
-      this.sendPaintData()
-    }
+  const onUndoClick = function () {
+    brushColor = "#fff"
   }
 
-  paint(prevPos, currPos, strokeStyle) {
-    const { offsetX, offsetY } = currPos
-    const { offsetX: x, offsetY: y } = prevPos
-
-    this.ctx.beginPath()
-    this.ctx.strokeStyle = strokeStyle
-    this.ctx.moveTo(x, y)
-    this.ctx.lineTo(offsetX, offsetY)
-    this.ctx.stroke()
-    this.prevPos = { offsetX, offsetY }
-  }
-
-  async sendPaintData() {
-    const options = {
-      line: this.line,
-      username:"ali"
-      // userId: this.userId,
-    }
-socket.emit("paint",options,()=>{
-  this.line = []
-})
-
-    // const req = await fetch("http://localhost:4000/paint", {
-    //   method: "post",
-    //   body: JSON.stringify(body),
-    //   headers: {
-    //     "content-type": "application/json",
-    //   },
-    // })
-    // const res = await req.json()
-    //this.line = []
-  }
-
-  componentDidMount() {
-    this.canvas.width = 500
-    this.canvas.height = 500
-    this.ctx = this.canvas.getContext("2d")
-    this.ctx.lineJoin = "round"
-    this.ctx.lineCap = "round"
-    this.ctx.lineWidth = 5
-    socket = io(ENDPOINT)
-
-    socket.on("draw", (options) => {
-
-      const {username,line}=options;
-        //if (username !== this.username) {
-          line.forEach((position) => {
-            this.paint(position.start, position.stop, this.guestStrokeStyle)
-          })
-      //  }
-    })
-    // const channel = this.pusher.subscribe("painting")
-    // channel.bind("draw", (data) => {
-    //   const { userId, line } = data
-    //   if (userId !== this.userId) {
-    //     line.forEach((position) => {
-    //       this.paint(position.start, position.stop, this.guestStrokeStyle)
-    //     })
-    //   }
-    // })
-  }
-
-  render() {
-    // const classes = styles()
+  const Point = function ({ size, color, className, onClick }) {
     return (
-      <>
-        <canvas
-          ref={(ref) => (this.canvas = ref)}
-          style={{ background: "#fff" }}
-          onMouseDown={this.onMouseDown}
-          onMouseLeave={this.endPaintEvent}
-          onMouseUp={this.endPaintEvent}
-          onMouseMove={this.onMouseMove}
-        />
-        {/*<Grid item className={classes.toolbar}>*/}
-        {/*  <Grid item xs={2} className={classes.item}>*/}
-        {/*    <Point*/}
-        {/*      size="sm"*/}
-        {/*      color={PALETTE.BLACK}*/}
-        {/*      onClick={() => onClickSize(SIZE.SM)}*/}
-        {/*    />*/}
-        {/*    <Point*/}
-        {/*      size="md"*/}
-        {/*      color={PALETTE.BLACK}*/}
-        {/*      onClick={() => onClickSize(SIZE.MD)}*/}
-        {/*    />*/}
-        {/*    <Point*/}
-        {/*      size="lg"*/}
-        {/*      color={PALETTE.BLACK}*/}
-        {/*      onClick={() => onClickSize(SIZE.LG)}*/}
-        {/*    />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={4} className={classes.item}>*/}
-        {/*    <Point*/}
-        {/*      className={classes.color}*/}
-        {/*      color={PALETTE.BLUE}*/}
-        {/*      onClick={() => onClickColor(PALETTE.BLUE)}*/}
-        {/*    />*/}
-        {/*    <Point*/}
-        {/*      className={classes.color}*/}
-        {/*      color={PALETTE.YELLOW}*/}
-        {/*      onClick={() => onClickColor(PALETTE.YELLOW)}*/}
-        {/*    />*/}
-        {/*    <Point*/}
-        {/*      className={classes.color}*/}
-        {/*      color={PALETTE.GREEN}*/}
-        {/*      onClick={() => onClickColor(PALETTE.GREEN)}*/}
-        {/*    />*/}
-        {/*    <Point*/}
-        {/*      className={classes.color}*/}
-        {/*      color={PALETTE.RED}*/}
-        {/*      onClick={() => onClickColor(PALETTE.RED)}*/}
-        {/*    />*/}
-        {/*    <Point*/}
-        {/*      className={classes.color}*/}
-        {/*      color={PALETTE.PURPLE}*/}
-        {/*      onClick={() => onClickColor(PALETTE.PURPLE)}*/}
-        {/*    />*/}
-        {/*  </Grid>*/}
-        {/*  <Grid item xs={2} className={classes.item}>*/}
-        {/*    <i className="material-icons" onClick={onClearClick}>*/}
-        {/*      clear*/}
-        {/*    </i>*/}
-        {/*    <i className="material-icons" onClick={onUndoClick}>*/}
-        {/*      refresh*/}
-        {/*    </i>*/}
-        {/*  </Grid>*/}
-        {/*</Grid>*/}
-      </>
+      <div
+        className={clsx(
+          className,
+          classes.point,
+          classes[size],
+          (color === brushColor ||
+            (size && SIZE[size.toUpperCase()] === brushSize)) &&
+            classes.selected
+        )}
+        style={{ backgroundColor: color || brushColor }}
+        onClick={onClick}
+      />
     )
   }
+
+  const onMouseDown = function ({ nativeEvent }) {
+    const { offsetX, offsetY } = nativeEvent
+    isPainting = true
+    prevPos = { offsetX, offsetY }
+  }
+
+  const onMouseMove = function ({ nativeEvent }) {
+    if (isPainting) {
+      const { offsetX, offsetY } = nativeEvent
+      const offSetData = { offsetX, offsetY }
+      const position = {
+        start: { ...prevPos },
+        stop: { ...offSetData },
+      }
+      line = line.concat(position)
+      paint(prevPos, offSetData, { color: brushColor, size: brushSize })
+    }
+  }
+
+  const endPaintEvent = function () {
+    if (isPainting) {
+      isPainting = false
+      sendPaintData()
+    }
+  }
+
+  const paint = function (prePos, currPos, style) {
+    const { offsetX, offsetY } = currPos
+    const { offsetX: x, offsetY: y } = prePos
+
+    ctx.beginPath()
+    ctx.strokeStyle = style.color
+    ctx.lineWidth = style.size
+    ctx.moveTo(x, y)
+    ctx.lineTo(offsetX, offsetY)
+    ctx.stroke()
+    prevPos = { offsetX, offsetY }
+  }
+
+  const sendPaintData = function () {
+    const options = {
+      line,
+      color: brushColor,
+      size: brushSize,
+      username,
+    }
+    socket.emit("paint", options, () => {
+      line = []
+    })
+  }
+
+  const createCanvas=function(){
+    canvas.current.width = 600
+    canvas.current.height = 500
+    ctx = canvas.current.getContext("2d")
+    ctx.lineJoin = "round"
+    ctx.lineCap = "round"
+  }
+
+  useEffect(() => {
+  createCanvas()
+    socket = io(ENDPOINT)
+    socket.on("draw", (options) => {
+      const { username, line, color, size } = options
+      // if (username !== this.username) {
+      line.forEach((position) => {
+        paint(position.start, position.stop, { color, size })
+      })
+      //  }
+    })
+    return () => {
+      socket.emit("disconnect")
+      socket.off()
+    }
+  }, [])
+
+  return (
+    <>
+      <canvas
+        ref={canvas}
+        style={{ background: "#fff" }}
+        onMouseDown={onMouseDown}
+        onMouseLeave={endPaintEvent}
+        onMouseUp={endPaintEvent}
+        onMouseMove={onMouseMove}
+      />
+      <Grid item className={classes.toolbar}>
+        <Grid item xs={2} className={classes.item}>
+          <Point
+            size="sm"
+            color={PALETTE.BLACK}
+            onClick={() => onClickSize(SIZE.SM)}
+          />
+          <Point
+            size="md"
+            color={PALETTE.BLACK}
+            onClick={() => onClickSize(SIZE.MD)}
+          />
+          <Point
+            size="lg"
+            color={PALETTE.BLACK}
+            onClick={() => onClickSize(SIZE.LG)}
+          />
+        </Grid>
+        <Grid item xs={4} className={classes.item}>
+          <Point
+            className={classes.color}
+            color={PALETTE.BLUE}
+            onClick={() => onClickColor(PALETTE.BLUE)}
+          />
+          <Point
+            className={classes.color}
+            color={PALETTE.YELLOW}
+            onClick={() => onClickColor(PALETTE.YELLOW)}
+          />
+          <Point
+            className={classes.color}
+            color={PALETTE.GREEN}
+            onClick={() => onClickColor(PALETTE.GREEN)}
+          />
+          <Point
+            className={classes.color}
+            color={PALETTE.RED}
+            onClick={() => onClickColor(PALETTE.RED)}
+          />
+          <Point
+            className={classes.color}
+            color={PALETTE.PURPLE}
+            onClick={() => onClickColor(PALETTE.PURPLE)}
+          />
+        </Grid>
+        <Grid item xs={2} className={classes.item}>
+          <i className="material-icons" onClick={onClearClick}>
+            clear
+          </i>
+          <i className="material-icons" onClick={onUndoClick}>
+            refresh
+          </i>
+        </Grid>
+      </Grid>
+    </>
+  )
 }
 
 export default Canvas

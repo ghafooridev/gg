@@ -21,16 +21,24 @@ const Forget = function () {
   const { register, handleSubmit, errors } = useForm()
   const history = useHistory()
   const [passwordValue, setPasswordValue] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const onSubmit = function (data) {
-    userRepository.resetPassword(data).then((result) => {
-      if (result) {
-        AlertAction.show({
-          type: "success",
-          text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
-        })
-      }
-    })
+    setLoading(true)
+    userRepository
+      .resetPassword(data)
+      .then((result) => {
+        setLoading(false)
+        if (result) {
+          AlertAction.show({
+            type: "success",
+            text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
+          })
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const onBackToLogin = function () {
@@ -114,6 +122,7 @@ const Forget = function () {
               type="primary"
               className={classes.submitButton}
               onClick={handleSubmit(onSubmit)}
+              loading={loading}
             />
           </Grid>
           <Grid item xs={12}>
