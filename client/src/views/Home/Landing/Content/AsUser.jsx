@@ -32,9 +32,9 @@ const AsUser = function (props) {
       </Grid>
 
       <Grid item xs={12} className={classes.gameList}>
-        <GameBox color="primary" label="Covidopoly" type="covidopoly" isUser />
-        <GameBox color="warning" label="Mafia" type="mafia" isUser />
-        <GameBox color="info" label="Pictionary" type="pictionary" isUser />
+        <GameBox color="primary" label="Covidopoly" type="covidopoly" user={user} />
+        <GameBox color="warning" label="Mafia" type="mafia" user={user} />
+        <GameBox color="info" label="Pictionary" type="pictionary" user={user} />
         <GameBox
           color="success"
           label="Forbidden Island"

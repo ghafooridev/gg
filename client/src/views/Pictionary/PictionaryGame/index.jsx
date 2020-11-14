@@ -10,7 +10,7 @@ import Card from "src/components/sharedComponents/Card"
 import InfoBox from "src/components/sharedComponents/InfoBox"
 import { styles } from "../Pictionary.Style"
 
-import PictionaryFrame from "../PictionaryFrame"
+import PictionaryFrame from "../PictionaryFrame/Canvas"
 
 const PictionaryGame = function () {
   const classes = styles()

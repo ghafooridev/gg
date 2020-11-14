@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
@@ -9,15 +9,44 @@ import Button from "src/components/sharedComponents/Button"
 import Card from "src/components/sharedComponents/Card"
 import InfoBox from "src/components/sharedComponents/InfoBox"
 import { useHistory } from "react-router-dom"
+import queryString from "query-string"
+import io from "socket.io-client"
+import ChatBox from "src/components/sharedComponents/ChatBox"
 import { styles } from "../Pictionary.Style"
+
+const ENDPOINT = "localhost:5000"
+let socket
 
 const PictionaryLobby = function () {
   const classes = styles()
   const history = useHistory()
 
+  const [messages, setMessages] = useState([])
+
   const onPlayClick = function () {
     history.push("pictionary-game?123")
   }
+
+  const onSendClick = function (message) {
+    socket.emit("sendMessage", message, () => {})
+  }
+  const { username, game } = queryString.parse(location.search)
+  useEffect(() => {
+
+    socket = io(ENDPOINT)
+    socket.emit("join", { username, game }, () => {})
+
+    return () => {
+      socket.emit("disconnect")
+      socket.off()
+    }
+  }, [])
+
+  useEffect(() => {
+    socket.on("message", (text) => {
+      setMessages([...messages, text])
+    })
+  }, [messages])
 
   return (
     <Grid container className={classes.root}>
@@ -71,16 +100,7 @@ const PictionaryLobby = function () {
             />
             <Button label="submit" />
           </Card>
-          <Card className={classes.itemCard}>
-            <Typography variant="h5" className={classes.title}>
-              Chat
-            </Typography>
-            <Grid item xs={12} className={classes.chatBox} />
-            <Grid item xs={12} className={classes.chatEntry}>
-              <TextField label="Type here ..." />
-              <Button label="send" />
-            </Grid>
-          </Card>
+          <ChatBox messages={messages} username={username} onSendClick={onSendClick} />
         </Grid>
       </Grid>
     </Grid>

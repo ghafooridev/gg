@@ -16,7 +16,7 @@ import { styles } from "./GameBox.Style"
 
 const GameBox = function (props) {
   const classes = styles(props)
-  const { label, isUser, type } = props
+  const { label, user, type } = props
   const history = useHistory()
 
   const loadGameImage = function () {
@@ -33,7 +33,7 @@ const GameBox = function (props) {
   }
 
   const onPlayClick = function () {
-    history.push(`${type}-lobby`)
+    history.push(`${type}-lobby?username=${user.username}&game=${type}`)
   }
 
   return (
@@ -44,7 +44,7 @@ const GameBox = function (props) {
           <h2 className={classes.color}>{label}</h2>
         </figcaption>
       </figure>
-      {isUser && (
+      {user && (
         <Button
           label="play now"
           type="primary"

@@ -89,10 +89,10 @@ const Register = function () {
                 label="Email"
                 icon="mail"
                 inputRef={register({
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
-                    message: validationMessage("Email address", "pattern"),
-                  },
+                  // pattern: {
+                  //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
+                  //   message: validationMessage("Email address", "pattern"),
+                  // },
                   required: validationMessage("Email address", "required"),
                 })}
                 error={errors.email}

@@ -60,4 +60,9 @@ router.get("/", allUsers)
  */
 router.delete("/:userId", removeUser)
 
+router.post('/paint', (req, res) => {
+  pusher.trigger('painting', 'draw', req.body);
+  res.json(req.body);
+});
+
 module.exports = router
