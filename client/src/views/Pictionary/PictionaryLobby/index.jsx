@@ -13,6 +13,7 @@ import queryString from "query-string"
 import io from "socket.io-client"
 import ChatBox from "src/components/sharedComponents/ChatBox"
 import Constant from "src/utils/Constant"
+import chatRepository from "src/repositories/chat"
 import { styles } from "../Pictionary.Style"
 
 const ENDPOINT = "localhost:5000"
@@ -44,6 +45,10 @@ const PictionaryLobby = function () {
   useEffect(() => {
     socket = io(ENDPOINT)
     socket.emit("join", { username, game })
+
+    chatRepository.getChatByGame(game).then((chats) => {
+      setMessages([...messages, ...chats])
+    })
 
     return () => {
       socket.emit("disconnect")
@@ -77,7 +82,7 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
-        disabled={Constant.GAMES.PICTIONARY_MIN_USER >= users.length}
+        disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item xs={12} className={classes.col}>
@@ -97,7 +102,8 @@ const PictionaryLobby = function () {
         <Grid item xs={12} className={classes.middleCol}>
           <Card className={classes.itemCard}>
             <Typography variant="h5" className={classes.title}>
-              IN QUEUE ({users.length}/{Constant.GAMES.PICTIONARY_MIN_USER})
+              IN QUEUE ({users.length}/
+              {Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER})
             </Typography>
             {users.map((item, index) => {
               return (

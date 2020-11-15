@@ -10,6 +10,7 @@ module.exports = Object.freeze({
       "Business Inquiry",
       "Other",
     ],
+    GAMES: ["PICTIONARY", "MAFIA", "FORBIDDEN_ISLAND", "COVIDOPOLY"],
   },
   VALIDATION_TYPE: {
     INVALID: "invalid",
@@ -24,5 +25,6 @@ module.exports = Object.freeze({
       "A verification email has been sent to your Email. It will be expire after one day",
     REGISTER_DUPLICATE_EMAIL: "This Email address hase been taken",
     NOT_VERIFIED_USER: "Your account has not been verified",
+    CHATS_NOT_FOUND:"Chats not found"
   },
 })

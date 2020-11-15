@@ -9,8 +9,8 @@ const {
   getUserByUsername,
 } = require("../utils/User")
 
-const joinGame = function (socket, io) {
-  socket.on("join", ({ username, game }, callback) => {
+const joinLobby = function (socket, io) {
+  socket.on("join.lobby", ({ username, game }, callback) => {
     const { user } = addUser({ id: socket.id, username, game }).then(() => {
       socket.emit("message", {
         username: "GG BOT",
@@ -23,13 +23,13 @@ const joinGame = function (socket, io) {
       })
 
       socket.join(game)
-      io.to(game).emit("updateUserList", getUserInGame(game))
+      io.to(game).emit("users.lobby", getUserInGame(game))
     })
   })
 }
 
-const sendMessage = function (socket, io) {
-  socket.on("sendMessage", ({ username, message }, callback) => {
+const chatLobby = function (socket, io) {
+  socket.on("chat.lobby", ({ username, message }, callback) => {
     const user = getUserByUsername(username)
     if (user) {
       io.to(user.game).emit("message", {
@@ -53,30 +53,17 @@ const sendMessage = function (socket, io) {
   })
 }
 
-const paint = function (socket, io) {
-  socket.on("paint", (options, callback) => {
-    const { line, username, color, size } = options
-    const user = getUser(socket.id)
-    io.emit("draw", {
-      username,
-      line,
-      color,
-      size,
-    })
 
-    callback()
-  })
-}
 
-const disconnect = function (socket, io) {
-  socket.on("leave", ({ username }) => {
+const leaveLobby = function (socket, io) {
+  socket.on("leave.lobby", ({ username }) => {
     const user = removeUserByUsername(username)
     if (user) {
       io.to(user.game).emit("message", {
-        username: "Admin",
+        username: "GG BOT",
         message: `${user.username} has left the ${user.game}`,
       })
-      io.to(user.game).emit("updateUserList", getUserInGame(user.game))
+      io.to(user.game).emit("users.lobby", getUserInGame(user.game))
     }
   })
 }

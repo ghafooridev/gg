@@ -21,10 +21,10 @@ const GameBox = function (props) {
 
   const loadGameImage = function () {
     const types = {
-      covidopoly: Covidopoly,
-      pictionary: Pictionary,
-      forbidden: ForbiddenIsland,
-      mafia: Mafia,
+      COVIDOPOLY: Covidopoly,
+      PICTIONARY: Pictionary,
+      FORBIDDEN_ISLAND: ForbiddenIsland,
+      MAFIA: Mafia,
     }
 
     if (types[type]) {

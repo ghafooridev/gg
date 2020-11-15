@@ -118,7 +118,7 @@ const Canvas = function ({ username, game }) {
     })
   }
 
-  const createCanvas=function(){
+  const createCanvas = function () {
     canvas.current.width = 600
     canvas.current.height = 500
     ctx = canvas.current.getContext("2d")
@@ -127,7 +127,7 @@ const Canvas = function ({ username, game }) {
   }
 
   useEffect(() => {
-  createCanvas()
+    createCanvas()
     socket = io(ENDPOINT)
     socket.on("draw", (options) => {
       const { username, line, color, size } = options

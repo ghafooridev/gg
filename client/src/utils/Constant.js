@@ -6,6 +6,12 @@ const Constant = {
       { id: "Business Inquiry", value: "Business Inquiry" },
       { id: "Other", value: "Other" },
     ],
+    GAMES: {
+      PICTIONARY: "PICTIONARY",
+      COVIDOPOLY: "COVIDOPOLY",
+      FORBIDDEN_ISLAND: "FORBIDDEN_ISLAND",
+      MAFIA: "MAFIA",
+    },
   },
   ACTION_TYPES: {
     SHOW_ALERT: "SHOW_ALERT",
@@ -31,8 +37,8 @@ const Constant = {
     REGISTER: "REGISTER",
     FORGET: "FORGET",
   },
-  GAMES: {
-    PICTIONARY_MIN_USER: 3,
+  GAMES_CONDITIONS: {
+    PICTIONARY_MIN_USER: 2,
   },
 }
 export default Constant

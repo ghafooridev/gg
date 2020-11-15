@@ -6,6 +6,7 @@ import GameBox from "src/components/sharedComponents/GameBox"
 import Button from "src/components/sharedComponents/Button"
 import Card from "src/components/sharedComponents/Card"
 
+import Constant from "src/utils/Constant"
 import { styles } from "../Landing.Style"
 
 const AsUser = function (props) {
@@ -32,14 +33,29 @@ const AsUser = function (props) {
       </Grid>
 
       <Grid item xs={12} className={classes.gameList}>
-        <GameBox color="primary" label="Covidopoly" type="covidopoly" user={user} />
-        <GameBox color="warning" label="Mafia" type="mafia" user={user} />
-        <GameBox color="info" label="Pictionary" type="pictionary" user={user} />
+        <GameBox
+          color="primary"
+          label="Covidopoly"
+          type={Constant.ENUMS.GAMES.COVIDOPOLY}
+          user={user}
+        />
+        <GameBox
+          color="warning"
+          label="Mafia"
+          type={Constant.ENUMS.GAMES.MAFIA}
+          user={user}
+        />
+        <GameBox
+          color="info"
+          label="Pictionary"
+          type={Constant.ENUMS.GAMES.PICTIONARY}
+          user={user}
+        />
         <GameBox
           color="success"
           label="Forbidden Island"
-          type="forbidden"
-          isUser
+          type={Constant.ENUMS.GAMES.FORBIDDEN_ISLAND}
+          user={user}
         />
       </Grid>
     </>

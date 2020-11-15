@@ -1,10 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 
-import { Grid, Typography } from "@material-ui/core"
-
-import TextField from "src/components/sharedComponents/TextField"
-
-import Button from "src/components/sharedComponents/Button"
+import { Typography } from "@material-ui/core"
 
 import ScrollToBottom from "react-scroll-to-bottom"
 
@@ -22,7 +18,7 @@ const Messages = function ({ messages, username }) {
               variant="subtitle2"
               color={message.username === username ? "primary" : "textPrimary"}
             >
-              {message.username} :
+              {message.username === username ? "Me" : message.username} :
             </Typography>
             <Typography variant="caption" color="textSecondary">
               {message.message}

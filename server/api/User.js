@@ -19,14 +19,14 @@ const router = express.Router()
 router.get("/confirmation/:email/:token", confirmationEmail)
 
 /*
- * @route  get api/user/register
+ * @route  post api/user/register
  * @desc   register User
  * @access public
  */
 router.post("/register", registerUser)
 
 /*
- * @route  put api/user/resetPassword
+ * @route  post api/user/resetPassword
  * @desc   reset user password
  * @access public
  */
@@ -60,9 +60,5 @@ router.get("/", allUsers)
  */
 router.delete("/:userId", removeUser)
 
-router.post('/paint', (req, res) => {
-  pusher.trigger('painting', 'draw', req.body);
-  res.json(req.body);
-});
 
 module.exports = router

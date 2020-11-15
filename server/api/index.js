@@ -10,6 +10,7 @@ const user = require("./User")
 const room = require("./roomApi")
 const lobby = require("./lobbyApi")
 const feedback = require("./Feedback")
+const chat = require("./Chat")
 
 const router = express.Router()
 
@@ -43,5 +44,6 @@ router.use("/user", user)
 router.use("/room", room)
 router.use("/lobby", lobby)
 router.use("/feedback", feedback)
+router.use("/chat", chat)
 
 module.exports = router
