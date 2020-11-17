@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
@@ -10,9 +10,16 @@ import Card from "src/components/sharedComponents/Card"
 import Messages from "src/components/sharedComponents/ChatBox/Messages"
 import { styles } from "./ChatBox.Style"
 
-const ChatBox = function ({ messages, onSendClick, username }) {
+const ChatBox = function ({
+  messages,
+  fetchMessages,
+  onSendClick,
+  username,
+  title,
+}) {
   const classes = styles()
   const [message, setMessage] = useState("")
+  const [list, setList] = useState([])
 
   const onChange = function ({ value }) {
     setMessage(value)
@@ -25,13 +32,23 @@ const ChatBox = function ({ messages, onSendClick, username }) {
     }
   }
 
+  useEffect(() => {
+    if (fetchMessages) {
+      setList([...fetchMessages])
+    }
+  }, [fetchMessages])
+
+  useEffect(() => {
+    setList([...list, messages])
+  }, [messages])
+
   return (
     <Card className={classes.itemCard}>
       <Typography variant="h5" className={classes.title}>
-        Chat
+        {title}
       </Typography>
       <Grid item xs={12} className={classes.chatBox}>
-        <Messages messages={messages} username={username} />
+        <Messages messages={list} username={username} />
       </Grid>
       <Grid item xs={12} className={classes.chatEntry}>
         <TextField
@@ -46,4 +63,4 @@ const ChatBox = function ({ messages, onSendClick, username }) {
   )
 }
 
-export default ChatBox
+export default React.memo(ChatBox)

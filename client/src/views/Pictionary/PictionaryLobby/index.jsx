@@ -26,6 +26,7 @@ const PictionaryLobby = function () {
   const history = useHistory()
 
   const [messages, setMessages] = useState([])
+  const [fetchMessages, setFetchMessages] = useState([])
   const [users, setUsers] = useState([])
 
   const onPlayClick = function () {
@@ -33,37 +34,37 @@ const PictionaryLobby = function () {
   }
 
   const onSendClick = function (message) {
-    socket.emit("sendMessage", { username, message }, () => {})
+    socket.emit("chat.lobby", { username, message }, () => {})
   }
 
   const onLeaveClick = function () {
-    socket.emit("leave", { username, game })
+    socket.emit("leave.lobby", { username, game })
     socket.off()
     history.push("home")
   }
 
   useEffect(() => {
     socket = io(ENDPOINT)
-    socket.emit("join", { username, game })
+    socket.emit("join.lobby", { username, game })
 
     chatRepository.getChatByGame(game).then((chats) => {
-      setMessages([...messages, ...chats])
+      setFetchMessages(chats)
     })
 
     return () => {
-      socket.emit("disconnect")
-      socket.off()
+      // socket.emit("leave.lobby", { username, game })
+      // socket.off()
     }
   }, [game, username])
 
   useEffect(() => {
     socket.on("message", (message) => {
-      setMessages([...messages, message])
+      setMessages(message)
     })
   }, [messages])
 
   useEffect(() => {
-    socket.on("updateUserList", (users) => {
+    socket.on("users.lobby", (users) => {
       setUsers(users)
     })
   }, [users])
@@ -82,7 +83,7 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
-        disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
+       // disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item xs={12} className={classes.col}>
@@ -130,7 +131,9 @@ const PictionaryLobby = function () {
             <Button label="submit" />
           </Card>
           <ChatBox
+            title="Chat"
             messages={messages}
+            fetchMessages={fetchMessages}
             username={username}
             onSendClick={onSendClick}
           />

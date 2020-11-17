@@ -1,47 +1,102 @@
 const UserModel = require("../models/User")
 
-const users = []
+let users = []
 
-const addUser = async function ({ id, username, game }) {
+const addUser = async function ({ id, username, game, place, NOP }) {
   const existingUser = users.find(
-    (user) => user.username === username && user.game === game
+    (user) =>
+      user.username === username && user.game === game && user.place === place
   )
-  // let user
+
   if (!existingUser) {
     const result = await UserModel.findOne({ username })
-    const user = { id, username, game, university: result.university }
+    const user = {
+      id,
+      username,
+      game,
+      university: result.university,
+      place,
+      NOP,
+    }
     users.push(user)
 
     return { user }
   }
 }
 
-const removeUser = function (id) {
-  const index = users.findIndex((user) => user.id === id)
+const removeUser = function (id, place) {
+  const index = users.findIndex(
+    (user) => user.id === id && user.place === place
+  )
 
   if (index !== -1) {
     return users.splice(index, 1)[0]
   }
 }
-const removeUserByUsername = function (username) {
-  const index = users.findIndex((user) => user.username === username)
+
+const removeUserByUsername = function (username, place) {
+  const index = users.findIndex(
+    (user) => user.username === username && user.place === place
+  )
 
   if (index !== -1) {
     return users.splice(index, 1)[0]
   }
 }
 
-const getUser = function (id) {
-  return users.find((user) => user.id === id)
+const getUser = function (id, place) {
+  return users.find((user) => user.id === id && user.place === place)
 }
 
-const getUserByUsername = function (username) {
-
-  return users.find((user) => user.username === username)
+const getUserByUsername = function (username, place) {
+  return users.find(
+    (user) => user.username === username && user.place === place
+  )
 }
 
-const getUserInGame = function (game) {
-  return users.filter((user) => user.game === game)
+const getAllUsers = function (game, place) {
+  return users.filter((user) => user.game === game && user.place === place)
 }
 
-module.exports = { addUser, removeUser, getUser, getUserInGame ,removeUserByUsername,getUserByUsername}
+const updateUsersAfterTurn = function (game, place, turn) {
+  const filteredUser = users.filter(
+    (user) => user.game === game && user.place === place
+  )
+  const index = filteredUser.findIndex((item) => item.username === turn)
+  const updateUsers = [...filteredUser]
+  if (index !== -1) {
+    updateUsers[index] = {
+      ...updateUsers[index],
+      NOP: updateUsers[index].NOP + 1,
+    }
+    users = [...updateUsers]
+    return users
+  }
+}
+
+const getUserTurnByUsername = function () {
+  const lastPlayer = users.find((user) => user.NOP === 0)
+
+  if (lastPlayer) {
+    return lastPlayer.username
+  }
+  let minPlayPlayer = users[0]
+  users.forEach((user) => {
+    if (user.NOP < minPlayPlayer.NOP) {
+      minPlayPlayer = user
+    }
+  })
+
+  return minPlayPlayer.username
+}
+
+module.exports = {
+  addUser,
+  removeUser,
+  getUser,
+  removeUserByUsername,
+  getUserByUsername,
+  getAllUsers,
+  getUserTurnByUsername,
+  updateUsersAfterTurn,
+}

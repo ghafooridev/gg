@@ -2,16 +2,19 @@ const Chat = require("../models/Chat")
 
 const {
   addUser,
-  getUser,
-  getUserInGame,
-  removeUser,
+  getAllUsers,
   removeUserByUsername,
   getUserByUsername,
 } = require("../utils/User")
 
 const joinLobby = function (socket, io) {
   socket.on("join.lobby", ({ username, game }, callback) => {
-    const { user } = addUser({ id: socket.id, username, game }).then(() => {
+    const { user } = addUser({
+      id: socket.id,
+      username,
+      game,
+      place: "lobby",
+    }).then(() => {
       socket.emit("message", {
         username: "GG BOT",
         message: `${username},welcome to ${game}`,
@@ -23,14 +26,14 @@ const joinLobby = function (socket, io) {
       })
 
       socket.join(game)
-      io.to(game).emit("users.lobby", getUserInGame(game))
+      io.to(game).emit("users.lobby", getAllUsers(game, "lobby"))
     })
   })
 }
 
 const chatLobby = function (socket, io) {
   socket.on("chat.lobby", ({ username, message }, callback) => {
-    const user = getUserByUsername(username)
+    const user = getUserByUsername(username,"lobby")
     if (user) {
       io.to(user.game).emit("message", {
         username: user.username,
@@ -53,19 +56,17 @@ const chatLobby = function (socket, io) {
   })
 }
 
-
-
 const leaveLobby = function (socket, io) {
   socket.on("leave.lobby", ({ username }) => {
-    const user = removeUserByUsername(username)
+    const user = removeUserByUsername(username, "lobby")
     if (user) {
       io.to(user.game).emit("message", {
         username: "GG BOT",
         message: `${user.username} has left the ${user.game}`,
       })
-      io.to(user.game).emit("users.lobby", getUserInGame(user.game))
+      io.to(user.game).emit("users.lobby", getAllUsers(user.game, "lobby"))
     }
   })
 }
 
-module.exports = { joinGame, sendMessage, disconnect, paint }
+module.exports = { joinLobby, chatLobby, leaveLobby }

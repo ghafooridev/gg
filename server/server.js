@@ -1,5 +1,6 @@
 require("dotenv").config()
 const express = require("express")
+const passport = require("passport")
 
 const app = express()
 const bodyParser = require("body-parser")
@@ -17,13 +18,25 @@ const path = require("path")
 const http = require("http")
 const fs = require("fs")
 const https = require("https")
+ const passportConfig = require("./utils/passport")
 
 const { ROOM_CLEAN_INTERVAL } = require("./config")
 const api = require("./api")
 
 const socketHelper = require("./helpers/socketHelper")
 
-const { joinGame, sendMessage, disconnect,paint } = require("./sockets/User")
+const { joinLobby, chatLobby, leaveLobby } = require("./sockets/Lobby")
+const {
+  joinGame,
+  guessGame,
+  leaveGame,
+  paintGame,
+  selectWord,
+  showResult,
+  getUsersTurn,
+  updateUsers,
+  hideResult,
+} = require("./sockets/Game")
 
 let server = http.createServer(app)
 
@@ -40,10 +53,19 @@ if (process.env.PROD) {
 const io = socketio(server)
 
 io.on("connection", (socket) => {
+  joinLobby(socket, io)
+  chatLobby(socket, io)
+  leaveLobby(socket, io)
+
   joinGame(socket, io)
-  sendMessage(socket, io)
-  disconnect(socket, io)
-  paint(socket,io)
+  guessGame(socket, io)
+  leaveGame(socket, io)
+  paintGame(socket, io)
+  selectWord(socket, io)
+  showResult(socket, io)
+  getUsersTurn(socket, io)
+  updateUsers(socket, io)
+  hideResult(socket, io)
 })
 // // socket connection event
 // io.on("connection", (socket) => {
@@ -172,6 +194,10 @@ io.on("connection", (socket) => {
 // })
 
 // attach to api router
+
+app.use(passport.initialize())
+passportConfig(passport)
+
 app.use("/api", api)
 
 // clean rooms periodically

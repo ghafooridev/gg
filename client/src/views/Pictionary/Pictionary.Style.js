@@ -55,4 +55,30 @@ export const styles = makeStyles((theme) => ({
   pictionaryPanel: {
     margin: "0 20px",
   },
+  pictionaryInfo: {
+    display: "flex",
+    width: 600,
+    justifyContent: "space-between",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  clue: {
+    display: "flex",
+    padding: 15,
+    "& span": {
+      display: "flex",
+      flexDirection: "column",
+      margin: "0 5px",
+      alignItems: "center",
+      width: 10,
+
+    },
+  },
+  underline: {
+    width: 10,
+    borderTop: "3px solid #000",
+  },
+  countdown: {
+    padding: 15,
+  },
 }))

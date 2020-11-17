@@ -1,0 +1,26 @@
+import React from "react"
+import { Grid, Typography } from "@material-ui/core"
+import samplesize from "lodash.samplesize"
+import { words } from "src/utils/Words"
+import Button from "src/components/sharedComponents/Button"
+
+const ChooseWord = function (props) {
+  const { onAction } = props
+
+  const onSelectWord = function (item) {
+    // onAction(onAction("submit", item))
+    onAction("submit", item)
+  }
+
+  return (
+    <Grid container xs={12}>
+      {samplesize(words, 3).map((item, index) => {
+        return (
+          <Button key={index} label={item} onClick={() => onSelectWord(item)} />
+        )
+      })}
+    </Grid>
+  )
+}
+
+export default ChooseWord

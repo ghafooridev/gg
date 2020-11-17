@@ -7,7 +7,7 @@ import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 
 import store from "./redux/store"
-import Dialog from "./components/sharedComponents/Dialog"
+import Dialog from "./components/sharedComponents/Modal"
 
 ReactDOM.render(
   <Provider store={store}>

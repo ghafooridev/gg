@@ -3,6 +3,8 @@ import clsx from "clsx"
 import { Grid } from "@material-ui/core"
 import io from "socket.io-client"
 import { styles } from "./PictionaryFrame.Style"
+import pen from "../../../assets/images/pen.png"
+import erase from "../../../assets/images/eraser.png"
 
 const PALETTE = {
   BLACK: "#000",
@@ -21,7 +23,7 @@ let socket
 
 const ENDPOINT = "localhost:5000"
 
-const Canvas = function ({ username, game }) {
+const Canvas = function ({ username, turn }) {
   const classes = styles()
   const canvas = useRef(null)
   let ctx
@@ -31,9 +33,12 @@ const Canvas = function ({ username, game }) {
 
   let line = []
   let prevPos = { offsetX: 0, offsetY: 0 }
-
   const onClickColor = function (pointColor) {
     brushColor = pointColor
+  }
+
+  const isMyTurn = function () {
+    return username === turn
   }
 
   const onClickSize = function (pointSize) {
@@ -44,6 +49,12 @@ const Canvas = function ({ username, game }) {
     ctx = canvas.current.getContext("2d")
     ctx.fillStyle = "white"
     ctx.fillRect(0, 0, 600, 500)
+    const options = {
+      line: [],
+    }
+    socket.emit("paint.game", options, () => {
+      line = []
+    })
   }
 
   const onUndoClick = function () {
@@ -68,28 +79,10 @@ const Canvas = function ({ username, game }) {
   }
 
   const onMouseDown = function ({ nativeEvent }) {
-    const { offsetX, offsetY } = nativeEvent
-    isPainting = true
-    prevPos = { offsetX, offsetY }
-  }
-
-  const onMouseMove = function ({ nativeEvent }) {
-    if (isPainting) {
+    if (isMyTurn()) {
       const { offsetX, offsetY } = nativeEvent
-      const offSetData = { offsetX, offsetY }
-      const position = {
-        start: { ...prevPos },
-        stop: { ...offSetData },
-      }
-      line = line.concat(position)
-      paint(prevPos, offSetData, { color: brushColor, size: brushSize })
-    }
-  }
-
-  const endPaintEvent = function () {
-    if (isPainting) {
-      isPainting = false
-      sendPaintData()
+      isPainting = true
+      prevPos = { offsetX, offsetY }
     }
   }
 
@@ -106,6 +99,19 @@ const Canvas = function ({ username, game }) {
     prevPos = { offsetX, offsetY }
   }
 
+  const onMouseMove = function ({ nativeEvent }) {
+    if (isPainting) {
+      const { offsetX, offsetY } = nativeEvent
+      const offSetData = { offsetX, offsetY }
+      const position = {
+        start: { ...prevPos },
+        stop: { ...offSetData },
+      }
+      line = line.concat(position)
+      paint(prevPos, offSetData, { color: brushColor, size: brushSize })
+    }
+  }
+
   const sendPaintData = function () {
     const options = {
       line,
@@ -113,9 +119,16 @@ const Canvas = function ({ username, game }) {
       size: brushSize,
       username,
     }
-    socket.emit("paint", options, () => {
+    socket.emit("paint.game", options, () => {
       line = []
     })
+  }
+
+  const endPaintEvent = function () {
+    if (isPainting) {
+      isPainting = false
+      sendPaintData()
+    }
   }
 
   const createCanvas = function () {
@@ -128,87 +141,95 @@ const Canvas = function ({ username, game }) {
 
   useEffect(() => {
     createCanvas()
+
     socket = io(ENDPOINT)
+
     socket.on("draw", (options) => {
       const { username, line, color, size } = options
       // if (username !== this.username) {
       line.forEach((position) => {
         paint(position.start, position.stop, { color, size })
       })
+
+      if (!line.length) {
+        ctx.fillStyle = "white"
+        ctx.fillRect(0, 0, 600, 500)
+      }
       //  }
     })
-    return () => {
-      socket.emit("disconnect")
-      socket.off()
-    }
-  }, [])
+  }, [line])
 
   return (
-    <>
+    <div>
       <canvas
         ref={canvas}
-        style={{ background: "#fff" }}
+        style={{
+          background: "#fff",
+          cursor: isMyTurn() ? `url('${pen}') 0 30, auto` : "not-allowed",
+        }}
         onMouseDown={onMouseDown}
         onMouseLeave={endPaintEvent}
         onMouseUp={endPaintEvent}
         onMouseMove={onMouseMove}
       />
-      <Grid item className={classes.toolbar}>
-        <Grid item xs={2} className={classes.item}>
-          <Point
-            size="sm"
-            color={PALETTE.BLACK}
-            onClick={() => onClickSize(SIZE.SM)}
-          />
-          <Point
-            size="md"
-            color={PALETTE.BLACK}
-            onClick={() => onClickSize(SIZE.MD)}
-          />
-          <Point
-            size="lg"
-            color={PALETTE.BLACK}
-            onClick={() => onClickSize(SIZE.LG)}
-          />
+      {isMyTurn() && (
+        <Grid item className={classes.toolbar}>
+          <Grid item xs={2} className={classes.item}>
+            <Point
+              size="sm"
+              color={PALETTE.BLACK}
+              onClick={() => onClickSize(SIZE.SM)}
+            />
+            <Point
+              size="md"
+              color={PALETTE.BLACK}
+              onClick={() => onClickSize(SIZE.MD)}
+            />
+            <Point
+              size="lg"
+              color={PALETTE.BLACK}
+              onClick={() => onClickSize(SIZE.LG)}
+            />
+          </Grid>
+          <Grid item xs={4} className={classes.item}>
+            <Point
+              className={classes.color}
+              color={PALETTE.BLUE}
+              onClick={() => onClickColor(PALETTE.BLUE)}
+            />
+            <Point
+              className={classes.color}
+              color={PALETTE.YELLOW}
+              onClick={() => onClickColor(PALETTE.YELLOW)}
+            />
+            <Point
+              className={classes.color}
+              color={PALETTE.GREEN}
+              onClick={() => onClickColor(PALETTE.GREEN)}
+            />
+            <Point
+              className={classes.color}
+              color={PALETTE.RED}
+              onClick={() => onClickColor(PALETTE.RED)}
+            />
+            <Point
+              className={classes.color}
+              color={PALETTE.PURPLE}
+              onClick={() => onClickColor(PALETTE.PURPLE)}
+            />
+          </Grid>
+          <Grid item xs={2} className={classes.item}>
+            <i className="material-icons" onClick={onUndoClick}>
+              image_aspect_ratio
+            </i>
+            <i className="material-icons" onClick={onClearClick}>
+              clear
+            </i>
+          </Grid>
         </Grid>
-        <Grid item xs={4} className={classes.item}>
-          <Point
-            className={classes.color}
-            color={PALETTE.BLUE}
-            onClick={() => onClickColor(PALETTE.BLUE)}
-          />
-          <Point
-            className={classes.color}
-            color={PALETTE.YELLOW}
-            onClick={() => onClickColor(PALETTE.YELLOW)}
-          />
-          <Point
-            className={classes.color}
-            color={PALETTE.GREEN}
-            onClick={() => onClickColor(PALETTE.GREEN)}
-          />
-          <Point
-            className={classes.color}
-            color={PALETTE.RED}
-            onClick={() => onClickColor(PALETTE.RED)}
-          />
-          <Point
-            className={classes.color}
-            color={PALETTE.PURPLE}
-            onClick={() => onClickColor(PALETTE.PURPLE)}
-          />
-        </Grid>
-        <Grid item xs={2} className={classes.item}>
-          <i className="material-icons" onClick={onClearClick}>
-            clear
-          </i>
-          <i className="material-icons" onClick={onUndoClick}>
-            refresh
-          </i>
-        </Grid>
-      </Grid>
-    </>
+      )}
+    </div>
   )
 }
 
-export default Canvas
+export default React.memo(Canvas)
