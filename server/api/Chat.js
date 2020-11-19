@@ -22,10 +22,10 @@ router.get("/all/:game", allChats)
 router.post("/", addChat)
 
 /*
- * @route  delete api/chat/:userId
+ * @route  delete api/chat/all/:game
  * @desc   remove all chats by game
  * @access public
  */
-router.delete("/:userId", removeChats)
+router.delete("/all/:game", removeChats)
 
 module.exports = router

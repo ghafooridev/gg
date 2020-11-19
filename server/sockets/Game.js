@@ -70,8 +70,8 @@ const selectWord = function (socket, io) {
 }
 
 const getUsersTurn = function (socket, io) {
-  socket.on("usersTurn.game", (callback) => {
-    io.emit("usersTurn.game", getUserTurnByUsername())
+  socket.on("usersTurn.game", (preTurn, callback) => {
+    io.emit("usersTurn.game", getUserTurnByUsername(preTurn))
     if (typeof callback === "function") {
       callback()
     }
@@ -87,7 +87,6 @@ const updateUsers = function (socket, io) {
 const updatePoints = function (socket, io) {
   socket.on("usersUpdatePoint.game", ({ game, username }) => {
     io.emit("usersUpdatePoint.game", updateUserPoint(game, "game", username))
-
   })
 }
 
@@ -106,6 +105,21 @@ const hideResult = function (socket, io) {
     if (typeof callback === "function") {
       callback()
     }
+  })
+}
+
+const countDown = function (socket, io) {
+  let counter = 60
+  socket.on("timer.game", (callback) => {
+    const timer = setInterval(() => {
+      counter -= 1
+      if (counter === 0) {
+        counter = 60
+        clearInterval(timer)
+        return io.emit("timersUp.game")
+      }
+      io.emit("timer.game", counter)
+    }, 1000)
   })
 }
 
@@ -130,4 +144,5 @@ module.exports = {
   hideResult,
   removeGuess,
   updatePoints,
+  countDown,
 }

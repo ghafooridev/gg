@@ -2,7 +2,7 @@ const UserModel = require("../models/User")
 
 let users = []
 
-const addUser = async function ({ id, username, game, place, NOP,point }) {
+const addUser = async function ({ id, username, game, place, NOP, point }) {
   const existingUser = users.find(
     (user) =>
       user.username === username && user.game === game && user.place === place
@@ -17,7 +17,7 @@ const addUser = async function ({ id, username, game, place, NOP,point }) {
       university: result.university,
       place,
       NOP,
-      point
+      point,
     }
     users.push(user)
 
@@ -75,8 +75,7 @@ const updateUsersAfterTurn = function (game, place, turn) {
   }
 }
 
-
-const updateUserPoint = function (game, place,username) {
+const updateUserPoint = function (game, place, username) {
   const filteredUser = users.filter(
     (user) => user.game === game && user.place === place
   )
@@ -88,11 +87,12 @@ const updateUserPoint = function (game, place,username) {
       point: updateUsers[index].point + 100,
     }
     users = [...updateUsers]
+
     return users
   }
 }
 
-const getUserTurnByUsername = function () {
+const getUserTurnByUsername = function (preTurn) {
   const lastPlayer = users.find((user) => user.NOP === 0)
 
   if (lastPlayer) {
@@ -120,5 +120,5 @@ module.exports = {
   getAllUsers,
   getUserTurnByUsername,
   updateUsersAfterTurn,
-  updateUserPoint
+  updateUserPoint,
 }

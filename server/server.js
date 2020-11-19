@@ -12,7 +12,7 @@ app.use(
     extended: true,
   })
 )
-const socketio = require("socket.io")
+
 const path = require("path")
 
 const http = require("http")
@@ -25,20 +25,7 @@ const api = require("./api")
 
 const socketHelper = require("./helpers/socketHelper")
 
-const { joinLobby, chatLobby, leaveLobby } = require("./sockets/Lobby")
-const {
-  joinGame,
-  guessGame,
-  leaveGame,
-  paintGame,
-  selectWord,
-  showResult,
-  getUsersTurn,
-  updateUsers,
-  hideResult,
-  removeGuess,
-  updatePoints,
-} = require("./sockets/Game")
+const connections = require("./sockets/index")
 
 let server = http.createServer(app)
 
@@ -52,25 +39,8 @@ if (process.env.PROD) {
   )
 }
 
-const io = socketio(server)
+connections(server)
 
-io.on("connection", (socket) => {
-  joinLobby(socket, io)
-  chatLobby(socket, io)
-  leaveLobby(socket, io)
-
-  joinGame(socket, io)
-  guessGame(socket, io)
-  leaveGame(socket, io)
-  paintGame(socket, io)
-  selectWord(socket, io)
-  showResult(socket, io)
-  getUsersTurn(socket, io)
-  updateUsers(socket, io)
-  hideResult(socket, io)
-  removeGuess(socket, io)
-  updatePoints(socket, io)
-})
 // // socket connection event
 // io.on("connection", (socket) => {
 //   // user joins room

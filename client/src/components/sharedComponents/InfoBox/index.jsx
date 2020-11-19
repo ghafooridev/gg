@@ -6,7 +6,7 @@ import clsx from "clsx"
 
 import Chip from "src/components/sharedComponents/Chip"
 import { styles } from "./InfoBox.Style"
-import Gif from "../../../assets/images/gif2.gif"
+import Gif from "../../../assets/images/p.png"
 
 const InfoBox = function (props) {
   const { labels, gameCount, point, title, subTitle, className ,turn} = props

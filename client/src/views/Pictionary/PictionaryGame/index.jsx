@@ -36,6 +36,7 @@ const PictionaryGame = function () {
   const [isPlaying, setIsPlaying] = useState(false)
   const [showResult, setShowResult] = useState(false)
   const [removeGuess, setRemoveGuess] = useState(false)
+  const [timer, setTimer] = useState(60)
 
   const onSendClick = function (message) {
     socket.emit("guess.game", { username, message }, () => {})
@@ -47,8 +48,9 @@ const PictionaryGame = function () {
     history.push("home")
   }
 
-  const onShowChoseWordDialog = function () {
-    if (turn === username) {
+  const onShowChoseWordDialog = function (nextTurn) {
+    console.log('AAAAAAAA')
+    if (nextTurn === username) {
       dialogAction.show({
         component: <ChooseWord />,
         title: "Choose a word",
@@ -58,15 +60,17 @@ const PictionaryGame = function () {
             setWord(data)
             dialogAction.hide()
             socket.emit("wordSelect.game", data)
+            socket.emit("timer.game")
           }
         },
       })
     }
   }
 
-  const getUserTurn = function () {
+  const getUserTurn = function (nextTurn) {
+    console.log("xsss")
     if (users.length) {
-      socket.emit("usersTurn.game", () => {})
+      socket.emit("usersTurn.game", nextTurn)
     }
   }
 
@@ -86,11 +90,15 @@ const PictionaryGame = function () {
   }
 
   const onTimesUp = function () {
-    setWord("")
+    // console.log("state", turn)
+    // if (game && turn) {
+    // setWord("")
     setIsPlaying(false)
     socket.emit("usersUpdate.game", { game, turn })
-    socket.emit("guessRemove.game", { game })
-    onShowResult()
+    // socket.emit("guessRemove.game", { game })
+    getUserTurn(turn)
+    // onShowResult()
+    // }
   }
 
   const checkReloadPage = function () {
@@ -101,30 +109,39 @@ const PictionaryGame = function () {
   }
 
   const guessCorrectly = function (username) {
-    console.log("xx")
     socket.emit("usersUpdatePoint.game", { game, username })
-    socket.on("usersUpdatePoint.game",(users)=>{
-      console.log(users)
+    socket.on("usersUpdatePoint.game", (users) => {
       setUsers(users)
     })
   }
 
   useEffect(() => {
-    onShowChoseWordDialog(turn)
-  }, [turn])
-
-  useEffect(() => {
     socket = io(ENDPOINT)
     socket.emit("join.game", { username, game })
-
     checkReloadPage()
   }, [game, username])
 
   useEffect(() => {
-    socket.on("guessRemove.game", () => {
-      setRemoveGuess(true)
+    socket.on("usersTurn.game", (nextTurn) => {
+      console.log(nextTurn,'---',turn)
+      if(nextTurn !==turn) {
+        onShowChoseWordDialog(nextTurn)
+        setTurn(nextTurn)
+      }
     })
-  }, [isPlaying])
+    return () => {
+      socket.off("usersTurn.game")
+    }
+  }, [turn])
+
+  useEffect(() => {
+    socket.on("timersUp.game", () => {
+      onTimesUp()
+    })
+    return () => {
+      socket.off("timersUp.game")
+    }
+  }, [timer])
 
   useEffect(() => {
     socket.on("hideResult.game", () => {
@@ -140,39 +157,57 @@ const PictionaryGame = function () {
     })
   }, [guess])
 
-  useEffect(() => {
-    socket.on("users.game", (users) => {
-      setUsers(users)
-
-      if (!isPlaying) {
-        getUserTurn()
-      }
-    })
-    socket.on("usersTurn.game", (turn) => {
-      setTurn(turn)
-    })
-    socket.on("usersUpdate.game", (users) => {
-      setUsers(users)
-    })
-  }, [users])
+  // useEffect(() => {
+  //   socket.on("usersTurn.game", (nextTurn) => {
+  //     console.log(turn, "-", nextTurn)
+  //     setTurn(nextTurn)
+  //   })
+  // }, [])
 
   useEffect(() => {
     socket.on("wordShow.game", (data) => {
       setWord(data)
     })
-    socket.on("showResult.game", () => {
-      dialogAction.show({
-        component: <GameResult users={users} />,
-        title: "result",
-        size: "sm",
-        onAction: () => {
-          dialogAction.hide()
-          socket.emit("hideResult.game")
-          getUserTurn()
-        },
-      })
+    // socket.on("showResult.game", () => {
+    //   dialogAction.show({
+    //     component: <GameResult users={users} />,
+    //     title: "result",
+    //     size: "sm",
+    //     onAction: () => {
+    //       dialogAction.hide()
+    //       socket.emit("hideResult.game")
+    //       getUserTurn()
+    //     },
+    //   })
+    // })
+    socket.on("timer.game", (timer) => {
+      setTimer(timer)
     })
   }, [word])
+
+  useEffect(() => {
+    socket.on("guessRemove.game", () => {
+      setRemoveGuess(true)
+    })
+  }, [isPlaying])
+  useEffect(() => {
+    socket.on("users.game", (users) => {
+      setUsers(users)
+      if (!isPlaying) {
+        getUserTurn()
+      }
+    })
+    // socket.on("usersTurn.game", (nextTurn) => {
+    //   console.log(turn, "-", nextTurn)
+    //   setTurn(nextTurn)
+    // })
+    // socket.on("usersUpdate.game", (updatedUsers) => {
+    //   console.log("userupdate", updatedUsers)
+    //   if (updatedUsers) {
+    //     setUsers(updatedUsers)
+    //   }
+    // })
+  }, [users])
 
   return (
     <Grid container className={classes.root}>
@@ -203,7 +238,7 @@ const PictionaryGame = function () {
         <Grid item sm={12} md={6} className={classes.pictionaryPanel}>
           <Card className={classes.itemCard}>
             <Grid item xs={12} className={classes.pictionaryInfo}>
-              <CountDown onTimesUp={onTimesUp} isStart={!!word} />
+              <CountDown isStart={!!word} timer={timer} />
 
               <Clue word={word} username={username} turn={turn} />
             </Grid>
