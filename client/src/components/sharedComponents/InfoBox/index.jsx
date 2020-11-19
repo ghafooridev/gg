@@ -9,8 +9,8 @@ import { styles } from "./InfoBox.Style"
 import Gif from "../../../assets/images/gif2.gif"
 
 const InfoBox = function (props) {
-  const { labels, gameCount, point, title, subTitle, className } = props
-  const classes = styles()
+  const { labels, gameCount, point, title, subTitle, className ,turn} = props
+  const classes = styles(props)
 
   return (
     <Paper className={clsx(classes.root, className)}>

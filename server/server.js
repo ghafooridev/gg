@@ -18,7 +18,7 @@ const path = require("path")
 const http = require("http")
 const fs = require("fs")
 const https = require("https")
- const passportConfig = require("./utils/passport")
+const passportConfig = require("./utils/passport")
 
 const { ROOM_CLEAN_INTERVAL } = require("./config")
 const api = require("./api")
@@ -36,6 +36,8 @@ const {
   getUsersTurn,
   updateUsers,
   hideResult,
+  removeGuess,
+  updatePoints,
 } = require("./sockets/Game")
 
 let server = http.createServer(app)
@@ -66,6 +68,8 @@ io.on("connection", (socket) => {
   getUsersTurn(socket, io)
   updateUsers(socket, io)
   hideResult(socket, io)
+  removeGuess(socket, io)
+  updatePoints(socket, io)
 })
 // // socket connection event
 // io.on("connection", (socket) => {

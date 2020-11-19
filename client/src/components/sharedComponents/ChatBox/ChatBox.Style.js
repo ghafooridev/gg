@@ -1,6 +1,9 @@
 import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
+  scroll:{
+    height:200
+  },
   itemCard: {
     borderRadius: 10,
     marginTop: 50,
@@ -29,5 +32,14 @@ export const styles = makeStyles((theme) => ({
   message: {
     display: "flex",
     alignItems: "center",
+    padding: 5,
+    margin: 5,
+  },
+  chatContent: {
+    marginLeft: 2,
+  },
+  guessed: {
+    backgroundColor: theme.palette.success.main,
+    borderRadius: 10,
   },
 }))

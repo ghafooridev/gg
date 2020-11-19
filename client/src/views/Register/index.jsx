@@ -83,7 +83,6 @@ const Register = function () {
                 name="name"
                 label="Full name"
                 icon="account_circle"
-                defaultValue="xxx"
                 inputRef={register({
                   required: validationMessage("Full Name", "required"),
                 })}

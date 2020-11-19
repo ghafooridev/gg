@@ -54,6 +54,12 @@ export default {
       fontWeight: 400,
       fontSize: 18,
     },
+    body1: {
+      fontSize: 16,
+    },
+    body2: {
+      fontSize: 15,
+    },
   },
   direction: "ltr",
   spacing: 5,

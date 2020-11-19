@@ -51,7 +51,9 @@ const Canvas = function ({ username, turn }) {
     ctx.fillRect(0, 0, 600, 500)
     const options = {
       line: [],
+      clear: true,
     }
+
     socket.emit("paint.game", options, () => {
       line = []
     })
@@ -118,6 +120,7 @@ const Canvas = function ({ username, turn }) {
       color: brushColor,
       size: brushSize,
       username,
+      clear: false,
     }
     socket.emit("paint.game", options, () => {
       line = []
@@ -145,13 +148,13 @@ const Canvas = function ({ username, turn }) {
     socket = io(ENDPOINT)
 
     socket.on("draw", (options) => {
-      const { username, line, color, size } = options
+      const { username, line, color, size, clear } = options
       // if (username !== this.username) {
       line.forEach((position) => {
         paint(position.start, position.stop, { color, size })
       })
 
-      if (!line.length) {
+      if (clear) {
         ctx.fillStyle = "white"
         ctx.fillRect(0, 0, 600, 500)
       }

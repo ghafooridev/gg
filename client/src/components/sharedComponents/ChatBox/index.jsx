@@ -16,6 +16,9 @@ const ChatBox = function ({
   onSendClick,
   username,
   title,
+  word,
+  removeGuess,
+  guessCorrectly,
 }) {
   const classes = styles()
   const [message, setMessage] = useState("")
@@ -39,8 +42,23 @@ const ChatBox = function ({
   }, [fetchMessages])
 
   useEffect(() => {
+    if (messages.message === word) {
+      if (typeof guessCorrectly === "function") {
+        guessCorrectly(messages.username)
+      }
+      return setList([
+        ...list,
+        { username: messages.username, message: "GUESS_CORRECTLY" },
+      ])
+    }
     setList([...list, messages])
   }, [messages])
+
+  useEffect(() => {
+    if (removeGuess) {
+      return setList([])
+    }
+  }, [removeGuess])
 
   return (
     <Card className={classes.itemCard}>

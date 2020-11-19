@@ -30,19 +30,13 @@ const CountDown = function ({ onTimesUp, isStart }) {
     onTimesUp()
   }
 
-  // useEffect(()=>{
-  //   if(turn){
-  //
-  //   }
-  // },[turn])
-
   useEffect(() => {
     if (isStart) {
       const timer = setInterval(() => {
-
         setProgress((prevProgress) => prevProgress - 1)
-        if (progress === -1) {
+        if (progress === 1) {
           clearInterval(timer)
+          setProgress(60)
           return onEnd()
         }
       }, 1000)

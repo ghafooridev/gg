@@ -14,6 +14,7 @@ export const styles = makeStyles((theme) => ({
       width: "100%",
       marginBottom: 10,
     },
+    backgroundColor: (props) => props.turn && theme.palette.info.light,
   },
   top: {
     display: "flex",

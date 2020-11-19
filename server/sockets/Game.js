@@ -7,6 +7,7 @@ const {
   getUserByUsername,
   getUserTurnByUsername,
   updateUsersAfterTurn,
+  updateUserPoint,
 } = require("../utils/User")
 
 const joinGame = function (socket, io) {
@@ -17,6 +18,7 @@ const joinGame = function (socket, io) {
       game,
       place: "game",
       NOP: 0,
+      point: 0,
     }).then(() => {
       socket.join(game)
       io.to(game).emit("users.game", getAllUsers(game, "game"))
@@ -36,15 +38,22 @@ const guessGame = function (socket, io) {
   })
 }
 
+const removeGuess = function (socket, io) {
+  socket.on("guessRemove.game", ({ game }, callback) => {
+    io.to(game).emit("guessRemove.game")
+  })
+}
+
 const paintGame = function (socket, io) {
   socket.on("paint.game", (options, callback) => {
-    const { line, username, color, size } = options
+    const { line, username, color, size, clear } = options
     // const user = getUser(socket.id)
     io.emit("draw", {
       username,
       line,
       color,
       size,
+      clear,
     })
 
     callback()
@@ -72,6 +81,13 @@ const getUsersTurn = function (socket, io) {
 const updateUsers = function (socket, io) {
   socket.on("usersUpdate.game", ({ game, turn }) => {
     io.emit("usersUpdate.game", updateUsersAfterTurn(game, "game", turn))
+  })
+}
+
+const updatePoints = function (socket, io) {
+  socket.on("usersUpdatePoint.game", ({ game, username }) => {
+    io.emit("usersUpdatePoint.game", updateUserPoint(game, "game", username))
+
   })
 }
 
@@ -111,5 +127,7 @@ module.exports = {
   showResult,
   getUsersTurn,
   updateUsers,
-  hideResult
+  hideResult,
+  removeGuess,
+  updatePoints,
 }

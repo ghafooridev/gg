@@ -14,9 +14,6 @@ import InfoBox from "src/components/sharedComponents/InfoBox"
 import ChatBox from "src/components/sharedComponents/ChatBox"
 
 import dialogAction from "src/redux/actions/dialogAction"
-import Register from "src/views/Register"
-import userRepository from "src/repositories/user"
-import AlertAction from "src/redux/actions/AlertAction"
 import ChooseWord from "../ChooseWord"
 import { styles } from "../Pictionary.Style"
 import PictionaryFrame from "../PictionaryFrame/Canvas"
@@ -38,6 +35,7 @@ const PictionaryGame = function () {
   const [turn, setTurn] = useState("")
   const [isPlaying, setIsPlaying] = useState(false)
   const [showResult, setShowResult] = useState(false)
+  const [removeGuess, setRemoveGuess] = useState(false)
 
   const onSendClick = function (message) {
     socket.emit("guess.game", { username, message }, () => {})
@@ -76,8 +74,9 @@ const PictionaryGame = function () {
     setShowResult(true)
     socket.emit("showResult.game", () => {
       dialogAction.show({
-        component: <GameResult />,
+        component: <GameResult users={users} />,
         title: "Result",
+        size: "sm",
         onAction: () => {
           dialogAction.hide()
           socket.emit("hideResult.game")
@@ -90,7 +89,24 @@ const PictionaryGame = function () {
     setWord("")
     setIsPlaying(false)
     socket.emit("usersUpdate.game", { game, turn })
+    socket.emit("guessRemove.game", { game })
     onShowResult()
+  }
+
+  const checkReloadPage = function () {
+    if (history.action === "POP") {
+      dialogAction.hide()
+      onLeaveClick()
+    }
+  }
+
+  const guessCorrectly = function (username) {
+    console.log("xx")
+    socket.emit("usersUpdatePoint.game", { game, username })
+    socket.on("usersUpdatePoint.game",(users)=>{
+      console.log(users)
+      setUsers(users)
+    })
   }
 
   useEffect(() => {
@@ -101,11 +117,14 @@ const PictionaryGame = function () {
     socket = io(ENDPOINT)
     socket.emit("join.game", { username, game })
 
-    // return () => {
-    //   socket.emit("leave.game", { username, game })
-    //   socket.off()
-    // }
+    checkReloadPage()
   }, [game, username])
+
+  useEffect(() => {
+    socket.on("guessRemove.game", () => {
+      setRemoveGuess(true)
+    })
+  }, [isPlaying])
 
   useEffect(() => {
     socket.on("hideResult.game", () => {
@@ -143,15 +162,18 @@ const PictionaryGame = function () {
     })
     socket.on("showResult.game", () => {
       dialogAction.show({
-        component: <GameResult />,
-        title: "Result",
+        component: <GameResult users={users} />,
+        title: "result",
+        size: "sm",
         onAction: () => {
+          dialogAction.hide()
+          socket.emit("hideResult.game")
           getUserTurn()
         },
       })
     })
   }, [word])
-  console.log("x")
+
   return (
     <Grid container className={classes.root}>
       <Grid item xs={12} className={classes.topPanel}>
@@ -163,36 +185,40 @@ const PictionaryGame = function () {
             <Typography variant="h5" className={classes.title}>
               Players
             </Typography>
-            {users.map((item, index) => {
-              return (
-                <InfoBox
-                  key={index}
-                  title={item.username}
-                  subTitle={item.university}
-                  point={`${item.NOP}${item.username === turn && "*"}`}
-                />
-              )
-            })}
+            {users &&
+              users.map((item, index) => {
+                return (
+                  <InfoBox
+                    key={index}
+                    title={item.username}
+                    subTitle={item.university}
+                    point={item.NOP}
+                    turn={item.username === turn}
+                  />
+                )
+              })}
             <Button label="leave queue" onClick={onLeaveClick} />
           </Card>
         </Grid>
         <Grid item sm={12} md={6} className={classes.pictionaryPanel}>
           <Card className={classes.itemCard}>
             <Grid item xs={12} className={classes.pictionaryInfo}>
-              {username === turn && (
-                <CountDown onTimesUp={onTimesUp} isStart={!!word} />
-              )}
+              <CountDown onTimesUp={onTimesUp} isStart={!!word} />
+
               <Clue word={word} username={username} turn={turn} />
             </Grid>
             <PictionaryFrame username={username} turn={turn} />
           </Card>
         </Grid>
-        <Grid item sm={12} md={3} className={classes.pictionaryPanel}>
+        <Grid item sm={12} md={3} className={classes.col}>
           <ChatBox
             title="Guess"
             messages={guess}
             username={username}
             onSendClick={onSendClick}
+            word={word}
+            removeGuess={removeGuess}
+            guessCorrectly={guessCorrectly}
           />
         </Grid>
       </Grid>

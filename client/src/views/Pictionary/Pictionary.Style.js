@@ -71,7 +71,6 @@ export const styles = makeStyles((theme) => ({
       margin: "0 5px",
       alignItems: "center",
       width: 10,
-
     },
   },
   underline: {
@@ -80,5 +79,22 @@ export const styles = makeStyles((theme) => ({
   },
   countdown: {
     padding: 15,
+  },
+  chooseWordContainer: {
+    display: "flex",
+    justifyContent: "space-evenly",
+  },
+  resultTableContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  resultTableRow: {
+    display: "flex",
+    justifyContent: "flex-start",
+    "& h5": {
+      width: 200,
+      height: 40,
+    },
   },
 }))
