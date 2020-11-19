@@ -49,7 +49,6 @@ const PictionaryGame = function () {
   }
 
   const onShowChoseWordDialog = function (nextTurn) {
-    console.log('AAAAAAAA')
     if (nextTurn === username) {
       dialogAction.show({
         component: <ChooseWord />,
@@ -68,7 +67,6 @@ const PictionaryGame = function () {
   }
 
   const getUserTurn = function (nextTurn) {
-    console.log("xsss")
     if (users.length) {
       socket.emit("usersTurn.game", nextTurn)
     }
@@ -90,7 +88,7 @@ const PictionaryGame = function () {
   }
 
   const onTimesUp = function () {
-    // console.log("state", turn)
+
     // if (game && turn) {
     // setWord("")
     setIsPlaying(false)
@@ -123,7 +121,6 @@ const PictionaryGame = function () {
 
   useEffect(() => {
     socket.on("usersTurn.game", (nextTurn) => {
-      console.log(nextTurn,'---',turn)
       if(nextTurn !==turn) {
         onShowChoseWordDialog(nextTurn)
         setTurn(nextTurn)
@@ -137,6 +134,7 @@ const PictionaryGame = function () {
   useEffect(() => {
     socket.on("timersUp.game", () => {
       onTimesUp()
+      setTimer(60)
     })
     return () => {
       socket.off("timersUp.game")
