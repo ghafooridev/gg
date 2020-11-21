@@ -1,6 +1,9 @@
 export default {
   palette: {
     type: "light",
+    background: {
+      default: "#fff",
+    },
     primary: {
       main: "#E63F3F",
     },
@@ -34,6 +37,15 @@ export default {
       dark: "#5a5a5a",
       darker: "#424242",
     },
+    custom: {
+      gray: "#C4C4C4",
+      grayBlue: "#3B3F55",
+      darkBlue: "#1F2436",
+      bgBlue: "#151828",
+      almostBlack: "#111111",
+      lightestBlue: "#E6EAEF",
+      lightGray: "#F2F2F2",
+    },
   },
   typography: {
     fontFamily: "Asap",
@@ -42,23 +54,30 @@ export default {
       fontWeight: 600,
       fontSize: 48,
     },
-    h4: {
+    h3: {
       fontWeight: 600,
       fontSize: 36,
+    },
+    h4: {
+      fontWeight: 600,
+      fontSize: 28,
     },
     h5: {
       fontWeight: 600,
       fontSize: 22,
     },
     h6: {
-      fontWeight: 400,
+      fontWeight: 800,
+      fontSize: 18,
+    },
+    subtitle1: {
       fontSize: 18,
     },
     body1: {
       fontSize: 16,
     },
     body2: {
-      fontSize: 15,
+      fontSize: 14,
     },
   },
   direction: "ltr",

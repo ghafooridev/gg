@@ -1,10 +1,10 @@
 import React from "react"
 
+import Intro from "src/views/Home/Intro"
+import Update from "src/views/Home/Update"
 import Landing from "./Landing"
 
 import { styles } from "./Home.Style"
-import Intro from "src/views/Home/Intro";
-import Update from "src/views/Home/Update";
 
 const Forget = function () {
   const classes = styles()
@@ -12,8 +12,8 @@ const Forget = function () {
   return (
     <div>
       <Landing />
-      <Intro/>
-      <Update/>
+      <Intro />
+      <Update />
     </div>
   )
 }

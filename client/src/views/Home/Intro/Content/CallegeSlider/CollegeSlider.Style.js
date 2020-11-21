@@ -2,11 +2,22 @@ import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
   root: {
-    marginBottom: 100,
+    margin: "100px 0",
+    padding: "10px 40px 40px",
+    borderRadius: 20,
+    backgroundColor:
+      theme.palette.type === "dark"
+        ? theme.palette.custom.lightestBlue
+        : theme.palette.custom.lightGray,
   },
   title: {
-    textAlign: "center",
-    margin: "75px 0 50px",
+    textAlign: "left",
+    margin: "20px 0 10px",
+    color: theme.palette.custom.bgBlue,
+  },
+  subTitle: {
+    marginBottom: 50,
+    color: theme.palette.custom.bgBlue,
   },
   image: {
     width: 130,

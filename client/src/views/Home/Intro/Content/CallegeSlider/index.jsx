@@ -24,9 +24,12 @@ const Intro = function () {
   ]
   return (
     <div className={classes.root}>
-      <Typography variant="h4" className={classes.title}>
+      <Typography variant="h3" className={classes.title}>
         Who is playing ?
       </Typography>
+        <Typography variant="subtitle1" className={classes.subTitle}>
+            Over 10+ universities are part of the GGchat community. Don’t see your school here? Sign up today for free!
+        </Typography>
       <Carousel
         ref={carousel}
         itemsToScroll={1}

@@ -5,7 +5,11 @@ export const styles = makeStyles((theme) => ({
     padding: 10,
     marginBottom: 10,
     boxShadow: "none",
-    border: `1px solid ${theme.palette.grey.light}`,
+    borderRadius: 10,
+    border:
+      theme.palette.type === "dark"
+        ? "none"
+        : `1px solid ${theme.palette.grey.light}`,
     [theme.breakpoints.down("sm")]: {
       width: "100%",
       marginBottom: 10,
@@ -14,7 +18,8 @@ export const styles = makeStyles((theme) => ({
       width: "100%",
       marginBottom: 10,
     },
-    backgroundColor: (props) => props.turn && theme.palette.info.light,
+    backgroundColor:
+      theme.palette.type === "dark" && theme.palette.custom.grayBlue,
   },
   top: {
     display: "flex",

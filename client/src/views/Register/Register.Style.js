@@ -1,36 +1,41 @@
 import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
-  leftPanel: {
+  root: {
+    margin: "100px auto",
+  },
+  container: {
+    padding: "50px 100px 0",
+  },
+  curves: {
+    top: 260,
+  },
+  inputs: {
+    marginTop: 30,
     display: "flex",
     flexDirection: "column",
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
-    "& img": {
-      width: "100%",
-    },
-    justifyContent: "center",
-    alignItems: "center",
   },
-  title: {
-    textAlign: "center",
-    padding: "20px 0",
+  input: {
+    zIndex: 1,
   },
+  row: {
+    display: "flex",
+    flex: 1,
+    justifyContent: "space-between",
+    margin: "10px 0",
+  },
+  item: {
+    margin: "0 5px",
+  },
+  title: {},
   subTitle: {
-    textAlign: "center",
-    paddingBottom: 20,
+    margin: "10px 0",
+    zIndex: 1,
   },
   submitButton: {
-    width: "100%",
+    zIndex: 1,
   },
-  link: {
-    fontSize: 10,
-    color: theme.palette.grey.main,
-    cursor: "pointer",
-    textDecoration: "none",
-    "&:hover": {
-      color: theme.palette.primary.main,
-    },
-  },
+    dropDown:{
+      margin:"10px 5px"
+    }
 }))

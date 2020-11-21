@@ -31,7 +31,9 @@ export default function SimplePopover({ user }) {
     userAction.logout()
   }
 
-  const onSettingClick = function () {}
+  const onSettingClick = function () {
+    history.push("profile")
+  }
 
   return (
     <>

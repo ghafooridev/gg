@@ -20,7 +20,7 @@ const InfoBox = function (props) {
         </Grid>
         <Grid item xs={10} className={classes.topRight}>
           <Grid item xs={12} className={classes.topRightUP}>
-            <Typography variant="subtitle2" className={classes.subTitle}>
+            <Typography variant="h6" className={classes.subTitle}>
               {title}
             </Typography>
             {point && (

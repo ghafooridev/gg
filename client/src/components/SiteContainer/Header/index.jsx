@@ -44,6 +44,9 @@ const Header = function () {
       inviteFriend: () => {
         alert("not implemented")
       },
+      home: () => {
+        history.push("home")
+      },
     }
 
     if (types[type]) {
@@ -54,7 +57,7 @@ const Header = function () {
   return (
     <div className={classes.root}>
       <Grid container className={classes.container}>
-        <img alt="logo" src={Logo} className={classes.logo} />
+        <img alt="logo" src={Logo} className={classes.logo}  onClick={() => onMenuClick("home")}/>
         <div className={classes.menu}>
           <Grid item className={classes.hamburger}>
             <Hamburger

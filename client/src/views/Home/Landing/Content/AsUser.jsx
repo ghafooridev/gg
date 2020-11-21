@@ -17,9 +17,8 @@ const AsUser = function (props) {
     <>
       <Card className={classes.jumbotron}>
         <Grid item xs={12}>
-          <Typography variant="h2">Hey {user.name} !</Typography>
-          <Typography variant="h6">
-            Welcome back to GGchat. let's play ...
+          <Typography variant="h3">
+            Hey {user.name} ! Welcome back to GGchat. let's play ...
           </Typography>
         </Grid>
         <Button

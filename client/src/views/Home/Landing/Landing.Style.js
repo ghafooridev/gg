@@ -18,5 +18,8 @@ export const styles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     padding: "40px 30px",
+    backgroundColor: `${
+      theme.palette.type === "light" && theme.palette.custom.lightGray
+    } !important`,
   },
 }))

@@ -9,7 +9,7 @@ const AsUser = function () {
 
   return (
     <div>
-      <Grid container className={classes.root}>
+      <Grid container className={classes.container}>
         <Typography variant="h4" className={classes.userInfoTitle}>
           Top Players
         </Typography>

@@ -12,6 +12,7 @@ import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button"
 import LoginContainer from "src/components/sharedComponents/LoginContainer"
 import userAction from "src/redux/actions/UserAction"
+import JoyStick from "src/components/sharedComponents/JoyStick"
 import SignInLogo from "../../assets/images/login.png"
 import { styles } from "./Login.Style"
 
@@ -34,85 +35,68 @@ const Login = function () {
       })
   }
 
-  const onRegister = function () {
-    history.push("register")
-  }
-
-  const onForgetPassword = function () {
-    history.push("forget-password")
-  }
+  // const onRegister = function () {
+  //   history.push("register")
+  // }
+  //
+  // const onForgetPassword = function () {
+  //   history.push("forget-password")
+  // }
 
   return (
-    <LoginContainer>
-      <Grid item xs={12} className={classes.leftPanel}>
-        <img alt="logo" src={SignInLogo} />
-        <a
-          href="https://www.freepikcompany.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.link}
-        >
-          Image created by freepikcompany.com
-        </a>
-      </Grid>
+    <Grid item xs={6} className={classes.root}>
+      <JoyStick>
+        <Grid item xs={12} className={classes.container}>
+          <Typography variant="h3" className={classes.title}>
+            Sign In
+          </Typography>
+          <Typography
+            variant="body2"
+            className={classes.subTitle}
+            color="textSecondary"
+          >
+            Don’t have an account? Sign up for free here.
+          </Typography>
+          <Grid container spacing={3} className={classes.inputs}>
+            <Grid item xs={12}>
+              <TextField
+                name="username"
+                label="Username"
+                icon="account_circle"
+                inputRef={register({
+                  required: validationMessage("Username", "required"),
+                })}
+                className={classes.input}
+                error={errors.username}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Password
+                name="password"
+                label="Password"
+                icon="lock_open"
+                inputRef={register({
+                  required: validationMessage("Password", "required"),
+                })}
+                className={classes.input}
+                error={errors.password}
+                onEnter={handleSubmit(onSubmit)}
+              />
+            </Grid>
 
-      <Grid item xs={12}>
-        <Typography variant="h4" className={classes.title}>
-          Welcome
-        </Typography>
-        <Typography
-          variant="body2"
-          className={classes.subTitle}
-          color="textSecondary"
-        >
-          log in to your account
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <TextField
-              name="username"
-              label="Username"
-              icon="account_circle"
-              inputRef={register({
-                required: validationMessage("Username", "required"),
-              })}
-              error={errors.username}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Password
-              name="password"
-              label="Password"
-              icon="lock_open"
-              inputRef={register({
-                required: validationMessage("Password", "required"),
-              })}
-              error={errors.password}
-              onEnter={handleSubmit(onSubmit)}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Button
-              label="submit"
-              type="primary"
-              className={classes.submitButton}
-              onClick={handleSubmit(onSubmit)}
-              loading={loading}
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.footer}>
-            <div className={classes.footerLink} onClick={onForgetPassword}>
-              <Typography variant="button">Forget Password</Typography>
-              <i className="material-icons">vpn_key</i>
-            </div>
-            <div className={classes.footerLink} onClick={onRegister}>
-              <Typography variant="button">create new account</Typography>
-              <i className="material-icons">person_add</i>
-            </div>
+            <Grid item xs={12} className={classes.input}>
+              <Button
+                label="submit"
+                type="primary"
+                className={classes.submitButton}
+                onClick={handleSubmit(onSubmit)}
+                loading={loading}
+              />
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    </LoginContainer>
+      </JoyStick>
+    </Grid>
   )
 }
 

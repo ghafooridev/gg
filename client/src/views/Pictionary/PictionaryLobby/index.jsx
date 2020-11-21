@@ -73,8 +73,8 @@ const PictionaryLobby = function () {
     <Grid container className={classes.root}>
       <Grid item xs={12} className={classes.topPanel}>
         <Card className={classes.jumbotron}>
-          <Typography variant="h2">waiting for other players</Typography>
-          <Typography variant="h6">
+          <Typography variant="h3">waiting for other players</Typography>
+          <Typography variant="body2">
             47 other people playing Pictionary right now
           </Typography>
         </Card>

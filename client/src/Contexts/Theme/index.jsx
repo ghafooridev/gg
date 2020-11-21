@@ -11,13 +11,31 @@ const ThemeContextProvider = (props) => {
     Theme,
   })
 
+  const setBackGround = (type) => {
+    if (type === "light") {
+      return {
+        paper: "#fff",
+        default: "#fff",
+      }
+    }
+
+    return {
+      paper: theme.Theme.palette.custom.darkBlue,
+      default: theme.Theme.palette.custom.bgBlue,
+    }
+  }
+
   const toggleTheme = () => {
     const newPaletteType =
       theme.Theme.palette.type === "light" ? "dark" : "light"
     setTheme({
       Theme: {
         ...theme.Theme,
-        palette: { ...theme.Theme.palette, type: newPaletteType },
+        palette: {
+          ...theme.Theme.palette,
+          type: newPaletteType,
+          background: setBackGround(newPaletteType),
+        },
       },
     })
   }

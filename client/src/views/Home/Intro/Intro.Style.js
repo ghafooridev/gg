@@ -4,6 +4,11 @@ export const styles = makeStyles((theme) => ({
   root: {
     margin: "100px 0",
   },
+  container:{
+    backgroundColor:theme.palette.custom.lightestBlue,
+    borderRadius:20,
+    padding:"25px 45px"
+  },
   leftPanel: {
     "& img": {
       width: "100%",
@@ -32,7 +37,8 @@ export const styles = makeStyles((theme) => ({
     },
   },
   userInfoTitle: {
-    margin: "50px 0 20px",
+    margin: "20px 0 20px",
+    color:theme.palette.custom.bgBlue
   },
   infoBox: {
     width: "24%",

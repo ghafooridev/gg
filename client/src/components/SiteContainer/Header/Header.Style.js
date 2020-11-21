@@ -4,7 +4,7 @@ export const styles = makeStyles((theme) => ({
   root: {
     bottom: "auto",
     top: 0,
-    backgroundColor: theme.palette.type === "light" ? "#fff" : "#303030",
+    backgroundColor: theme.palette.type === "light" ? "#fff" : theme.palette.custom.bgBlue,
     position: "sticky",
     zIndex: 1000,
   },

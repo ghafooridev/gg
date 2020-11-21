@@ -11,16 +11,16 @@ const AsGuest = function () {
 
   return (
     <div>
-      <Grid container className={classes.root}>
+      <Grid container >
         <Grid item xs={12} sm={6} className={classes.leftPanel}>
           <img alt="animation" src={Gif} />
         </Grid>
         <Grid item xs={12} sm={6} className={classes.rightPanel}>
-          <Typography variant="h4" className={classes.title}>
+          <Typography variant="h3" className={classes.title}>
             Welcome to GGchat, the new social gaming platform.
           </Typography>
           <Typography
-            variant="body2"
+            variant="subtitle1"
             className={classes.subTitle}
             color="textSecondary"
           >

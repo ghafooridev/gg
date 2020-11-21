@@ -15,7 +15,8 @@ import { useHistory } from "react-router-dom"
 import LoginContainer from "src/components/sharedComponents/LoginContainer"
 import UniversitySelector from "src/components/sharedComponents/UnivercitySelector"
 import { findCollegeId } from "src/helpers/utils"
-import RegisterLogo from "../../assets/images/register.png"
+import JoyStick from "src/components/sharedComponents/JoyStick"
+import clsx from "clsx"
 import { styles } from "./Register.Style"
 
 const Register = function () {
@@ -48,124 +49,112 @@ const Register = function () {
       })
   }
 
-  const onBackToLogin = function () {
-    history.push("login")
-  }
-
   return (
-    <LoginContainer>
-      <Grid item xs={12} className={classes.leftPanel}>
-        <img alt="logo" src={RegisterLogo} />
-        <a
-          href="https://www.freepikcompany.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className={classes.link}
-        >
-          Image created by freepikcompany.com
-        </a>
-      </Grid>
-      <Grid item xs={12}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Typography variant="h4" className={classes.title}>
+    <Grid item xs={6} className={classes.root}>
+      <JoyStick curveClass={classes.curves}>
+        <Grid item xs={12} className={classes.container}>
+          <Typography variant="h3" className={classes.title}>
             Sign Up
           </Typography>
-          <Typography
-            variant="body2"
-            className={classes.subTitle}
-            color="textSecondary"
-          >
-            Create a New account
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                name="name"
-                label="Full name"
-                icon="account_circle"
-                inputRef={register({
-                  required: validationMessage("Full Name", "required"),
-                })}
-                error={errors.name}
-              />
+          <Grid spacing={3} className={classes.inputs}>
+            <Grid className={classes.row}>
+              <Grid item xs={6} className={classes.item}>
+                <TextField
+                  name="name"
+                  label="Full name"
+                  icon="account_circle"
+                  inputRef={register({
+                    required: validationMessage("Full Name", "required"),
+                  })}
+                  className={classes.input}
+                  error={errors.name}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <TextField
+                  name="email"
+                  label="Email"
+                  icon="mail"
+                  inputRef={register({
+                    // pattern: {
+                    //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
+                    //   message: validationMessage("Email address", "pattern"),
+                    // },
+                    required: validationMessage("Email address", "required"),
+                  })}
+                  className={classes.input}
+                  error={errors.email}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name="email"
-                label="Email"
-                icon="mail"
-                inputRef={register({
-                  // pattern: {
-                  //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
-                  //   message: validationMessage("Email address", "pattern"),
-                  // },
-                  required: validationMessage("Email address", "required"),
-                })}
-                error={errors.email}
-              />
+            <Grid className={classes.row}>
+              <Grid item xs={6} className={classes.item}>
+                <TextField
+                  name="username"
+                  label="Username"
+                  icon="account_circle"
+                  inputRef={register({
+                    required: validationMessage("Username", "required"),
+                  })}
+                  className={classes.input}
+                  error={errors.username}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <Password
+                  name="password"
+                  label="Password"
+                  icon="lock_open"
+                  inputRef={register({
+                    required: validationMessage("Password", "required"),
+                  })}
+                  className={classes.input}
+                  error={errors.password}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                name="username"
-                label="Username"
-                icon="account_circle"
-                inputRef={register({
-                  required: validationMessage("Username", "required"),
-                })}
-                error={errors.username}
-              />
+            <Grid className={classes.dropDown}>
+              <Grid item xs={12}>
+                {/* <Selector */}
+                {/*  name="university" */}
+                {/*  label="University" */}
+                {/*  icon="account_circle" */}
+                {/*  inputRef={register({ */}
+                {/*    required: validationMessage("University", "required"), */}
+                {/*  })} */}
+                {/*  error={errors.university} */}
+                {/*  options={collegeList} */}
+                {/* /> */}
+                <UniversitySelector
+                  name="university"
+                  inputRef={register({
+                    required: validationMessage("University", "required"),
+                  })}
+                  className={classes.input}
+                  error={errors.university}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Password
-                name="password"
-                label="Password"
-                icon="lock_open"
-                inputRef={register({
-                  required: validationMessage("Password", "required"),
-                })}
-                error={errors.password}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              {/* <Selector */}
-              {/*  name="university" */}
-              {/*  label="University" */}
-              {/*  icon="account_circle" */}
-              {/*  inputRef={register({ */}
-              {/*    required: validationMessage("University", "required"), */}
-              {/*  })} */}
-              {/*  error={errors.university} */}
-              {/*  options={collegeList} */}
-              {/* /> */}
-              <UniversitySelector
-                name="university"
-                inputRef={register({
-                  required: validationMessage("University", "required"),
-                })}
-                error={errors.university}
-              />
-            </Grid>
-            <Grid item xs={12}>
+            <Typography
+              variant="body2"
+              className={classes.subTitle}
+              color="textSecondary"
+            >
+              Don’t have an account? Sign up for free here.
+            </Typography>
+            <Grid item xs={12} className={classes.input}>
               <Button
-                label="create new account"
+                label="submit"
                 type="primary"
-                htmlType="submit"
                 className={classes.submitButton}
+                onClick={handleSubmit(onSubmit)}
                 loading={loading}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Button
-                label="back to login page"
-                type="grey"
-                className={classes.submitButton}
-                onClick={onBackToLogin}
-              />
-            </Grid>
           </Grid>
-        </form>
-      </Grid>
-    </LoginContainer>
+        </Grid>
+      </JoyStick>
+    </Grid>
   )
 }
 

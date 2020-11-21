@@ -12,7 +12,7 @@ const SiteContainer = function ({ children }) {
     <div className={classes.root}>
       <Header />
       {children}
-      <Footer />
+      {/*<Footer />*/}
     </div>
   )
 }
