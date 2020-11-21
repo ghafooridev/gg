@@ -12,7 +12,8 @@ const {
   hideResult,
   removeGuess,
   updatePoints,
-  countDown
+  countDown,
+  showWord
 } = require("./Game")
 
 const connections = (server) => {

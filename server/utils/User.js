@@ -60,6 +60,7 @@ const getAllUsers = function (game, place) {
 }
 
 const updateUsersAfterTurn = function (game, place, turn) {
+  console.log(turn)
   const filteredUser = users.filter(
     (user) => user.game === game && user.place === place
   )

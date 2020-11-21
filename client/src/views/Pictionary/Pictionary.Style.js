@@ -65,6 +65,7 @@ export const styles = makeStyles((theme) => ({
   clue: {
     display: "flex",
     padding: 15,
+    alignItems:"flex-end",
     "& span": {
       display: "flex",
       flexDirection: "column",

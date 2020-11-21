@@ -80,6 +80,7 @@ const getUsersTurn = function (socket, io) {
 
 const updateUsers = function (socket, io) {
   socket.on("usersUpdate.game", ({ game, turn }) => {
+    console.log("x")
     io.emit("usersUpdate.game", updateUsersAfterTurn(game, "game", turn))
   })
 }
@@ -110,9 +111,16 @@ const hideResult = function (socket, io) {
 
 const countDown = function (socket, io) {
   let counter = 60
-  socket.on("timer.game", (callback) => {
+  socket.on("timer.game", (word,callback) => {
     const timer = setInterval(() => {
       counter -= 1
+
+      if(counter===30){
+        const array = word.split("")
+        const charIndex = Math.floor(Math.random() * array.length)
+        io.emit("charShow.game", charIndex)
+      }
+
       if (counter === 0) {
         counter = 60
         clearInterval(timer)
@@ -131,6 +139,19 @@ const leaveGame = function (socket, io) {
     }
   })
 }
+
+// const showWord = function (socket, io) {
+//   socket.on("hideResult.game", ({ word, timer }, callback) => {
+//     if (timer === 30) {
+//       const array = word.split("")
+//       const charIndex = array[Math.floor(Math.random() * array.length)]
+//       io.emit("hideResult.game", charIndex)
+//       if (typeof callback === "function") {
+//         callback()
+//       }
+//     }
+//   })
+// }
 
 module.exports = {
   joinGame,

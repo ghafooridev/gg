@@ -111,6 +111,7 @@ const Canvas = function ({ username, turn }) {
       }
       line = line.concat(position)
       paint(prevPos, offSetData, { color: brushColor, size: brushSize })
+      sendPaintData()
     }
   }
 
@@ -128,10 +129,7 @@ const Canvas = function ({ username, turn }) {
   }
 
   const endPaintEvent = function () {
-    if (isPainting) {
-      isPainting = false
-      sendPaintData()
-    }
+    isPainting = false
   }
 
   const createCanvas = function () {

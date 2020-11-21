@@ -37,6 +37,7 @@ const PictionaryGame = function () {
   const [showResult, setShowResult] = useState(false)
   const [removeGuess, setRemoveGuess] = useState(false)
   const [timer, setTimer] = useState(60)
+const [charIndex,setCharIndex]=useState(10000)
 
   const onSendClick = function (message) {
     socket.emit("guess.game", { username, message }, () => {})
@@ -59,7 +60,7 @@ const PictionaryGame = function () {
             setWord(data)
             dialogAction.hide()
             socket.emit("wordSelect.game", data)
-            socket.emit("timer.game")
+            socket.emit("timer.game",data)
           }
         },
       })
@@ -91,9 +92,10 @@ const PictionaryGame = function () {
 
     // if (game && turn) {
     // setWord("")
+    setCharIndex(1000)
     setIsPlaying(false)
     socket.emit("usersUpdate.game", { game, turn })
-    // socket.emit("guessRemove.game", { game })
+    socket.emit("guessRemove.game", { game })
     getUserTurn(turn)
     // onShowResult()
     // }
@@ -136,8 +138,14 @@ const PictionaryGame = function () {
       onTimesUp()
       setTimer(60)
     })
+
+    socket.on("charShow.game",(charIndex)=>{
+      console.log('x',charIndex)
+      setCharIndex(charIndex)
+    })
     return () => {
       socket.off("timersUp.game")
+      socket.off("charShow.game")
     }
   }, [timer])
 
@@ -188,6 +196,7 @@ const PictionaryGame = function () {
       setRemoveGuess(true)
     })
   }, [isPlaying])
+
   useEffect(() => {
     socket.on("users.game", (users) => {
       setUsers(users)
@@ -195,16 +204,15 @@ const PictionaryGame = function () {
         getUserTurn()
       }
     })
-    // socket.on("usersTurn.game", (nextTurn) => {
-    //   console.log(turn, "-", nextTurn)
-    //   setTurn(nextTurn)
-    // })
-    // socket.on("usersUpdate.game", (updatedUsers) => {
-    //   console.log("userupdate", updatedUsers)
-    //   if (updatedUsers) {
-    //     setUsers(updatedUsers)
-    //   }
-    // })
+
+    socket.on("usersUpdate.game", (updatedUsers) => {
+      if (updatedUsers) {
+        setUsers(updatedUsers)
+      }
+    })
+    return () => {
+      socket.off("usersUpdate.game")
+    }
   }, [users])
 
   return (
@@ -238,7 +246,7 @@ const PictionaryGame = function () {
             <Grid item xs={12} className={classes.pictionaryInfo}>
               <CountDown isStart={!!word} timer={timer} />
 
-              <Clue word={word} username={username} turn={turn} />
+              <Clue word={word} username={username} turn={turn} charIndex={charIndex}/>
             </Grid>
             <PictionaryFrame username={username} turn={turn} />
           </Card>
