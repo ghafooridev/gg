@@ -2,10 +2,10 @@ const UserModel = require("../models/User")
 
 let users = []
 
-const addUser = async function ({ id, username, game, place, NOP, point }) {
+const addUser = async function ({ id, username, room, place, NOP, point }) {
   const existingUser = users.find(
     (user) =>
-      user.username === username && user.game === game && user.place === place
+      user.username === username && user.room === room && user.place === place
   )
 
   if (!existingUser) {
@@ -13,7 +13,7 @@ const addUser = async function ({ id, username, game, place, NOP, point }) {
     const user = {
       id,
       username,
-      game,
+      room,
       university: result.university,
       place,
       NOP,
@@ -55,14 +55,13 @@ const getUserByUsername = function (username, place) {
   )
 }
 
-const getAllUsers = function (game, place) {
-  return users.filter((user) => user.game === game && user.place === place)
+const getAllUsers = function (room, place) {
+  return users.filter((user) => user.room === room && user.place === place)
 }
 
-const updateUsersAfterTurn = function (game, place, turn) {
-  console.log(turn)
+const updateUsersAfterTurn = function (room, place, turn) {
   const filteredUser = users.filter(
-    (user) => user.game === game && user.place === place
+    (user) => user.room === room && user.place === place
   )
   const index = filteredUser.findIndex((item) => item.username === turn)
   const updateUsers = [...filteredUser]
@@ -76,9 +75,9 @@ const updateUsersAfterTurn = function (game, place, turn) {
   }
 }
 
-const updateUserPoint = function (game, place, username) {
+const updateUserPoint = function (room, place, username) {
   const filteredUser = users.filter(
-    (user) => user.game === game && user.place === place
+    (user) => user.room === room && user.place === place
   )
   const index = filteredUser.findIndex((item) => item.username === username)
   const updateUsers = [...filteredUser]

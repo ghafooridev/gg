@@ -8,7 +8,7 @@ export default {
       main: "#E63F3F",
     },
     secondary: {
-      main: "#BDBDBD",
+      main: "#3943B7",
     },
     error: {
       light: "#e57373",

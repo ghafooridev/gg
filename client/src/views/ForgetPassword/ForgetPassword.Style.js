@@ -1,36 +1,29 @@
 import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
-  leftPanel: {
-    [theme.breakpoints.down("sm")]: {
-      display: "none",
-    },
-    "& img": {
-      width: "100%",
-    },
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
+  root: {
+    margin: "100px auto",
   },
-  title: {
-    textAlign: "center",
-    padding: "20px 0",
+  container: {
+    padding: "50px 150px 0",
   },
+  inputs: {
+    marginTop: 30,
+  },
+  input: {
+    zIndex: 1,
+  },
+  title: {},
   subTitle: {
-    textAlign: "center",
-    paddingBottom: 20,
+    margin: "10px 0 20px",
+    zIndex: 1,
   },
   submitButton: {
-    width: "100%",
+    zIndex: 1,
   },
   link: {
-    fontSize: 10,
-    color: theme.palette.grey.main,
     cursor: "pointer",
-    textDecoration: "none",
-    "&:hover": {
-      color: theme.palette.primary.main,
-    },
+    color: theme.palette.primary.main,
+    margin: "0 5px",
   },
 }))

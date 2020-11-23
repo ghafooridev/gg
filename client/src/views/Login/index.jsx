@@ -22,6 +22,10 @@ const Login = function () {
   const history = useHistory()
   const [loading, setLoading] = useState(false)
 
+  const onSignUpClick = function () {
+    history.push("register")
+  }
+
   const onSubmit = function (data) {
     setLoading(true)
     userAction
@@ -35,13 +39,9 @@ const Login = function () {
       })
   }
 
-  // const onRegister = function () {
-  //   history.push("register")
-  // }
-  //
-  // const onForgetPassword = function () {
-  //   history.push("forget-password")
-  // }
+  const onForgetPassword = function () {
+    history.push("forget-password")
+  }
 
   return (
     <Grid item xs={6} className={classes.root}>
@@ -55,7 +55,11 @@ const Login = function () {
             className={classes.subTitle}
             color="textSecondary"
           >
-            Don’t have an account? Sign up for free here.
+            Don’t have an account?
+            <span className={classes.link} onClick={onSignUpClick}>
+              Sign up
+            </span>
+            for free here.
           </Typography>
           <Grid container spacing={3} className={classes.inputs}>
             <Grid item xs={12}>
@@ -84,7 +88,7 @@ const Login = function () {
               />
             </Grid>
 
-            <Grid item xs={12} className={classes.input}>
+            <Grid item xs={12} className={classes.inputButtons}>
               <Button
                 label="submit"
                 type="primary"
@@ -92,6 +96,9 @@ const Login = function () {
                 onClick={handleSubmit(onSubmit)}
                 loading={loading}
               />
+              <span className={classes.link} onClick={onForgetPassword}>
+                Forget Password ?
+              </span>
             </Grid>
           </Grid>
         </Grid>

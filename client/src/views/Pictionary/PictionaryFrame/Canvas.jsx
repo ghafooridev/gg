@@ -54,7 +54,7 @@ const Canvas = function ({ username, turn }) {
       clear: true,
     }
 
-    socket.emit("paint.game", options, () => {
+    socket.emit("paint.room", options, () => {
       line = []
     })
   }
@@ -123,7 +123,7 @@ const Canvas = function ({ username, turn }) {
       username,
       clear: false,
     }
-    socket.emit("paint.game", options, () => {
+    socket.emit("paint.room", options, () => {
       line = []
     })
   }

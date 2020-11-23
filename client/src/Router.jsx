@@ -8,6 +8,7 @@ import SiteContainer from "src/components/SiteContainer"
 import Home from "src/views/Home"
 import Profile from "src/views/Profile"
 import PictionaryLobby from "src/views/Pictionary/PictionaryLobby"
+import PictionaryRoom from "src/views/Pictionary/PictionaryRoom"
 import PictionaryGame from "src/views/Pictionary/PictionaryGame"
 
 const Router = function () {
@@ -22,6 +23,7 @@ const Router = function () {
             <Route exact path="/" component={Home} />
             <Route path="/home" exact component={Home} />
             <Route path="/profile" exact component={Profile} />
+            <Route path="/pictionary-Room" exact component={PictionaryRoom} />
             <Route path="/pictionary-lobby" exact component={PictionaryLobby} />
             <Route path="/pictionary-game" exact component={PictionaryGame} />
           </SiteContainer>

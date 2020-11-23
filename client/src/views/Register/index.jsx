@@ -140,7 +140,11 @@ const Register = function () {
               className={classes.subTitle}
               color="textSecondary"
             >
-              Don’t have an account? Sign up for free here.
+              By creating an account, you agree to our
+              <a className={classes.link} href="#" rel="noopener noreferer">
+                Privacy Policy and Terms
+              </a>
+              .
             </Typography>
             <Grid item xs={12} className={classes.input}>
               <Button

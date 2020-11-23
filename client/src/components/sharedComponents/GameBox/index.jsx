@@ -33,7 +33,7 @@ const GameBox = function (props) {
   }
 
   const onPlayClick = function () {
-    history.push(`${type}-lobby?username=${user.username}&game=${type}`)
+    history.push(`${type}-room?username=${user.username}&game=${type}`)
   }
 
   return (

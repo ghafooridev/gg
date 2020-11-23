@@ -13,6 +13,12 @@ export const styles = makeStyles((theme) => ({
   input: {
     zIndex: 1,
   },
+  inputButtons: {
+    zIndex: 1,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
   title: {},
   subTitle: {
     margin: "10px 0 20px",
@@ -20,5 +26,10 @@ export const styles = makeStyles((theme) => ({
   },
   submitButton: {
     zIndex: 1,
+  },
+  link: {
+    cursor: "pointer",
+    color: theme.palette.primary.main,
+    margin: "0 5px",
   },
 }))

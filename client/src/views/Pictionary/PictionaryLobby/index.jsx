@@ -20,7 +20,7 @@ const ENDPOINT = "localhost:5000"
 let socket
 
 const PictionaryLobby = function () {
-  const { username, game } = queryString.parse(location.search)
+  const { username, game,room } = queryString.parse(location.search)
 
   const classes = styles()
   const history = useHistory()
@@ -30,7 +30,7 @@ const PictionaryLobby = function () {
   const [users, setUsers] = useState([])
 
   const onPlayClick = function () {
-    history.push(`pictionary-game?username=${username}&game=${game}`)
+    history.push(`pictionary-game?username=${username}&game=${game}&room=${room}`)
   }
 
   const onSendClick = function (message) {
@@ -38,24 +38,24 @@ const PictionaryLobby = function () {
   }
 
   const onLeaveClick = function () {
-    socket.emit("leave.lobby", { username, game })
+    socket.emit("leave.lobby", { username, room })
     socket.off()
     history.push("home")
   }
 
   useEffect(() => {
     socket = io(ENDPOINT)
-    socket.emit("join.lobby", { username, game })
+    socket.emit("join.lobby", { username, room })
 
-    chatRepository.getChatByGame(game).then((chats) => {
+    chatRepository.getChatByGame(room).then((chats) => {
       setFetchMessages(chats)
     })
 
     return () => {
-      // socket.emit("leave.lobby", { username, game })
+      // socket.emit("leave.lobby", { username, room })
       // socket.off()
     }
-  }, [game, username])
+  }, [room, username])
 
   useEffect(() => {
     socket.on("message", (message) => {
@@ -70,7 +70,7 @@ const PictionaryLobby = function () {
   }, [users])
 
   return (
-    <Grid container className={classes.root}>
+    <Grid container >
       <Grid item xs={12} className={classes.topPanel}>
         <Card className={classes.jumbotron}>
           <Typography variant="h3">waiting for other players</Typography>

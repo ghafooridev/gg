@@ -35,7 +35,13 @@ export const styles = makeStyles((theme) => ({
   submitButton: {
     zIndex: 1,
   },
-    dropDown:{
-      margin:"10px 5px"
-    }
+  dropDown: {
+    margin: "10px 5px",
+  },
+  link: {
+    cursor: "pointer",
+    color: theme.palette.primary.main,
+    margin: "0 5px",
+    textDecoration: "none",
+  },
 }))

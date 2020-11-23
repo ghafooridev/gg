@@ -1,5 +1,3 @@
-const Chat = require("../models/Chat")
-
 const {
   addUser,
   getAllUsers,
@@ -11,26 +9,27 @@ const {
 } = require("../utils/User")
 
 const joinGame = function (socket, io) {
-  socket.on("join.game", ({ username, game }, callback) => {
+  socket.on("join.room", ({ username, room,id }, callback) => {
     const { user } = addUser({
-      id: socket.id,
+      id,
       username,
-      game,
+      room,
       place: "game",
       NOP: 0,
       point: 0,
     }).then(() => {
-      socket.join(game)
-      io.to(game).emit("users.game", getAllUsers(game, "game"))
+      socket.join(room)
+      socket.to(room).broadcast.emit("userConnected.room",id)
+      io.to(room).emit("users.room", getAllUsers(room, "game"))
     })
   })
 }
 
 const guessGame = function (socket, io) {
-  socket.on("guess.game", ({ username, message }, callback) => {
+  socket.on("guess.room", ({ username, message }, callback) => {
     const user = getUserByUsername(username, "game")
     if (user) {
-      io.to(user.game).emit("guess", {
+      io.to(user.room).emit("guess", {
         username: user.username,
         message,
       })
@@ -39,13 +38,13 @@ const guessGame = function (socket, io) {
 }
 
 const removeGuess = function (socket, io) {
-  socket.on("guessRemove.game", ({ game }, callback) => {
-    io.to(game).emit("guessRemove.game")
+  socket.on("guessRemove.room", ({ room }, callback) => {
+    io.to(room).emit("guessRemove.room")
   })
 }
 
 const paintGame = function (socket, io) {
-  socket.on("paint.game", (options, callback) => {
+  socket.on("paint.room", (options, callback) => {
     const { line, username, color, size, clear } = options
     // const user = getUser(socket.id)
     io.emit("draw", {
@@ -61,8 +60,8 @@ const paintGame = function (socket, io) {
 }
 
 const selectWord = function (socket, io) {
-  socket.on("wordSelect.game", (word, callback) => {
-    io.emit("wordShow.game", word)
+  socket.on("wordSelect.room", (word, callback) => {
+    io.emit("wordShow.room", word)
     if (typeof callback === "function") {
       callback()
     }
@@ -70,8 +69,8 @@ const selectWord = function (socket, io) {
 }
 
 const getUsersTurn = function (socket, io) {
-  socket.on("usersTurn.game", (preTurn, callback) => {
-    io.emit("usersTurn.game", getUserTurnByUsername(preTurn))
+  socket.on("usersTurn.room", (preTurn, callback) => {
+    io.emit("usersTurn.room", getUserTurnByUsername(preTurn))
     if (typeof callback === "function") {
       callback()
     }
@@ -79,21 +78,20 @@ const getUsersTurn = function (socket, io) {
 }
 
 const updateUsers = function (socket, io) {
-  socket.on("usersUpdate.game", ({ game, turn }) => {
-    console.log("x")
-    io.emit("usersUpdate.game", updateUsersAfterTurn(game, "game", turn))
+  socket.on("usersUpdate.room", ({ room, turn }) => {
+    io.emit("usersUpdate.room", updateUsersAfterTurn(room, "game", turn))
   })
 }
 
 const updatePoints = function (socket, io) {
-  socket.on("usersUpdatePoint.game", ({ game, username }) => {
-    io.emit("usersUpdatePoint.game", updateUserPoint(game, "game", username))
+  socket.on("usersUpdatePoint.room", ({ room, username }) => {
+    io.emit("usersUpdatePoint.room", updateUserPoint(room, "game", username))
   })
 }
 
 const showResult = function (socket, io) {
-  socket.on("showResult.game", (callback) => {
-    io.emit("showResult.game")
+  socket.on("showResult.room", (callback) => {
+    io.emit("showResult.room")
     if (typeof callback === "function") {
       callback()
     }
@@ -101,8 +99,8 @@ const showResult = function (socket, io) {
 }
 
 const hideResult = function (socket, io) {
-  socket.on("hideResult.game", (callback) => {
-    io.emit("hideResult.game")
+  socket.on("hideResult.room", (callback) => {
+    io.emit("hideResult.room")
     if (typeof callback === "function") {
       callback()
     }
@@ -111,47 +109,36 @@ const hideResult = function (socket, io) {
 
 const countDown = function (socket, io) {
   let counter = 60
-  socket.on("timer.game", (word,callback) => {
+  socket.on("timer.room", (word, callback) => {
     const timer = setInterval(() => {
       counter -= 1
 
-      if(counter===30){
+      if (counter === 30) {
         const array = word.split("")
         const charIndex = Math.floor(Math.random() * array.length)
-        io.emit("charShow.game", charIndex)
+        io.emit("charShow.room", charIndex)
       }
 
       if (counter === 0) {
         counter = 60
         clearInterval(timer)
-        return io.emit("timersUp.game")
+        return io.emit("timersUp.room")
       }
-      io.emit("timer.game", counter)
+      io.emit("timer.room", counter)
     }, 1000)
   })
 }
 
 const leaveGame = function (socket, io) {
-  socket.on("leave.game", ({ username }) => {
+  socket.on("leave.room", ({ username,room ,id}) => {
     const user = removeUserByUsername(username, "game")
+    console.log(user)
     if (user) {
-      io.to(user.game).emit("users.game", getAllUsers(user.game, "game"))
+      socket.to(room).broadcast.emit("userDisConnected.room",id)
+      io.to(user.room).emit("users.room", getAllUsers(user.room, "game"))
     }
   })
 }
-
-// const showWord = function (socket, io) {
-//   socket.on("hideResult.game", ({ word, timer }, callback) => {
-//     if (timer === 30) {
-//       const array = word.split("")
-//       const charIndex = array[Math.floor(Math.random() * array.length)]
-//       io.emit("hideResult.game", charIndex)
-//       if (typeof callback === "function") {
-//         callback()
-//       }
-//     }
-//   })
-// }
 
 module.exports = {
   joinGame,
