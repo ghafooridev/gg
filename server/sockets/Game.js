@@ -21,7 +21,9 @@ const joinGame = function (socket, io) {
       socket.join(room)
       socket.to(room).broadcast.emit("userConnected.room",id)
       io.to(room).emit("users.room", getAllUsers(room, "game"))
-      io.to(room).emit("getCurrentUser.room", getUserByUsername(username, "game"))
+      if (typeof callback === "function") {
+        callback()
+      }
     })
   })
 }
@@ -108,6 +110,15 @@ const hideResult = function (socket, io) {
   })
 }
 
+const getCurrentUser = function (socket, io) {
+  socket.on("getCurrentUser.room", ({room,username},callback) => {
+    io.emit("getCurrentUser.room", getUserByUsername(username, "game"))
+    if (typeof callback === "function") {
+      callback()
+    }
+  })
+}
+
 const countDown = function (socket, io) {
   let counter = 60
   socket.on("timer.room", (word, callback) => {
@@ -154,4 +165,5 @@ module.exports = {
   removeGuess,
   updatePoints,
   countDown,
+  getCurrentUser
 }

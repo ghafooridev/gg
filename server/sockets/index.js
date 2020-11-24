@@ -13,7 +13,7 @@ const {
   removeGuess,
   updatePoints,
   countDown,
-  showWord
+  getCurrentUser
 } = require("./Game")
 
 const connections = (server) => {
@@ -36,6 +36,7 @@ const connections = (server) => {
     removeGuess(socket, io)
     updatePoints(socket, io)
     countDown(socket,io)
+    getCurrentUser(socket,io)
   })
 }
 
