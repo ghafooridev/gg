@@ -41,7 +41,7 @@ const PictionaryGame = function () {
   const [removeGuess, setRemoveGuess] = useState(false)
   const [timer, setTimer] = useState(60)
   const [charIndex, setCharIndex] = useState(10000)
-  const [videoSrc, setVideoSrc] = useState([])
+  const [audio, setAudio] = useState(false)
 
   const onSendClick = function (message) {
     socket.emit("guess.room", { username, message }, () => {})
@@ -118,23 +118,73 @@ const PictionaryGame = function () {
     })
   }
 
-  function addVideoStream(video, stream) {
+  const appendInformation = function (videoBox, user, stream) {
+    console.log("turn", turn)
+    const point = document.createElement("span")
+    point.innerHTML = user
+    point.className = "point"
+
+    // const name = document.createElement("span")
+    // name.innerHTML = user.username
+    // name.className = "name"
+    //
+    // const school = document.createElement("span")
+    // school.innerHTML = user.university
+    // school.className = "school"
+    //
+    // const icons = document.createElement("div")
+    // icons.className = "icons"
+    //
+    // const close = document.createElement("i")
+    // close.className = "material-icons"
+    // close.innerHTML = "clear"
+    // close.onclick = () => {
+    //   videoBox.remove()
+    //   stream.getTracks().forEach((track) => track.stop())
+    //   onLeaveClick(user.id)
+    // }
+    // const volume = document.createElement("i")
+    // volume.className = "material-icons"
+    // volume.innerHTML = "volume_up"
+    // volume.onclick = () => {
+    //   console.log(audio)
+    //   setAudio(false)
+    // }
+    //
+    // icons.append(volume)
+    // icons.append(close)
+
+    videoBox.append(point)
+    // videoBox.append(name)
+    // videoBox.append(school)
+    // videoBox.append(icons)
+  }
+
+  function addVideoStream(video, stream, userId) {
     const videoGrid = document.getElementById("video-grid")
     video.srcObject = stream
-    video.muted = true
+    // video.muted = true
     video.addEventListener("loadedmetadata", () => {
       video.play()
     })
-    videoGrid.append(video)
+
+    const videoBox = document.createElement("div")
+    videoBox.className = "videoBox"
+
+    videoBox.append(video)
+    appendInformation(videoBox, userId, stream)
+
+    videoGrid.append(videoBox)
   }
 
   function connectToNewUser(myPeer, userId, stream) {
     const call = myPeer.call(userId, stream)
     const video = document.createElement("video")
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream)
+      addVideoStream(video, userVideoStream, userId)
     })
     call.on("close", () => {
+      console.log("xxxx")
       video.remove()
     })
 
@@ -147,31 +197,38 @@ const PictionaryGame = function () {
     const myPeer = new Peer(undefined)
 
     const myVideo = document.createElement("video")
-    myVideo.muted = true
+    // myVideo.muted = true
+
+
 
     navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-        audio: true,
-      })
-      .then((stream) => {
-        addVideoStream(myVideo, stream)
+        .getUserMedia({
+          video: true,
+          audio,
+        })
+        .then((stream) => {
 
-        myPeer.on("call", (call) => {
-          call.answer(stream)
-          const video = document.createElement("video")
-          call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream)
+          addVideoStream(myVideo, stream)
+
+          myPeer.on("call", (call) => {
+            call.answer(stream)
+            const video = document.createElement("video")
+            call.on("stream", (userVideoStream) => {
+                addVideoStream(video, userVideoStream)
+            })
           })
-        })
 
-        socket.on("userConnected.room", (userId) => {
-          connectToNewUser(myPeer, userId, stream)
-        })
-      })
+          socket.on("userConnected.room", (userId) => {
+            connectToNewUser(myPeer, userId, stream)
+          })
+
+
 
     myPeer.on("open", (id) => {
       socket.emit("join.room", { username, room, id })
+
+
+        })
     })
 
     socket.on("userDisConnected.room", (userId) => {
@@ -258,62 +315,49 @@ const PictionaryGame = function () {
   }, [users])
 
   return (
-    <>
-      <div id="video-grid" />
-      <Grid className={classes.root}>
-        <Grid item xs={12} className={classes.topPanel}>
-          <Typography variant="h2">Pictionary</Typography>
+    <Grid className={classes.root}>
+      <Grid item xs={12} className={classes.topPanel}>
+        <Typography variant="h2">Pictionary</Typography>
+      </Grid>
+      <Grid item xs={12} className={classes.bottomPanel}>
+        <Grid item sm={12} md={4} className={classes.col}>
+          <Card className={classes.itemCard}>
+            <Typography variant="h5" className={classes.title}>
+              Players
+            </Typography>
+            <Grid className={classes.videoCard}>
+              <div id="video-grid" className={classes.videoGrid} />
+            </Grid>
+          </Card>
         </Grid>
-        <Grid item xs={12} className={classes.bottomPanel}>
-          <Grid item sm={12} md={4} className={classes.col}>
-            <Card className={classes.itemCard}>
-              <Typography variant="h5" className={classes.title}>
-                Players
-              </Typography>
-              <Grid className={classes.videoCard}>
-                {users &&
-                  users.map((item, index) => {
-                    return (
-                      <VideoBox
-                        index={index}
-                        user={item}
-                        turn={turn}
-                        src={videoSrc}
-                      />
-                    )
-                  })}
-              </Grid>
-            </Card>
-          </Grid>
-          <Grid item sm={12} md={5} className={classes.pictionaryPanel}>
-            <Card className={classes.itemCard}>
-              <Grid item xs={12} className={classes.pictionaryInfo}>
-                <CountDown isStart={!!word} timer={timer} />
+        <Grid item sm={12} md={5} className={classes.pictionaryPanel}>
+          <Card className={classes.itemCard}>
+            <Grid item xs={12} className={classes.pictionaryInfo}>
+              <CountDown isStart={!!word} timer={timer} />
 
-                <Clue
-                  word={word}
-                  username={username}
-                  turn={turn}
-                  charIndex={charIndex}
-                />
-              </Grid>
-              <PictionaryFrame username={username} turn={turn} />
-            </Card>
-          </Grid>
-          <Grid item sm={12} md={3} className={classes.col}>
-            <ChatBox
-              title="Guess"
-              messages={guess}
-              username={username}
-              onSendClick={onSendClick}
-              word={word}
-              removeGuess={removeGuess}
-              guessCorrectly={guessCorrectly}
-            />
-          </Grid>
+              <Clue
+                word={word}
+                username={username}
+                turn={turn}
+                charIndex={charIndex}
+              />
+            </Grid>
+            <PictionaryFrame username={username} turn={turn} />
+          </Card>
+        </Grid>
+        <Grid item sm={12} md={3} className={classes.col}>
+          <ChatBox
+            title="Guess"
+            messages={guess}
+            username={username}
+            onSendClick={onSendClick}
+            word={word}
+            removeGuess={removeGuess}
+            guessCorrectly={guessCorrectly}
+          />
         </Grid>
       </Grid>
-    </>
+    </Grid>
   )
 }
 

@@ -21,6 +21,7 @@ const joinGame = function (socket, io) {
       socket.join(room)
       socket.to(room).broadcast.emit("userConnected.room",id)
       io.to(room).emit("users.room", getAllUsers(room, "game"))
+      io.to(room).emit("getCurrentUser.room", getUserByUsername(username, "game"))
     })
   })
 }

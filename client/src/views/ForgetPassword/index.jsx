@@ -63,10 +63,10 @@ const Forget = function () {
                 icon="mail"
                 className={classes.input}
                 inputRef={register({
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
-                    message: validationMessage("Email address", "pattern"),
-                  },
+                  // pattern: {
+                  //   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.edu$/i,
+                  //   message: validationMessage("Email address", "pattern"),
+                  // },
                   required: validationMessage("Email address", "required"),
                 })}
                 error={errors.email}
