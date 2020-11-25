@@ -10,19 +10,21 @@ const {
 
 const joinGame = function (socket, io) {
   socket.on("join.room", ({ username, room,id }, callback) => {
-    const { user } = addUser({
+    const newUser={
       id,
       username,
       room,
       place: "game",
       NOP: 0,
       point: 0,
-    }).then(() => {
+    }
+    const { user } = addUser(newUser).then((x) => {
       socket.join(room)
-      socket.to(room).broadcast.emit("userConnected.room",id)
+      socket.to(room).broadcast.emit("userConnected.room",newUser)
       io.to(room).emit("users.room", getAllUsers(room, "game"))
+      io.to(room).emit("join.room", newUser)
       if (typeof callback === "function") {
-        callback()
+        callback(newUser)
       }
     })
   })

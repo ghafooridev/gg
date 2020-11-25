@@ -119,9 +119,8 @@ const PictionaryGame = function () {
   }
 
   const appendInformation = function (videoBox, user, stream) {
-    console.log("turn", turn)
     const point = document.createElement("span")
-    point.innerHTML = user
+    point.innerHTML = user.username
     point.className = "point"
 
     // const name = document.createElement("span")
@@ -154,13 +153,13 @@ const PictionaryGame = function () {
     // icons.append(volume)
     // icons.append(close)
 
-     videoBox.append(point)
+    // videoBox.append(point)
     // videoBox.append(name)
     // videoBox.append(school)
     // videoBox.append(icons)
   }
 
-  function addVideoStream(video, stream,n) {
+  function addVideoStream(video, stream, n) {
     const videoGrid = document.getElementById("video-grid")
     video.srcObject = stream
     // video.muted = true
@@ -172,23 +171,23 @@ const PictionaryGame = function () {
     videoBox.className = "videoBox"
 
     videoBox.append(video)
-    //appendInformation(videoBox, user, stream)
+    // appendInformation(videoBox, user, stream)
     appendInformation(videoBox, n, stream)
 
     videoGrid.append(videoBox)
   }
 
-  function connectToNewUser(myPeer, userId, stream) {
-    const call = myPeer.call(userId, stream)
+  function connectToNewUser(myPeer, user, stream) {
+    const call = myPeer.call(user.id, stream)
     const video = document.createElement("video")
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream,"3")
+      addVideoStream(video, userVideoStream, user)
     })
     call.on("close", () => {
       video.remove()
     })
 
-    peers[userId] = call
+    peers[user.id] = call
   }
 
   useEffect(() => {
@@ -199,33 +198,29 @@ const PictionaryGame = function () {
     const myVideo = document.createElement("video")
     // myVideo.muted = true
 
-
     navigator.mediaDevices
       .getUserMedia({
         video: true,
         audio,
       })
       .then((stream) => {
-        addVideoStream(myVideo, stream,"1")
-
+        const user = { username }
+        addVideoStream(myVideo, stream, user)
         myPeer.on("call", (call) => {
-          console.log(call)
           call.answer(stream)
           const video = document.createElement("video")
           call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream,"2")
+            addVideoStream(video, userVideoStream, user)
           })
         })
 
-        socket.on("userConnected.room", (userId) => {
-          connectToNewUser(myPeer, userId, stream)
+        socket.on("userConnected.room", (user) => {
+          connectToNewUser(myPeer, user, stream)
         })
-
       })
 
     myPeer.on("open", (id) => {
-      socket.emit("join.room", { username, room, id },()=>{
-        socket.emit("getCurrentUser.room", { room, username })
+      socket.emit("join.room", { username, room, id }, () => {
       })
     })
 
@@ -236,11 +231,11 @@ const PictionaryGame = function () {
     checkReloadPage()
   }, [room, username])
 
-  useEffect(()=>{
-    socket.on("getCurrentUser.room", user=>{
+  useEffect(() => {
+    socket.on("getCurrentUser.room", (user) => {
       console.log(user)
     })
-  },[])
+  }, [])
 
   useEffect(() => {
     socket.on("usersTurn.room", (nextTurn) => {
@@ -261,7 +256,6 @@ const PictionaryGame = function () {
     })
 
     socket.on("charShow.room", (charIndex) => {
-      console.log("x", charIndex)
       setCharIndex(charIndex)
     })
     return () => {
@@ -331,6 +325,18 @@ const PictionaryGame = function () {
             </Typography>
             <Grid className={classes.videoCard}>
               <div id="video-grid" className={classes.videoGrid} />
+              {/* {users && */}
+              {/* users.map((item, index) => { */}
+              {/*  return ( */}
+              {/*      <InfoBox */}
+              {/*          key={index} */}
+              {/*          title={item.username} */}
+              {/*          subTitle={item.university} */}
+              {/*          point={item.NOP} */}
+              {/*          turn={item.username === turn} */}
+              {/*      /> */}
+              {/*  ) */}
+              {/* })} */}
             </Grid>
           </Card>
         </Grid>
