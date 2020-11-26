@@ -40,7 +40,6 @@ const PictionaryGame = function () {
   const [showResult, setShowResult] = useState(false)
   const [removeGuess, setRemoveGuess] = useState(false)
   const [timer, setTimer] = useState(60)
-  const [wordSelectTimer, setWordSelectTimer] = useState(10)
   const [charIndex, setCharIndex] = useState(10000)
   const [audio, setAudio] = useState(false)
 
@@ -57,7 +56,13 @@ const PictionaryGame = function () {
   const onShowChoseWordDialog = function (nextTurn) {
     if (nextTurn === username) {
       dialogAction.show({
-        component: <ChooseWord timer={wordSelectTimer} />,
+        component: (
+          <ChooseWord
+            socket={socket}
+            onSelectWordTimesUp={onSelectWordTimesUp}
+            turn={nextTurn}
+          />
+        ),
         title: `Choose a word`,
         disableCloseButton: true,
         onAction: (type, data) => {
@@ -71,6 +76,15 @@ const PictionaryGame = function () {
         },
       })
     }
+  }
+
+  const onSelectWordTimesUp = function (turn) {
+    dialogAction.hide()
+    setCharIndex(1000)
+    setIsPlaying(false)
+    socket.emit("usersUpdate.room", { room, turn })
+    socket.emit("guessRemove.room", { room })
+    getUserTurn(turn)
   }
 
   const getUserTurn = function (nextTurn) {
@@ -150,7 +164,6 @@ const PictionaryGame = function () {
     volume.className = "material-icons"
     volume.innerHTML = "volume_up"
     volume.onclick = () => {
-      console.log(audio)
       setAudio(false)
     }
 
@@ -212,7 +225,6 @@ const PictionaryGame = function () {
           call.answer(stream)
           const video = document.createElement("video")
           call.on("stream", (userVideoStream) => {
-            console.log("SSS", call.peer)
             addVideoStream(video, userVideoStream, call.peer)
           })
         })
@@ -236,20 +248,13 @@ const PictionaryGame = function () {
   useEffect(() => {
     socket.on("usersTurn.room", (nextTurn) => {
       if (nextTurn !== turn) {
-        socket.emit("wordSelectTimer.room")
         onShowChoseWordDialog(nextTurn)
         setTurn(nextTurn)
       }
     })
-    console.log("sssx")
-    socket.on("wordSelectTimer.room", (wordSelectTimer) => {
-      console.log("fffx")
-      setWordSelectTimer(wordSelectTimer)
-    })
 
     return () => {
       socket.off("usersTurn.room")
-      socket.off("wordSelectTimer.room")
     }
   }, [turn])
 
@@ -307,7 +312,6 @@ const PictionaryGame = function () {
     })
 
     socket.on("getInfo.room", (user) => {
-      console.log(user)
       appendInformation(user)
     })
 

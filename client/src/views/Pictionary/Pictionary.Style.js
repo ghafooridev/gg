@@ -207,4 +207,9 @@ export const styles = makeStyles((theme) => ({
   guessBox: {
     marginTop: 30,
   },
+  wordSelectCounter:{
+    position:"absolute",
+    top:25,
+    right:25
+  }
 }))

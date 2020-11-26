@@ -6,12 +6,12 @@ const {
   getUserTurnByUsername,
   updateUsersAfterTurn,
   updateUserPoint,
-  getUserById
+  getUserById,
 } = require("../utils/User")
 
 const joinGame = function (socket, io) {
-  socket.on("join.room", ({ username, room,id }, callback) => {
-    const newUser={
+  socket.on("join.room", ({ username, room, id }, callback) => {
+    const newUser = {
       id,
       username,
       room,
@@ -21,8 +21,8 @@ const joinGame = function (socket, io) {
     }
     const { user } = addUser(newUser).then(() => {
       socket.join(room)
-      socket.to(room).broadcast.emit("userConnected.room",newUser)
-      io.to(room).emit("users.room",newUser, getAllUsers(room, "game"))
+      socket.to(room).broadcast.emit("userConnected.room", newUser)
+      io.to(room).emit("users.room", newUser, getAllUsers(room, "game"))
       if (typeof callback === "function") {
         callback(newUser)
       }
@@ -113,7 +113,7 @@ const hideResult = function (socket, io) {
 }
 
 const getCurrentUser = function (socket, io) {
-  socket.on("getCurrentUser.room", ({room,username},callback) => {
+  socket.on("getCurrentUser.room", ({ room, username }, callback) => {
     io.emit("getCurrentUser.room", getUserByUsername(username, "game"))
     if (typeof callback === "function") {
       callback()
@@ -123,7 +123,7 @@ const getCurrentUser = function (socket, io) {
 
 const getCurrentUserById = function (socket, io) {
   socket.on("getInfo.room", (id) => {
-    io.emit("getInfo.room", getUserById(id,"game"))
+    io.emit("getInfo.room", getUserById(id, "game"))
   })
 }
 
@@ -150,23 +150,23 @@ const countDown = function (socket, io) {
 }
 
 const leaveGame = function (socket, io) {
-  socket.on("leave.room", ({ username,room ,id}) => {
+  socket.on("leave.room", ({ username, room, id }) => {
     const user = removeUserByUsername(username, "game")
     if (user) {
-      socket.to(room).broadcast.emit("userDisConnected.room",id)
+      socket.to(room).broadcast.emit("userDisConnected.room", id)
       io.to(user.room).emit("users.room", getAllUsers(user.room, "game"))
     }
   })
 }
 
-const selectWordTimer=function(socket,io){
-  let counter = 10
+const selectWordTimer = function (socket, io) {
+  let counter = 20
   socket.on("wordSelectTimer.room", (callback) => {
     const timer = setInterval(() => {
       counter -= 1
 
       if (counter === 0) {
-        counter = 10
+        counter = 20
         clearInterval(timer)
         return io.emit("wordSelectTimerUp.room")
       }
@@ -190,5 +190,5 @@ module.exports = {
   countDown,
   getCurrentUser,
   getCurrentUserById,
-  selectWordTimer
+  selectWordTimer,
 }

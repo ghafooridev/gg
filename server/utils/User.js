@@ -54,7 +54,6 @@ const getUserByUsername = function (username, place) {
 }
 
 const getUserById = function (id, place) {
-  console.log(users, id)
   return users.find((user) => user.id === id && user.place === place)
 }
 
@@ -66,6 +65,7 @@ const updateUsersAfterTurn = function (room, place, turn) {
   const filteredUser = users.filter(
     (user) => user.room === room && user.place === place
   )
+
   const index = filteredUser.findIndex((item) => item.username === turn)
   const updateUsers = [...filteredUser]
   if (index !== -1) {
@@ -76,6 +76,7 @@ const updateUsersAfterTurn = function (room, place, turn) {
     users = [...updateUsers]
     return users
   }
+  return users
 }
 
 const updateUserPoint = function (room, place, username) {
