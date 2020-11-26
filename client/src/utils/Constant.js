@@ -23,6 +23,7 @@ const Constant = {
   },
   STORAGE: {
     CURRENT_USER: "CURRENT_USER",
+    MODE:"MODE"
   },
   MESSAGES: {
     SEND_ACTIVATION_LINK:

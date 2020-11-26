@@ -1,14 +1,23 @@
-import React from "react"
+import React, { useContext, useEffect } from "react"
 
-import { styles } from "./Style"
 import "src/assets/css/style.css"
-// import "./assets/scss/paper-kit.scss"
-// import "./assets/demo/demo.css"
-// import "./assets/scss/custom/main.scss"
-
+import Storage from "src/services/Storage"
+import Constant from "src/utils/Constant"
+import ThemeContext from "src/Contexts/Theme/ThemeContext"
+import { styles } from "./Style"
 import Router from "./Router"
 
 function App() {
+  const { toggleTheme } = useContext(ThemeContext)
+
+  useEffect(() => {
+    const defaultTheme = Storage.pull(Constant.STORAGE.MODE)
+
+    if (defaultTheme) {
+      toggleTheme(defaultTheme)
+    }
+  }, [])
+
   styles()
   return <Router />
 }

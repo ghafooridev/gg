@@ -37,8 +37,4 @@ export const styles = makeStyles((theme) => ({
     width: 25,
     height: 25,
   },
-  selected: {
-    boxShadow: "5px 2px 5px gray",
-    transform: "scale(1.1)",
-  },
 }))

@@ -44,7 +44,7 @@ const Login = function () {
   }
 
   return (
-    <Grid item xs={6} className={classes.root}>
+    <Grid item xs={8} className={classes.root}>
       <JoyStick>
         <Grid item xs={12} className={classes.container}>
           <Typography variant="h3" className={classes.title}>

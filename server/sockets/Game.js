@@ -6,6 +6,7 @@ const {
   getUserTurnByUsername,
   updateUsersAfterTurn,
   updateUserPoint,
+  getUserById
 } = require("../utils/User")
 
 const joinGame = function (socket, io) {
@@ -18,11 +19,10 @@ const joinGame = function (socket, io) {
       NOP: 0,
       point: 0,
     }
-    const { user } = addUser(newUser).then((x) => {
+    const { user } = addUser(newUser).then(() => {
       socket.join(room)
       socket.to(room).broadcast.emit("userConnected.room",newUser)
-      io.to(room).emit("users.room", getAllUsers(room, "game"))
-      io.to(room).emit("join.room", newUser)
+      io.to(room).emit("users.room",newUser, getAllUsers(room, "game"))
       if (typeof callback === "function") {
         callback(newUser)
       }
@@ -121,6 +121,12 @@ const getCurrentUser = function (socket, io) {
   })
 }
 
+const getCurrentUserById = function (socket, io) {
+  socket.on("getInfo.room", (id) => {
+    io.emit("getInfo.room", getUserById(id,"game"))
+  })
+}
+
 const countDown = function (socket, io) {
   let counter = 60
   socket.on("timer.room", (word, callback) => {
@@ -146,11 +152,26 @@ const countDown = function (socket, io) {
 const leaveGame = function (socket, io) {
   socket.on("leave.room", ({ username,room ,id}) => {
     const user = removeUserByUsername(username, "game")
-    console.log(user)
     if (user) {
       socket.to(room).broadcast.emit("userDisConnected.room",id)
       io.to(user.room).emit("users.room", getAllUsers(user.room, "game"))
     }
+  })
+}
+
+const selectWordTimer=function(socket,io){
+  let counter = 10
+  socket.on("wordSelectTimer.room", (callback) => {
+    const timer = setInterval(() => {
+      counter -= 1
+
+      if (counter === 0) {
+        counter = 10
+        clearInterval(timer)
+        return io.emit("wordSelectTimerUp.room")
+      }
+      io.emit("wordSelectTimer.room", counter)
+    }, 1000)
   })
 }
 
@@ -167,5 +188,7 @@ module.exports = {
   removeGuess,
   updatePoints,
   countDown,
-  getCurrentUser
+  getCurrentUser,
+  getCurrentUserById,
+  selectWordTimer
 }

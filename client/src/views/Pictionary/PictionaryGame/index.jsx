@@ -40,6 +40,7 @@ const PictionaryGame = function () {
   const [showResult, setShowResult] = useState(false)
   const [removeGuess, setRemoveGuess] = useState(false)
   const [timer, setTimer] = useState(60)
+  const [wordSelectTimer, setWordSelectTimer] = useState(10)
   const [charIndex, setCharIndex] = useState(10000)
   const [audio, setAudio] = useState(false)
 
@@ -50,14 +51,15 @@ const PictionaryGame = function () {
   const onLeaveClick = function (id) {
     socket.emit("leave.room", { username, room, id })
     socket.off()
-    history.push("home")
+    history.push("/home")
   }
 
   const onShowChoseWordDialog = function (nextTurn) {
     if (nextTurn === username) {
       dialogAction.show({
-        component: <ChooseWord />,
-        title: "Choose a word",
+        component: <ChooseWord timer={wordSelectTimer} />,
+        title: `Choose a word`,
+        disableCloseButton: true,
         onAction: (type, data) => {
           if (type === "submit") {
             setIsPlaying(true)
@@ -118,48 +120,50 @@ const PictionaryGame = function () {
     })
   }
 
-  const appendInformation = function (videoBox, user, stream) {
+  const appendInformation = function (user) {
+    const element = document.getElementById(user.id)
+
     const point = document.createElement("span")
-    point.innerHTML = user.username
+    point.innerHTML = user.point
     point.className = "point"
 
-    // const name = document.createElement("span")
-    // name.innerHTML = user.username
-    // name.className = "name"
-    //
-    // const school = document.createElement("span")
-    // school.innerHTML = user.university
-    // school.className = "school"
-    //
-    // const icons = document.createElement("div")
-    // icons.className = "icons"
-    //
-    // const close = document.createElement("i")
-    // close.className = "material-icons"
-    // close.innerHTML = "clear"
-    // close.onclick = () => {
-    //   videoBox.remove()
-    //   stream.getTracks().forEach((track) => track.stop())
-    //   onLeaveClick(user.id)
-    // }
-    // const volume = document.createElement("i")
-    // volume.className = "material-icons"
-    // volume.innerHTML = "volume_up"
-    // volume.onclick = () => {
-    //   console.log(audio)
-    //   setAudio(false)
-    // }
-    //
-    // icons.append(volume)
-    // icons.append(close)
+    const name = document.createElement("span")
+    name.innerHTML = user.username
+    name.className = "name"
 
-    // videoBox.append(point)
-    // videoBox.append(name)
-    // videoBox.append(school)
-    // videoBox.append(icons)
+    const school = document.createElement("span")
+    school.innerHTML = user.university
+    school.className = "school"
+
+    const icons = document.createElement("div")
+    icons.className = "icons"
+
+    const close = document.createElement("i")
+    close.className = "material-icons"
+    close.innerHTML = "clear"
+    close.onclick = () => {
+      element.remove()
+      // stream.getTracks().forEach((track) => track.stop())
+      onLeaveClick(user.id)
+    }
+    const volume = document.createElement("i")
+    volume.className = "material-icons"
+    volume.innerHTML = "volume_up"
+    volume.onclick = () => {
+      console.log(audio)
+      setAudio(false)
+    }
+
+    icons.append(volume)
+    icons.append(close)
+
+    element.append(point)
+    element.append(name)
+    element.append(school)
+    element.append(icons)
   }
 
-  function addVideoStream(video, stream, n) {
+  function addVideoStream(video, stream, userId) {
     const videoGrid = document.getElementById("video-grid")
     video.srcObject = stream
     // video.muted = true
@@ -169,19 +173,18 @@ const PictionaryGame = function () {
 
     const videoBox = document.createElement("div")
     videoBox.className = "videoBox"
-
+    videoBox.id = userId
     videoBox.append(video)
-    // appendInformation(videoBox, user, stream)
-    appendInformation(videoBox, n, stream)
 
     videoGrid.append(videoBox)
+    socket.emit("getInfo.room", userId)
   }
 
   function connectToNewUser(myPeer, user, stream) {
     const call = myPeer.call(user.id, stream)
     const video = document.createElement("video")
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, user)
+      addVideoStream(video, userVideoStream, user.id)
     })
     call.on("close", () => {
       video.remove()
@@ -193,7 +196,7 @@ const PictionaryGame = function () {
   useEffect(() => {
     socket = io(ENDPOINT)
 
-    const myPeer = new Peer(undefined)
+    const myPeer = new Peer({ host: "localhost", port: 3001 })
 
     const myVideo = document.createElement("video")
     // myVideo.muted = true
@@ -204,13 +207,13 @@ const PictionaryGame = function () {
         audio,
       })
       .then((stream) => {
-        const user = { username }
-        addVideoStream(myVideo, stream, user)
+        addVideoStream(myVideo, stream, myPeer._id)
         myPeer.on("call", (call) => {
           call.answer(stream)
           const video = document.createElement("video")
           call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream, user)
+            console.log("SSS", call.peer)
+            addVideoStream(video, userVideoStream, call.peer)
           })
         })
 
@@ -220,8 +223,7 @@ const PictionaryGame = function () {
       })
 
     myPeer.on("open", (id) => {
-      socket.emit("join.room", { username, room, id }, () => {
-      })
+      socket.emit("join.room", { username, room, id }, () => {})
     })
 
     socket.on("userDisConnected.room", (userId) => {
@@ -232,20 +234,22 @@ const PictionaryGame = function () {
   }, [room, username])
 
   useEffect(() => {
-    socket.on("getCurrentUser.room", (user) => {
-      console.log(user)
-    })
-  }, [])
-
-  useEffect(() => {
     socket.on("usersTurn.room", (nextTurn) => {
       if (nextTurn !== turn) {
+        socket.emit("wordSelectTimer.room")
         onShowChoseWordDialog(nextTurn)
         setTurn(nextTurn)
       }
     })
+    console.log("sssx")
+    socket.on("wordSelectTimer.room", (wordSelectTimer) => {
+      console.log("fffx")
+      setWordSelectTimer(wordSelectTimer)
+    })
+
     return () => {
       socket.off("usersTurn.room")
+      socket.off("wordSelectTimer.room")
     }
   }, [turn])
 
@@ -295,11 +299,16 @@ const PictionaryGame = function () {
   }, [isPlaying])
 
   useEffect(() => {
-    socket.on("users.room", (users) => {
+    socket.on("users.room", (newUser, users) => {
       setUsers(users)
       if (!isPlaying) {
         getUserTurn()
       }
+    })
+
+    socket.on("getInfo.room", (user) => {
+      console.log(user)
+      appendInformation(user)
     })
 
     socket.on("usersUpdate.room", (updatedUsers) => {
@@ -318,25 +327,13 @@ const PictionaryGame = function () {
         <Typography variant="h2">Pictionary</Typography>
       </Grid>
       <Grid item xs={12} className={classes.bottomPanel}>
-        <Grid item sm={12} md={4} className={classes.col}>
+        <Grid item sm={12} md={4} className={classes.leftColGame}>
           <Card className={classes.itemCard}>
             <Typography variant="h5" className={classes.title}>
               Players
             </Typography>
             <Grid className={classes.videoCard}>
               <div id="video-grid" className={classes.videoGrid} />
-              {/* {users && */}
-              {/* users.map((item, index) => { */}
-              {/*  return ( */}
-              {/*      <InfoBox */}
-              {/*          key={index} */}
-              {/*          title={item.username} */}
-              {/*          subTitle={item.university} */}
-              {/*          point={item.NOP} */}
-              {/*          turn={item.username === turn} */}
-              {/*      /> */}
-              {/*  ) */}
-              {/* })} */}
             </Grid>
           </Card>
         </Grid>
@@ -355,8 +352,9 @@ const PictionaryGame = function () {
             <PictionaryFrame username={username} turn={turn} />
           </Card>
         </Grid>
-        <Grid item sm={12} md={3} className={classes.col}>
+        <Grid item sm={12} md={3} className={classes.rightColGame}>
           <ChatBox
+            className={classes.guessBox}
             title="Guess"
             messages={guess}
             username={username}
@@ -364,6 +362,7 @@ const PictionaryGame = function () {
             word={word}
             removeGuess={removeGuess}
             guessCorrectly={guessCorrectly}
+            height={370}
           />
         </Grid>
       </Grid>

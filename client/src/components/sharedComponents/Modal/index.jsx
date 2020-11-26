@@ -6,9 +6,14 @@ import { styles } from "./Modal.Style"
 
 const Modal = function () {
   const classes = styles()
-  const { show, component, title, onAction, size } = useSelector(
-    (state) => state.dialog
-  )
+  const {
+    show,
+    component,
+    title,
+    onAction,
+    size,
+    disableCloseButton,
+  } = useSelector((state) => state.dialog)
 
   const onClose = function () {
     dialogAction.hide()
@@ -25,13 +30,15 @@ const Modal = function () {
     >
       <Grid item xs={12} className={classes.title}>
         <Typography variant="h6">{title}</Typography>
-        <i
-          className="material-icons"
-          onClick={onClose}
-          style={{ cursor: "pointer" }}
-        >
-          clear
-        </i>
+        {!disableCloseButton && (
+          <i
+            className="material-icons"
+            onClick={onClose}
+            style={{ cursor: "pointer" }}
+          >
+            clear
+          </i>
+        )}
       </Grid>
       <Grid item xs={12} className={classes.container}>
         {component && React.cloneElement(component, { onAction })}

@@ -27,19 +27,22 @@ const rooms = [
 ]
 
 const PictionaryRoom = function () {
-  const { username, game ,room} = queryString.parse(location.search)
-
+  const { username, game, room } = queryString.parse(location.search)
+  console.log(game)
   const classes = styles()
   const history = useHistory()
 
   const onCreateRoom = function () {
-    history.push(`${game}-lobby?username=${username}&game=${game}&room=${123}`)
+    history.push({
+      pathname: `/${game}-lobby/123`,
+      search: `?username=${username}&game=${game}&room=${123}`,
+    })
   }
 
   const onJoinRoom = function () {}
 
   return (
-    <Grid container className={classes.root}>
+    <Grid container>
       <Grid item xs={8} className={classes.topPanel}>
         <Card className={classes.jumbotron}>
           <Typography variant="h4">47 other players online</Typography>

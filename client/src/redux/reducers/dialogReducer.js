@@ -5,6 +5,7 @@ const initialState = {
   component: null,
   title: "",
   size: "md",
+  disableCloseButton: false,
   onAction: () => {},
 }
 

@@ -1,10 +1,9 @@
-import React, { Component, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import clsx from "clsx"
 import { Grid } from "@material-ui/core"
 import io from "socket.io-client"
 import { styles } from "./PictionaryFrame.Style"
 import pen from "../../../assets/images/pen.png"
-import erase from "../../../assets/images/eraser.png"
 
 const PALETTE = {
   BLACK: "#000",
@@ -48,7 +47,7 @@ const Canvas = function ({ username, turn }) {
   const onClearClick = function () {
     ctx = canvas.current.getContext("2d")
     ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, 600, 500)
+    ctx.fillRect(0, 0, 600, 400)
     const options = {
       line: [],
       clear: true,
@@ -66,14 +65,7 @@ const Canvas = function ({ username, turn }) {
   const Point = function ({ size, color, className, onClick }) {
     return (
       <div
-        className={clsx(
-          className,
-          classes.point,
-          classes[size],
-          (color === brushColor ||
-            (size && SIZE[size.toUpperCase()] === brushSize)) &&
-            classes.selected
-        )}
+        className={clsx(className, classes.point, classes[size])}
         style={{ backgroundColor: color || brushColor }}
         onClick={onClick}
       />
@@ -101,6 +93,19 @@ const Canvas = function ({ username, turn }) {
     prevPos = { offsetX, offsetY }
   }
 
+  const sendPaintData = function () {
+    const options = {
+      line,
+      color: brushColor,
+      size: brushSize,
+      username,
+      clear: false,
+    }
+    socket.emit("paint.room", options, () => {
+      line = []
+    })
+  }
+
   const onMouseMove = function ({ nativeEvent }) {
     if (isPainting) {
       const { offsetX, offsetY } = nativeEvent
@@ -115,26 +120,13 @@ const Canvas = function ({ username, turn }) {
     }
   }
 
-  const sendPaintData = function () {
-    const options = {
-      line,
-      color: brushColor,
-      size: brushSize,
-      username,
-      clear: false,
-    }
-    socket.emit("paint.room", options, () => {
-      line = []
-    })
-  }
-
   const endPaintEvent = function () {
     isPainting = false
   }
 
   const createCanvas = function () {
     canvas.current.width = 600
-    canvas.current.height = 500
+    canvas.current.height = 400
     ctx = canvas.current.getContext("2d")
     ctx.lineJoin = "round"
     ctx.lineCap = "round"
@@ -146,17 +138,15 @@ const Canvas = function ({ username, turn }) {
     socket = io(ENDPOINT)
 
     socket.on("draw", (options) => {
-      const { username, line, color, size, clear } = options
-      // if (username !== this.username) {
+      const { line, color, size, clear } = options
       line.forEach((position) => {
         paint(position.start, position.stop, { color, size })
       })
 
       if (clear) {
         ctx.fillStyle = "white"
-        ctx.fillRect(0, 0, 600, 500)
+        ctx.fillRect(0, 0, 600, 400)
       }
-      //  }
     })
   }, [line])
 
@@ -166,7 +156,7 @@ const Canvas = function ({ username, turn }) {
         ref={canvas}
         style={{
           background: "#fff",
-          cursor: isMyTurn() ? `url('${pen}') 0 30, auto` : "not-allowed",
+          cursor: isMyTurn() ? `url('${pen}') 0 30, auto` : "inherit",
         }}
         onMouseDown={onMouseDown}
         onMouseLeave={endPaintEvent}
@@ -193,6 +183,11 @@ const Canvas = function ({ username, turn }) {
             />
           </Grid>
           <Grid item xs={4} className={classes.item}>
+            <Point
+              className={classes.color}
+              color={PALETTE.BLACK}
+              onClick={() => onClickColor(PALETTE.BLACK)}
+            />
             <Point
               className={classes.color}
               color={PALETTE.BLUE}

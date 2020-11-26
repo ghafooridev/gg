@@ -16,16 +16,21 @@ const Router = function () {
     <BrowserRouter>
       <div>
         <Switch>
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/forget-password" component={ForgetPassword} />
           <SiteContainer>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/forget-password" component={ForgetPassword} />
+
             <Route exact path="/" component={Home} />
             <Route path="/home" exact component={Home} />
             <Route path="/profile" exact component={Profile} />
-            <Route path="/pictionary-Room" exact component={PictionaryRoom} />
-            <Route path="/pictionary-lobby" exact component={PictionaryLobby} />
-            <Route path="/pictionary-game" exact component={PictionaryGame} />
+            <Route path="/pictionary-Room/:room" component={PictionaryRoom} />
+            <Route
+              path="/pictionary-lobby/:lobby"
+              component={PictionaryLobby}
+            />
+
+            <Route path="/pictionary-game/:game" component={PictionaryGame} />
           </SiteContainer>
         </Switch>
       </div>

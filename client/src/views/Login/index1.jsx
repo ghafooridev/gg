@@ -13,7 +13,7 @@ import Button from "src/components/sharedComponents/Button"
 import LoginContainer from "src/components/sharedComponents/LoginContainer"
 import userAction from "src/redux/actions/UserAction"
 import SignInLogo from "../../assets/images/login.png"
-import { styles } from "./Login.Style"
+import { styles } from "./Login1.Style"
 
 const Login = function () {
   const classes = styles()

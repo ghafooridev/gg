@@ -8,11 +8,11 @@ export const styles = makeStyles((theme) => ({
   },
   jumbotron: {
     borderRadius: 10,
-    marginTop: 50,
+    marginTop: 20,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "50px 15px",
+    padding: "25px 15px",
     width: "70%",
     [theme.breakpoints.down("sm")]: {
       width: "100%",
@@ -20,7 +20,7 @@ export const styles = makeStyles((theme) => ({
   },
   itemCard: {
     borderRadius: 10,
-    marginTop: 50,
+    marginTop: 30,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -48,7 +48,22 @@ export const styles = makeStyles((theme) => ({
       flexDirection: "column",
     },
   },
+  leftCol: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  leftColGame: {
+    display: "flex",
+  },
+  rightColGame: {
+    display: "flex",
+  },
+  rightCol: {
+    display: "flex",
+    flexDirection: "column",
+  },
   middleCol: {
+    display: "flex",
     margin: "20px 20px 0",
   },
   title: {
@@ -66,6 +81,7 @@ export const styles = makeStyles((theme) => ({
   },
   pictionaryPanel: {
     margin: "0 20px",
+    display: "flex",
   },
   pictionaryInfo: {
     display: "flex",
@@ -88,7 +104,7 @@ export const styles = makeStyles((theme) => ({
   },
   underline: {
     width: 10,
-    borderTop: "3px solid #000",
+    borderTop: `3px solid ${theme.palette.type === "dark" ? "#fff" : "#000"}`,
   },
   countdown: {
     padding: 15,
@@ -131,13 +147,14 @@ export const styles = makeStyles((theme) => ({
     flexWrap: "wrap",
     "& .videoBox": {
       width: "47%",
-      height: 185,
+      height: 150,
       position: "relative",
       margin: 5,
       "& video": {
         width: "100%",
         height: "100%",
         objectFit: "cover",
+        borderRadius: 10,
       },
       "& .point": {
         position: "absolute",
@@ -186,5 +203,8 @@ export const styles = makeStyles((theme) => ({
         fontSize: 14,
       },
     },
+  },
+  guessBox: {
+    marginTop: 30,
   },
 }))

@@ -30,7 +30,10 @@ const PictionaryLobby = function () {
   const [users, setUsers] = useState([])
 
   const onPlayClick = function () {
-    history.push(`pictionary-game?username=${username}&game=${game}&room=${room}`)
+    history.push({
+      pathname: `/pictionary-game/125`,
+      search: `?username=${username}&game=${game}&room=${room}`,
+    })
   }
 
   const onSendClick = function (message) {
@@ -83,10 +86,10 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
-       // disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
+        //disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
-        <Grid item xs={12} className={classes.col}>
+        <Grid item xs={12} className={classes.leftCol}>
           <Card className={classes.itemCard}>
             <Typography variant="h5" className={classes.title}>
               PICTIONARY RULES
@@ -97,8 +100,17 @@ const PictionaryLobby = function () {
               pulvinar lorem felis nec erat Lorem ipsu dolor sit amet,
               consectetur adipiscing elit. Nunc maximus, nulla ut commodo
               sagittus, sapien dui mattis dui, non pulvinar lorem felis nec erat
+              Lorem ipsu dolor sit amet, consectetur adipiscing elit. Nunc
+              maximus, nulla ut commodo sagittus, sapien dui mattis dui, non
+              pulvinar lorem felis nec erat Lorem ipsu dolor sit amet,
+              consectetur adipiscing elit. Nunc maximus, nulla ut commodo
+              sagittus, sapien dui mattis dui, non pulvinar lorem felis nec erat
             </Typography>
           </Card>
+          <Card className={classes.itemCard}>
+            <Typography>AD</Typography>
+          </Card>
+
         </Grid>
         <Grid item xs={12} className={classes.middleCol}>
           <Card className={classes.itemCard}>
@@ -118,13 +130,13 @@ const PictionaryLobby = function () {
             <Button label="leave queue" onClick={onLeaveClick} />
           </Card>
         </Grid>
-        <Grid item xs={12} className={classes.col}>
+        <Grid item xs={12} className={classes.rightCol}>
           <Card className={classes.itemCard}>
             <Typography variant="h5" className={classes.title}>
               TODAY’S ICEBREAKER
             </Typography>
             <TextField
-              rows={4}
+              rows={2}
               label="What is your favorite cuisine?"
               style={{ marginBottom: 10 }}
             />
@@ -136,6 +148,7 @@ const PictionaryLobby = function () {
             fetchMessages={fetchMessages}
             username={username}
             onSendClick={onSendClick}
+            height={120}
           />
         </Grid>
       </Grid>

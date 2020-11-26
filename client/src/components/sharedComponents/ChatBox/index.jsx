@@ -8,6 +8,7 @@ import Button from "src/components/sharedComponents/Button"
 
 import Card from "src/components/sharedComponents/Card"
 import Messages from "src/components/sharedComponents/ChatBox/Messages"
+import clsx from "clsx"
 import { styles } from "./ChatBox.Style"
 
 const ChatBox = function ({
@@ -19,6 +20,8 @@ const ChatBox = function ({
   word,
   removeGuess,
   guessCorrectly,
+  className,
+  height,
 }) {
   const classes = styles()
   const [message, setMessage] = useState("")
@@ -61,12 +64,12 @@ const ChatBox = function ({
   }, [removeGuess])
 
   return (
-    <Card className={classes.itemCard}>
+    <Card className={clsx(classes.itemCard, className)}>
       <Typography variant="h5" className={classes.title}>
         {title}
       </Typography>
       <Grid item xs={12} className={classes.chatBox}>
-        <Messages messages={list} username={username} />
+        <Messages messages={list} username={username} height={height} />
       </Grid>
       <Grid item xs={12} className={classes.chatEntry}>
         <TextField

@@ -8,8 +8,8 @@ import ScrollToBottom from "react-scroll-to-bottom"
 
 import { styles } from "./ChatBox.Style"
 
-const Messages = function ({ messages, username }) {
-  const classes = styles()
+const Messages = function ({ messages, username, height }) {
+  const classes = styles(height)
   return (
     <ScrollToBottom className={classes.scroll}>
       {messages.map((message, index) => {
@@ -30,7 +30,11 @@ const Messages = function ({ messages, username }) {
               >
                 {message.username === username ? "Me" : message.username} :
               </Typography>
-              <Typography variant="body2" color="textSecondary" className={classes.chatContent}>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                className={classes.chatContent}
+              >
                 {message.message === "GUESS_CORRECTLY"
                   ? "Guessed the word correctly"
                   : message.message}

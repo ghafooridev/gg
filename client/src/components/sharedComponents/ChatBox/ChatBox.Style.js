@@ -1,12 +1,12 @@
 import { makeStyles } from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
-  scroll:{
-    height:200
+  scroll: {
+    height: (props) => props,
   },
   itemCard: {
     borderRadius: 10,
-    marginTop: 50,
+    marginTop: 10,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -14,15 +14,15 @@ export const styles = makeStyles((theme) => ({
     width: "100%",
   },
   title: {
-    margin: "0 0 20px",
+    margin: "0 0 10px",
   },
   chatBox: {
     width: "100%",
-    margin: "20px 0",
+    margin: "5px 0",
   },
   chatEntry: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
     width: "100%",
     "& button": {
       minWidth: 80,

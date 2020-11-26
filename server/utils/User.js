@@ -4,8 +4,7 @@ let users = []
 
 const addUser = async function ({ id, username, room, place, NOP, point }) {
   const existingUser = users.find(
-    (user) =>
-      user.username === username && user.room === room && user.place === place
+    (user) => user.id === id && user.room === room && user.place === place
   )
 
   if (!existingUser) {
@@ -20,7 +19,6 @@ const addUser = async function ({ id, username, room, place, NOP, point }) {
       point,
     }
     users.push(user)
-
     return { user }
   }
 }
@@ -53,6 +51,11 @@ const getUserByUsername = function (username, place) {
   return users.find(
     (user) => user.username === username && user.place === place
   )
+}
+
+const getUserById = function (id, place) {
+  console.log(users, id)
+  return users.find((user) => user.id === id && user.place === place)
 }
 
 const getAllUsers = function (room, place) {
@@ -121,4 +124,5 @@ module.exports = {
   getUserTurnByUsername,
   updateUsersAfterTurn,
   updateUserPoint,
+  getUserById,
 }

@@ -13,7 +13,9 @@ const {
   removeGuess,
   updatePoints,
   countDown,
-  getCurrentUser
+  getCurrentUser,
+  getCurrentUserById,
+  selectWordTimer
 } = require("./Game")
 
 const connections = (server) => {
@@ -35,8 +37,10 @@ const connections = (server) => {
     hideResult(socket, io)
     removeGuess(socket, io)
     updatePoints(socket, io)
-    countDown(socket,io)
-    getCurrentUser(socket,io)
+    countDown(socket, io)
+    getCurrentUser(socket, io)
+    getCurrentUserById(socket, io)
+    selectWordTimer(socket,io)
   })
 }
 

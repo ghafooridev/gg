@@ -82,5 +82,5 @@ export default {
   },
   direction: "ltr",
   spacing: 5,
-  overrides: {},
+  overrides: { }
 }
