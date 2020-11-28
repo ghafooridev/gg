@@ -74,8 +74,8 @@ const selectWord = function (socket, io) {
 }
 
 const getUsersTurn = function (socket, io) {
-  socket.on("usersTurn.room", (preTurn, callback) => {
-    io.emit("usersTurn.room", getUserTurnByUsername(preTurn))
+  socket.on("usersTurn.room", ({ room, nextTurn }, callback) => {
+    io.emit("usersTurn.room", getUserTurnByUsername(room, nextTurn))
     if (typeof callback === "function") {
       callback()
     }

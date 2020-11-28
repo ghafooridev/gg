@@ -26,7 +26,7 @@ import GameResult from "../GameResult"
 const ENDPOINT = "localhost:5000"
 let socket
 const peers = []
-const elements = []
+
 const PictionaryGame = function () {
   const { username, room } = queryString.parse(location.search)
   const classes = styles()
@@ -89,34 +89,35 @@ const PictionaryGame = function () {
 
   const getUserTurn = function (nextTurn) {
     if (users.length) {
-      socket.emit("usersTurn.room", nextTurn)
+      socket.emit("usersTurn.room", { room, nextTurn })
     }
   }
 
-  // const onShowResult = function () {
-  //   setShowResult(true)
-  //   socket.emit("showResult.room", () => {
-  //     dialogAction.show({
-  //       component: <GameResult users={users} />,
-  //       title: "Result",
-  //       size: "sm",
-  //       onAction: () => {
-  //         dialogAction.hide()
-  //         socket.emit("hideResult.room")
-  //       },
-  //     })
-  //   })
-  // }
-  //
+  const onShowResult = function () {
+    setShowResult(true)
+    socket.emit("showResult.room", () => {
+      dialogAction.show({
+        component: <GameResult users={users} />,
+        title: "Result",
+        size: "sm",
+        onAction: () => {
+          users.map((item) => socket.emit("getInfo.room", item.id))
+          dialogAction.hide()
+          socket.emit("hideResult.room")
+        },
+      })
+    })
+  }
+
   const onTimesUp = function () {
     // if (room && turn) {
-    // setWord("")
+    setWord("")
     setCharIndex(1000)
     setIsPlaying(false)
     socket.emit("usersUpdate.room", { room, turn })
     socket.emit("guessRemove.room", { room })
-    getUserTurn(turn)
-    // onShowResult()
+
+    onShowResult()
     // }
   }
 
@@ -277,8 +278,11 @@ const PictionaryGame = function () {
     socket.on("hideResult.room", () => {
       dialogAction.hide()
       setShowResult(false)
-      getUserTurn()
+      getUserTurn(turn)
     })
+    return () => {
+      socket.off("hideResult.room")
+    }
   }, [showResult])
 
   useEffect(() => {

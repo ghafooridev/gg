@@ -18,6 +18,7 @@ const path = require("path")
 const http = require("http")
 const fs = require("fs")
 const https = require("https")
+
 const passportConfig = require("./utils/passport")
 
 const { ROOM_CLEAN_INTERVAL } = require("./config")
@@ -38,6 +39,14 @@ if (process.env.PROD) {
     app
   )
 }
+
+// const { ExpressPeerServer } = require("peer")
+//
+// const peerServer = ExpressPeerServer(server, {
+//   path: "/myapp",
+// })
+//
+// app.use("/peerjs", peerServer)
 
 connections(server)
 

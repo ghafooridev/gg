@@ -88,7 +88,7 @@ const updateUserPoint = function (room, place, username) {
   if (index !== -1) {
     updateUsers[index] = {
       ...updateUsers[index],
-      point: updateUsers[index].point + 100,
+      point: updateUsers[index].point + 50,
     }
     users = [...updateUsers]
 
@@ -96,19 +96,44 @@ const updateUserPoint = function (room, place, username) {
   }
 }
 
-const getUserTurnByUsername = function (preTurn) {
-  const lastPlayer = users.find((user) => user.NOP === 0)
+const getUserTurnByUsername = function (room, preTurn) {
+  const filteredUser = users.filter(
+    (user) => user.room === room && user.place === "game"
+  )
+
+  if (!preTurn) {
+    const player = filteredUser[0]
+    return player.username
+  }
+  const index = filteredUser.findIndex((user) => user.username === preTurn)
+  if (index + 1 < filteredUser.length) {
+    return filteredUser[index + 1].username
+  }
+
+  return filteredUser[0].username
+
+}
+
+const getUserTurnByUsername2 = function (room, preTurn) {
+  const filteredUser = users.filter(
+    (user) => user.room === room && user.place === "game"
+  )
+  console.log(preTurn, filteredUser)
+  const lastPlayer = filteredUser.find((user) => user.NOP === 0)
 
   if (lastPlayer) {
     return lastPlayer.username
   }
 
-  let minPlayPlayer = users[0]
-  users.forEach((user) => {
+  let minPlayPlayer = filteredUser[0]
+  filteredUser.forEach((user) => {
     if (user.NOP < minPlayPlayer.NOP) {
       minPlayPlayer = user
     }
   })
+
+  if (minPlayPlayer.username === preTurn) {
+  }
 
   if (minPlayPlayer) {
     return minPlayPlayer.username
