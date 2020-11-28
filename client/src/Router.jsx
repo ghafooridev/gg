@@ -23,7 +23,7 @@ const Router = function () {
 
             <Route exact path="/" component={Home} />
             <Route path="/home" exact component={Home} />
-            <Route path="/profile" exact component={Profile} />
+            <Route path="/profile/:userId" exact component={Profile} />
             <Route path="/pictionary-Room/:room" component={PictionaryRoom} />
             <Route
               path="/pictionary-lobby/:lobby"

@@ -16,19 +16,14 @@ export const styles = makeStyles((theme) => ({
     marginRight: 50,
   },
   rightPanel: {
+    position: "relative",
     flex: 1,
   },
   item: {
     marginBottom: 20,
   },
-  uploadBox: {
-    height: 360,
-    backgroundColor:
-      theme.palette.type === "dark"
-        ? theme.palette.custom.grayBlue
-        : theme.palette.custom.lightGray,
-    borderRadius: 10,
-    textAlign: "center",
-    padding: 110,
+
+  colorBox: {
+    float: "right",
   },
 }))

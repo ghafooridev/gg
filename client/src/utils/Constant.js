@@ -23,7 +23,7 @@ const Constant = {
   },
   STORAGE: {
     CURRENT_USER: "CURRENT_USER",
-    MODE:"MODE"
+    MODE: "MODE",
   },
   MESSAGES: {
     SEND_ACTIVATION_LINK:
@@ -32,6 +32,7 @@ const Constant = {
       "Your feedback has been sent to us ,Thanks for reporting feedback",
     RESET_PASSWORD:
       "Your password has been reset successfully,an activation link has been sent to your email address ",
+    EDIT_DATA: "The information has been updated successfully",
   },
   LOGIN_PAGE: {
     SIGN_IN: "SIGN_IN",

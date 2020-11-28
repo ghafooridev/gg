@@ -7,6 +7,7 @@ const {
   loginUser,
   allUsers,
   removeUser,
+  editUser
 } = require("../controllers/UserController")
 
 const router = express.Router()
@@ -40,7 +41,7 @@ router.post("/resetPassword", resetPassword)
 router.post("/login", loginUser)
 
 /*
- * @route  get api/user/currentUser/:userId
+ * @route  get api/user/:userId
  * @desc   get current User
  * @access public
  */
@@ -59,6 +60,13 @@ router.get("/", allUsers)
  * @access public
  */
 router.delete("/:userId", removeUser)
+
+/*
+ * @route  put api/user/:userId
+ * @desc   edit a user by user id
+ * @access public
+ */
+router.put("/:userId", editUser)
 
 
 module.exports = router

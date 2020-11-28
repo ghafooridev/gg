@@ -43,7 +43,7 @@ const PictionaryLobby = function () {
   const onLeaveClick = function () {
     socket.emit("leave.lobby", { username, room })
     socket.off()
-    history.push("home")
+    history.push("/home")
   }
 
   useEffect(() => {

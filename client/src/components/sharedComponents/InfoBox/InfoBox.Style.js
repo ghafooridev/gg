@@ -1,5 +1,12 @@
 import { makeStyles } from "@material-ui/core/styles"
 
+const setBackground = (props, theme) => {
+  if (!props.background || props.background === "transparent") {
+    return theme.palette.type === "dark" && theme.palette.custom.grayBlue
+  }
+  return props.background
+}
+
 export const styles = makeStyles((theme) => ({
   root: {
     padding: 10,
@@ -18,8 +25,7 @@ export const styles = makeStyles((theme) => ({
       width: "100%",
       marginBottom: 10,
     },
-    backgroundColor:
-      theme.palette.type === "dark" && theme.palette.custom.grayBlue,
+    backgroundColor: (props) => setBackground(props, theme),
   },
   top: {
     display: "flex",

@@ -9,7 +9,7 @@ import { styles } from "./InfoBox.Style"
 import Gif from "../../../assets/images/p.png"
 
 const InfoBox = function (props) {
-  const { labels, gameCount, point, title, subTitle, className ,turn} = props
+  const { labels, gameCount, onEditClick, title, subTitle, className ,turn} = props
   const classes = styles(props)
 
   return (
@@ -23,14 +23,8 @@ const InfoBox = function (props) {
             <Typography variant="h6" className={classes.subTitle}>
               {title}
             </Typography>
-            {point && (
-              <Typography
-                variant="body2"
-                className={classes.subTitle}
-                color="error"
-              >
-                {point}
-              </Typography>
+            {onEditClick && (
+                <i className={clsx("material-icons",classes.icon)} style={{cursor:"pointer"}} onClick={onEditClick}>create</i>
             )}
           </Grid>
           <Grid item xs={12} className={classes.topRightDown}>

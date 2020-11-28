@@ -36,16 +36,16 @@ const Header = function () {
   const onMenuClick = function (type) {
     const types = {
       signIn: () => {
-        history.push("login")
+        history.push("/login")
       },
       signUp: () => {
-        history.push("register")
+        history.push("/register")
       },
       inviteFriend: () => {
         alert("not implemented")
       },
       home: () => {
-        history.push("home")
+        history.push("/home")
       },
     }
 

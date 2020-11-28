@@ -6,6 +6,9 @@ export const styles = makeStyles((theme) => ({
   },
   root: {
     width: "100%",
+    borderRadius: 5,
+    backgroundColor:
+      theme.palette.type === "dark" && theme.palette.custom.grayBlue,
     [theme.breakpoints.down("xs")]: {
       width: "100% !important",
     },
@@ -19,7 +22,7 @@ export const styles = makeStyles((theme) => ({
   },
   menuContainer: {
     position: "absolute",
-    backgroundColor: "#fff",
+    backgroundColor: theme.palette.type==="dark"?theme.palette.custom.grayBlue:"#fff",
     width: "100%",
     overflowY: "auto",
     border: `1px solid #0000003b`,

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
@@ -17,38 +17,70 @@ import UniversitySelector from "src/components/sharedComponents/UnivercitySelect
 import { findCollegeId } from "src/helpers/utils"
 import JoyStick from "src/components/sharedComponents/JoyStick"
 import clsx from "clsx"
+import { SketchPicker } from "react-color"
 import Card from "src/components/sharedComponents/Card"
+import InfoBox from "src/components/sharedComponents/InfoBox"
+import Storage from "src/services/Storage"
 import { styles } from "./Profile.Style"
 
-const Register = function () {
+const Register = function (props) {
   const classes = styles()
   const { register, handleSubmit, errors, reset } = useForm()
   const history = useHistory()
   const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState(null)
+  const [showColor, setShowColor] = useState(false)
 
   const onSubmit = function (data, e) {
-    // let newData = data
-    // const university = findCollegeId(data.university)
-    // if (university) {
-    //   newData = { ...data, university }
-    // }
-    // setLoading(true)
-    // userRepository
-    //   .register(newData)
-    //   .then((result) => {
-    //     setLoading(false)
-    //     if (result) {
-    //       AlertAction.show({
-    //         type: "success",
-    //         text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
-    //       })
-    //       e.target.reset()
-    //     }
-    //   })
-    //   .catch(() => {
-    //     setLoading(false)
-    //   })
+    let newData = data
+    const university = findCollegeId(data.university)
+    if (university) {
+      newData = { ...data, university }
+    }
+    newData = { ...newData, background: user.background }
+    setLoading(true)
+    userRepository
+      .edit(user.id, newData)
+      .then((result) => {
+        setLoading(false)
+        if (result) {
+          AlertAction.show({
+            type: "success",
+            text: Constant.MESSAGES.EDIT_DATA,
+          })
+          e.target.reset()
+        }
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
+
+  const onEditClick = function () {
+    setShowColor(!showColor)
+  }
+
+  const onselectColor = function (color) {
+    setUser({ ...user, background: color.hex })
+  }
+
+  const onChangeText = function ({ value, name }) {
+    setUser({ ...user, [name]: value })
+  }
+
+  const onSelectUniversity = function (value) {
+    setUser({ ...user, university: value.text })
+  }
+
+  useEffect(() => {
+    const userId = Storage.pull(Constant.STORAGE.CURRENT_USER).id
+    userRepository
+      .getCurrentUser(userId)
+      .then((result) => {
+        setUser(result)
+      })
+      .catch(() => {})
+  }, [])
 
   return (
     <Card className={classes.root}>
@@ -67,6 +99,7 @@ const Register = function () {
               })}
               className={classes.input}
               error={errors.name}
+              defaultValue={user && user.name}
             />
           </Grid>
           <Grid item xs={12} className={classes.item}>
@@ -83,6 +116,7 @@ const Register = function () {
               })}
               className={classes.input}
               error={errors.email}
+              defaultValue={user && user.email}
             />
           </Grid>
           <Grid item xs={12} className={classes.item}>
@@ -95,18 +129,8 @@ const Register = function () {
               })}
               className={classes.input}
               error={errors.username}
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.item}>
-            <Password
-              name="password"
-              label="Password"
-              icon="lock_open"
-              inputRef={register({
-                required: validationMessage("Password", "required"),
-              })}
-              className={classes.input}
-              error={errors.password}
+              defaultValue={user && user.username}
+              onChange={onChangeText}
             />
           </Grid>
           <Grid item xs={12} className={classes.item}>
@@ -117,6 +141,8 @@ const Register = function () {
               })}
               className={classes.input}
               error={errors.university}
+              defaultValue={user && user.university}
+              onSelect={onSelectUniversity}
             />
           </Grid>
           <Button
@@ -129,10 +155,19 @@ const Register = function () {
         </Grid>
 
         <Grid className={classes.rightPanel}>
-          <Grid className={classes.uploadBox}>
-            <Typography variant="h5" color="textSecondary">
-              To change your profile image , drag and drop here
-            </Typography>
+          <InfoBox
+            title={user && user.username}
+            subTitle={user && user.university}
+            background={user && user.background}
+            onEditClick={onEditClick}
+          />
+          <Grid className={classes.colorBox}>
+            {showColor && (
+              <SketchPicker
+                color={user && user.background}
+                onChange={onselectColor}
+              />
+            )}
           </Grid>
         </Grid>
       </Grid>

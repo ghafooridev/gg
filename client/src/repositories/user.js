@@ -15,7 +15,7 @@ export default {
   getCurrentUser(userId) {
     try {
       return api.get({
-        url: `/user/currentUser/${userId}`,
+        url: `/user/${userId}`,
       })
     } catch (error) {
       // throw new TypeError(error)
@@ -37,6 +37,17 @@ export default {
     try {
       return api.post({
         url: "/user/login",
+        data,
+      })
+    } catch (error) {
+      // throw new TypeError(error)
+    }
+  },
+
+  edit(userId, data) {
+    try {
+      return api.put({
+        url: `/user/${userId}`,
         data,
       })
     } catch (error) {

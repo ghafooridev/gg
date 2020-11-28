@@ -137,7 +137,7 @@ exports.loginUser = function (req, res) {
 }
 
 exports.currentUser = function (req, res) {
-  const { userId } = req.param
+  const { userId } = req.params
 
   User.findOne({ _id: userId }).then((user) => {
     if (!user) {
@@ -163,6 +163,21 @@ exports.removeUser = function (req, res) {
 
   User.findByIdAndRemove(userId)
     .then((user) => {
+      res.json(user)
+    })
+    .catch((err) => {
+      res.status(400).json(err)
+    })
+}
+
+exports.editUser = function (req, res) {
+  const userId = req.param("userId")
+  const { username, email, university, password } = req.body
+
+  // id, req.body, {new: true},
+  User.findByIdAndUpdate(userId, req.body)
+    .then((user) => {
+      console.log("user",user)
       res.json(user)
     })
     .catch((err) => {

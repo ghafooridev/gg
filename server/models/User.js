@@ -9,6 +9,7 @@ const UserSchema = new Schema({
   email: { type: String, required: true },
   university: { type: String, required: true },
   description: { type: String, required: false },
+  background:{type:String,default:"transparent"},
   active: { type: Boolean, default: true },
   inQueue: { type: Boolean, default: false },
   inGame: { type: Boolean, default: false },

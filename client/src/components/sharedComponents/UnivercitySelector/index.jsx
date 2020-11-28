@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import MuiTextField from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"
@@ -37,19 +37,26 @@ const MenuList = function ({ options, onSelectData }) {
 const UniversitySelector = function (props) {
   const classes = styles()
 
-  const { inputRef, style, className, caption, error } = props
-
+  const { inputRef, style, className, caption, error, defaultValue,onSelect } = props
   const [isExpand, setIsExpand] = useState(false)
-  const [selectedData, setIsSelectedData] = useState({ value: "", text: "" })
+  const [selectedData, setSelectedData] = useState({ value: "", text: "" })
 
   const onExpandClick = function () {
     setIsExpand(!isExpand)
   }
 
   const onSelectData = function (value) {
-    setIsSelectedData(value)
+    setSelectedData(value)
     setIsExpand(false)
+
+    if(typeof onSelect==="function") {
+      onSelect(value)
+    }
   }
+
+  useEffect(() => {
+    setSelectedData({ text: defaultValue } || "")
+  }, [defaultValue])
 
   return (
     <div className={classes.container}>
