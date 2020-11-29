@@ -9,7 +9,7 @@ const GameResult = function (props) {
   const classes = styles()
 
   return (
-    <Grid container xs={12}>
+    <Grid container>
       <Grid item xs={12}>
         <Grid item xs={12} className={classes.resultTableRow}>
           <Typography variant="h5">Players</Typography>
@@ -19,7 +19,7 @@ const GameResult = function (props) {
           {users &&
             users.map((user, index) => {
               return (
-                <Grid item xs={12} className={classes.resultTableRow}>
+                <Grid key={index} item xs={12} className={classes.resultTableRow}>
                   <Typography variant="h5"> {user.username}</Typography>
                   <Typography variant="h5"> {user.point}</Typography>
                 </Grid>

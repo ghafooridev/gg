@@ -1,9 +1,15 @@
 import React, { useEffect, useRef } from "react"
+
 import clsx from "clsx"
+
 import { Grid } from "@material-ui/core"
+
 import io from "socket.io-client"
+
+import pen from "src/assets/images/pen.png"
+import { socketURL } from "src/helpers/utils"
+
 import { styles } from "./PictionaryFrame.Style"
-import pen from "../../../assets/images/pen.png"
 
 const PALETTE = {
   BLACK: "#000",
@@ -20,7 +26,7 @@ const SIZE = {
 }
 let socket
 
-const ENDPOINT = "localhost:5000"
+const ENDPOINT = socketURL()
 
 const Canvas = function ({ username, turn }) {
   const classes = styles()

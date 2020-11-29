@@ -89,8 +89,8 @@ const updateUsers = function (socket, io) {
 }
 
 const updatePoints = function (socket, io) {
-  socket.on("usersUpdatePoint.room", ({ room, username }) => {
-    io.emit("usersUpdatePoint.room", updateUserPoint(room, "game", username))
+  socket.on("usersUpdatePoint.room", ({ room, usernames }) => {
+    io.emit("usersUpdatePoint.room", updateUserPoint(room, "game", usernames))
   })
 }
 

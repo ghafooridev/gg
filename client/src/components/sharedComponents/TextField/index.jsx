@@ -93,7 +93,6 @@ TextField.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
   inputRef: PropTypes.func,
-  rows: PropTypes.string,
   type: PropTypes.string,
   name: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),

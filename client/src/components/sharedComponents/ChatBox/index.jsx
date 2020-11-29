@@ -58,9 +58,7 @@ const ChatBox = function ({
   }, [messages])
 
   useEffect(() => {
-    if (removeGuess) {
-      return setList([])
-    }
+    return setList([])
   }, [removeGuess])
 
   return (

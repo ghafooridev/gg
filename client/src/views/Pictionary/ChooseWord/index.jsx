@@ -36,7 +36,7 @@ const ChooseWord = function (props) {
   }, [counter])
 
   return (
-    <Grid container xs={12} className={classes.chooseWordContainer}>
+    <Grid container className={classes.chooseWordContainer}>
       <Typography variant="h5" className={classes.wordSelectCounter}>
         {counter}
       </Typography>

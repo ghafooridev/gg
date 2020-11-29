@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from "react"
 
+import { useHistory } from "react-router-dom"
+
 import { Grid, Typography } from "@material-ui/core"
 
+import io from "socket.io-client"
+
+import queryString from "query-string"
+
 import TextField from "src/components/sharedComponents/TextField"
-
 import Button from "src/components/sharedComponents/Button"
-
 import Card from "src/components/sharedComponents/Card"
 import InfoBox from "src/components/sharedComponents/InfoBox"
-import { useHistory } from "react-router-dom"
-import queryString from "query-string"
-import io from "socket.io-client"
 import ChatBox from "src/components/sharedComponents/ChatBox"
 import Constant from "src/utils/Constant"
 import chatRepository from "src/repositories/chat"
+import { socketURL } from "src/helpers/utils"
+
 import { styles } from "../Pictionary.Style"
 
-const ENDPOINT = "localhost:5000"
+const ENDPOINT = socketURL()
 let socket
 
 const PictionaryLobby = function () {
-  const { username, game,room } = queryString.parse(location.search)
+  const { username, game, room } = queryString.parse(location.search)
 
   const classes = styles()
   const history = useHistory()
@@ -73,7 +76,7 @@ const PictionaryLobby = function () {
   }, [users])
 
   return (
-    <Grid container >
+    <Grid container>
       <Grid item xs={12} className={classes.topPanel}>
         <Card className={classes.jumbotron}>
           <Typography variant="h3">waiting for other players</Typography>
@@ -86,7 +89,7 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
-        //disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
+        // disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item xs={12} className={classes.leftCol}>
@@ -110,7 +113,6 @@ const PictionaryLobby = function () {
           <Card className={classes.itemCard}>
             <Typography>AD</Typography>
           </Card>
-
         </Grid>
         <Grid item xs={12} className={classes.middleCol}>
           <Card className={classes.itemCard}>

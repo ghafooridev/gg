@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react"
-import { Grid, Paper, Typography } from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core"
 import { styles } from "src/views/Pictionary/Pictionary.Style"
-import src from "./1.mp4"
 
 const VideoBox = function ({ user, index, turn, src }) {
   const classes = styles()

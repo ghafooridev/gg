@@ -83,6 +83,20 @@ const updateUserPoint = function (room, place, username) {
   const filteredUser = users.filter(
     (user) => user.room === room && user.place === place
   )
+
+  // const updateUsers = filteredUser.map((user) => {
+  //   if (usernames.includes(user.username)) {
+  //     user.point += 5
+  //     return user
+  //   }
+  //   return user
+  // })
+  // console.log(usernames)
+  // console.log(updateUsers)
+  // users = [...updateUsers]
+  //
+  // return users
+
   const index = filteredUser.findIndex((item) => item.username === username)
   const updateUsers = [...filteredUser]
   if (index !== -1) {
@@ -111,7 +125,6 @@ const getUserTurnByUsername = function (room, preTurn) {
   }
 
   return filteredUser[0].username
-
 }
 
 const getUserTurnByUsername2 = function (room, preTurn) {

@@ -15,9 +15,10 @@ import ChatBox from "src/components/sharedComponents/ChatBox"
 import Constant from "src/utils/Constant"
 import chatRepository from "src/repositories/chat"
 import RoomTable from "src/views/Pictionary/PictionaryRoom/RoomTable"
+import { socketURL } from "src/helpers/utils"
 import { styles } from "../Pictionary.Style"
 
-const ENDPOINT = "localhost:5000"
+const ENDPOINT = socketURL()
 let socket
 
 const rooms = [
