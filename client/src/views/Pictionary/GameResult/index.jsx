@@ -5,12 +5,13 @@ import Button from "src/components/sharedComponents/Button"
 import { styles } from "src/views/Pictionary/Pictionary.Style"
 
 const GameResult = function (props) {
-  const { onAction, users } = props
+  const { onAction, users ,round } = props
   const classes = styles()
 
   return (
     <Grid container>
       <Grid item xs={12}>
+          <Typography variant="h5">Round : {round}</Typography>
         <Grid item xs={12} className={classes.resultTableRow}>
           <Typography variant="h5">Players</Typography>
           <Typography variant="h5">Points</Typography>

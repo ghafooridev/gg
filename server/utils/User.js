@@ -17,6 +17,7 @@ const addUser = async function ({ id, username, room, place, NOP, point }) {
       place,
       NOP,
       point,
+      // round
     }
     users.push(user)
     return { user }
@@ -79,35 +80,37 @@ const updateUsersAfterTurn = function (room, place, turn) {
   return users
 }
 
-const updateUserPoint = function (room, place, username) {
+const updateUserPoint = function (room, round, place, username) {
   const filteredUser = users.filter(
     (user) => user.room === room && user.place === place
   )
 
-  // const updateUsers = filteredUser.map((user) => {
-  //   if (usernames.includes(user.username)) {
-  //     user.point += 5
-  //     return user
-  //   }
-  //   return user
-  // })
-  // console.log(usernames)
-  // console.log(updateUsers)
-  // users = [...updateUsers]
-  //
-  // return users
-
-  const index = filteredUser.findIndex((item) => item.username === username)
-  const updateUsers = [...filteredUser]
-  if (index !== -1) {
-    updateUsers[index] = {
-      ...updateUsers[index],
-      point: updateUsers[index].point + 50,
+  const updateUsers = filteredUser.map((user) => {
+    if (username && username.includes(user.username)) {
+      if (user.round !== round) {
+        user.point += 5
+        user.round = round
+      }
+      return user
     }
-    users = [...updateUsers]
+    return user
+  })
 
-    return users
-  }
+  users = [...updateUsers]
+
+  return users
+
+  // const index = filteredUser.findIndex((item) => item.username === username)
+  // const updateUsers = [...filteredUser]
+  // if (index !== -1) {
+  //   updateUsers[index] = {
+  //     ...updateUsers[index],
+  //     point: updateUsers[index].point + 50,
+  //   }
+  //   users = [...updateUsers]
+  //
+  //   return users
+  // }
 }
 
 const getUserTurnByUsername = function (room, preTurn) {

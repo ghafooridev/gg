@@ -9,6 +9,8 @@ const {
   getUserById,
 } = require("../utils/User")
 
+let round = 0
+
 const joinGame = function (socket, io) {
   socket.on("join.room", ({ username, room, id }, callback) => {
     const newUser = {
@@ -18,6 +20,7 @@ const joinGame = function (socket, io) {
       place: "game",
       NOP: 0,
       point: 0,
+      // round:1
     }
     const { user } = addUser(newUser).then(() => {
       socket.join(room)
@@ -66,7 +69,8 @@ const paintGame = function (socket, io) {
 
 const selectWord = function (socket, io) {
   socket.on("wordSelect.room", (word, callback) => {
-    io.emit("wordShow.room", word)
+    round += 1
+    io.emit("wordShow.room", { word, round })
     if (typeof callback === "function") {
       callback()
     }
@@ -89,8 +93,8 @@ const updateUsers = function (socket, io) {
 }
 
 const updatePoints = function (socket, io) {
-  socket.on("usersUpdatePoint.room", ({ room, usernames }) => {
-    io.emit("usersUpdatePoint.room", updateUserPoint(room, "game", usernames))
+  socket.on("usersUpdatePoint.room", ({ room, round, guessedUser }) => {
+    io.emit("usersUpdatePoint.room", updateUserPoint(room, round, "game", guessedUser))
   })
 }
 

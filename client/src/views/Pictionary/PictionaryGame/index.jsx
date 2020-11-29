@@ -40,6 +40,8 @@ const PictionaryGame = function () {
   const [timer, setTimer] = useState(60)
   const [charIndex, setCharIndex] = useState(10000)
   const [audio, setAudio] = useState(false)
+  const [guessedUser, setGuessedUser] = useState([])
+  const [round, setRound] = useState(0)
 
   const onSendClick = function (message) {
     socket.emit("guess.room", { username, message }, () => {})
@@ -62,7 +64,7 @@ const PictionaryGame = function () {
     setCharIndex(1000)
     setIsPlaying(false)
     socket.emit("usersUpdate.room", { room, turn })
-    //socket.emit("guessRemove.room", { room })
+    // socket.emit("guessRemove.room", { room })
     getUserTurn(turn)
   }
 
@@ -96,7 +98,7 @@ const PictionaryGame = function () {
     setShowResult(true)
     socket.emit("showResult.room", () => {
       dialogAction.show({
-        component: <GameResult users={users} />,
+        component: <GameResult users={users} round={round} />,
         title: "Result",
         size: "sm",
         onAction: () => {
@@ -124,10 +126,7 @@ const PictionaryGame = function () {
   }
 
   const guessCorrectly = function (username) {
-    socket.emit("usersUpdatePoint.room", { room, username })
-    socket.on("usersUpdatePoint.room", (users) => {
-      setUsers(users)
-    })
+    setGuessedUser([...guessedUser, username])
   }
 
   const appendInformation = function (user) {
@@ -283,8 +282,15 @@ const PictionaryGame = function () {
       setShowResult(false)
       getUserTurn(turn)
     })
+
+    socket.emit("usersUpdatePoint.room", { room, round, guessedUser })
+    socket.on("usersUpdatePoint.room", (users) => {
+      setUsers(users)
+    })
+
     return () => {
       socket.off("hideResult.room")
+      socket.off("usersUpdatePoint.room")
     }
   }, [showResult])
 
@@ -295,8 +301,10 @@ const PictionaryGame = function () {
   }, [guess])
 
   useEffect(() => {
-    socket.on("wordShow.room", (data) => {
-      setWord(data)
+    socket.on("wordShow.room", ({ word, round }) => {
+      setWord(word)
+      setRound(round)
+      setGuessedUser([])
     })
 
     socket.on("timer.room", (timer) => {
@@ -331,6 +339,7 @@ const PictionaryGame = function () {
       socket.off("usersUpdate.room")
     }
   }, [users])
+
   return (
     <Grid className={classes.root}>
       <Grid item xs={12} className={classes.topPanel}>
