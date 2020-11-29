@@ -98,7 +98,7 @@ const PictionaryGame = function () {
     setShowResult(true)
     socket.emit("showResult.room", () => {
       dialogAction.show({
-        component: <GameResult users={users} round={round} />,
+        component: <GameResult users={users} guessedUser={guessedUser} round={round} />,
         title: "Result",
         size: "sm",
         onAction: () => {
