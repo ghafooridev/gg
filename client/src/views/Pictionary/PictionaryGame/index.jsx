@@ -27,6 +27,7 @@ import GameResult from "../GameResult"
 const ENDPOINT = socketURL()
 let socket
 const peers = []
+const callList = []
 
 const PictionaryGame = function () {
   const { username, room } = queryString.parse(location.search)
@@ -43,7 +44,7 @@ const PictionaryGame = function () {
   const [timer, setTimer] = useState(60)
   const [charIndex, setCharIndex] = useState(10000)
   const [audio, setAudio] = useState(true)
-  const [video, setVideo] = useState(true)
+  const [videos, setVideo] = useState(true)
   const [guessedUser, setGuessedUser] = useState([])
   const [round, setRound] = useState(0)
   const [myStream, setMyStream] = useState(null)
@@ -76,7 +77,7 @@ const PictionaryGame = function () {
     myStream &&
       myStream.getTracks().forEach(function (track) {
         if (track.readyState === "live" && track.kind === "video") {
-          setVideo(!video)
+          setVideo(!videos)
           track.enabled = !track.enabled
         }
       })
@@ -224,7 +225,10 @@ const PictionaryGame = function () {
     const call = myPeer.call(user.id, stream)
     const video = document.createElement("video")
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, user.id)
+      if (!callList[call.peer]) {
+        addVideoStream(video, userVideoStream, user.id)
+        callList[call.peer] = call
+      }
     })
     call.on("close", () => {
       video.remove()
@@ -243,7 +247,7 @@ const PictionaryGame = function () {
     navigator.mediaDevices
       .getUserMedia({
         video: true,
-        audio,
+        audio: true,
       })
       .then((stream) => {
         setMyStream(stream)
@@ -252,7 +256,10 @@ const PictionaryGame = function () {
           call.answer(stream)
           const video = document.createElement("video")
           call.on("stream", (userVideoStream) => {
-            addVideoStream(video, userVideoStream, call.peer)
+            if (!callList[call.peer]) {
+              addVideoStream(video, userVideoStream, call.peer)
+              callList[call.peer] = call
+            }
           })
         })
 
@@ -374,19 +381,39 @@ const PictionaryGame = function () {
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item sm={12} md={4} className={classes.leftColGame}>
           <Card className={classes.itemCard}>
-            <Typography variant="h5" className={classes.title}>
-              Players
-            </Typography>
+            <Grid className={classes.videoHeader}>
+              <Typography variant="h5">
+                Players
+              </Typography>
+              <Grid>
+                <Button
+                  className={classes.videoHeaderButton}
+                  icon={<i className="material-icons">exit_to_app</i>}
+                  onClick={onLeftClick}
+                />
+                <Button
+                  className={classes.videoHeaderButton}
+                  icon={
+                    <i className="material-icons">
+                      {videos ? "videocam" : "videocam_off"}
+                    </i>
+                  }
+                  onClick={onVideoClick}
+                />
+                <Button
+                  className={classes.videoHeaderButton}
+                  icon={
+                    <i className="material-icons">
+                      {audio ? "volume_up" : "volume_off"}
+                    </i>
+                  }
+                  onClick={onAudioClick}
+                />
+              </Grid>
+            </Grid>
+
             <Grid className={classes.videoCard}>
               <div id="video-grid" className={classes.videoGrid} />
-            </Grid>
-            <Grid>
-              <Button label="Leave" onClick={onLeftClick} />
-              <Button
-                label={video ? "show" : "notShow"}
-                onClick={onVideoClick}
-              />
-              <Button label={audio ? "seda" : "bised"} onClick={onAudioClick} />
             </Grid>
           </Card>
         </Grid>

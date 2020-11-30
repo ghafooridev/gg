@@ -66,9 +66,6 @@ export const styles = makeStyles((theme) => ({
     display: "flex",
     margin: "20px 20px 0",
   },
-  title: {
-    margin: "0 0 20px",
-  },
   chatBox: {},
   chatEntry: {
     display: "flex",
@@ -155,7 +152,7 @@ export const styles = makeStyles((theme) => ({
         height: "100%",
         objectFit: "cover",
         borderRadius: 10,
-        backgroundColor: "#000"
+        backgroundColor: "#000",
       },
       "& .point": {
         position: "absolute",
@@ -205,6 +202,19 @@ export const styles = makeStyles((theme) => ({
         fontSize: 14,
       },
     },
+  },
+  videoHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    marginBottom: 20,
+  },
+  videoHeaderButton: {
+    padding: 0,
+    minWidth: 40,
+    height: 40,
+    marginLeft: 10,
   },
   guessBox: {
     marginTop: 30,
