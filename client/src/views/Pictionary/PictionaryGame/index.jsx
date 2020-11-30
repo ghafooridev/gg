@@ -14,6 +14,9 @@ import ChatBox from "src/components/sharedComponents/ChatBox"
 import dialogAction from "src/redux/actions/dialogAction"
 import Peer from "peerjs"
 import { socketURL } from "src/helpers/utils"
+import Storage from "src/services/Storage"
+import Constant from "src/utils/Constant"
+import Button from "src/components/sharedComponents/Button"
 import ChooseWord from "../ChooseWord"
 import { styles } from "../Pictionary.Style"
 import PictionaryFrame from "../PictionaryFrame/Canvas"
@@ -39,9 +42,11 @@ const PictionaryGame = function () {
   const [removeGuess, setRemoveGuess] = useState(false)
   const [timer, setTimer] = useState(60)
   const [charIndex, setCharIndex] = useState(10000)
-  const [audio, setAudio] = useState(false)
+  const [audio, setAudio] = useState(true)
+  const [video, setVideo] = useState(true)
   const [guessedUser, setGuessedUser] = useState([])
   const [round, setRound] = useState(0)
+  const [myStream, setMyStream] = useState(null)
 
   const onSendClick = function (message) {
     socket.emit("guess.room", { username, message }, () => {})
@@ -49,8 +54,42 @@ const PictionaryGame = function () {
 
   const onLeaveClick = function (id) {
     socket.emit("leave.room", { username, room, id })
+    if (id) {
+      removeCurrentWrapper(id)
+    }
     socket.off()
     history.push("/home")
+  }
+
+  const onLeftClick = function () {
+    const currentUser = Storage.pull(Constant.STORAGE.CURRENT_USER).username
+    const element = document.querySelectorAll(
+      `[data-username=${currentUser}]`
+    )[0]
+    const id = element.id
+    element.remove()
+    myStream && myStream.getTracks().forEach((track) => track.stop())
+    onLeaveClick(id)
+  }
+
+  const onVideoClick = function () {
+    myStream &&
+      myStream.getTracks().forEach(function (track) {
+        if (track.readyState === "live" && track.kind === "video") {
+          setVideo(!video)
+          track.enabled = !track.enabled
+        }
+      })
+  }
+
+  const onAudioClick = function () {
+    myStream &&
+      myStream.getTracks().forEach(function (track) {
+        if (track.readyState === "live" && track.kind === "audio") {
+          setAudio(!audio)
+          track.enabled = !track.enabled
+        }
+      })
   }
 
   const getUserTurn = function (nextTurn) {
@@ -98,7 +137,9 @@ const PictionaryGame = function () {
     setShowResult(true)
     socket.emit("showResult.room", () => {
       dialogAction.show({
-        component: <GameResult users={users} guessedUser={guessedUser} round={round} />,
+        component: (
+          <GameResult users={users} guessedUser={guessedUser} round={round} />
+        ),
         title: "Result",
         size: "sm",
         onAction: () => {
@@ -129,13 +170,19 @@ const PictionaryGame = function () {
     setGuessedUser([...guessedUser, username])
   }
 
-  const appendInformation = function (user) {
-    const element = document.getElementById(user.id)
+  const removeCurrentWrapper = function (id) {
+    const element = document.getElementById(id)
     const wrapperClass = element.getElementsByClassName("wrapper")
     if (wrapperClass && wrapperClass[0]) {
       wrapperClass[0].remove()
     }
 
+    return element
+  }
+
+  const appendInformation = function (user) {
+    const element = removeCurrentWrapper(user.id)
+    element.setAttribute("data-username", user.username)
     const point = document.createElement("span")
     point.innerHTML = user.point
     point.className = "point"
@@ -148,41 +195,18 @@ const PictionaryGame = function () {
     school.innerHTML = user.university
     school.className = "school"
 
-    const icons = document.createElement("div")
-    icons.className = "icons"
-
-    const close = document.createElement("i")
-    close.className = "material-icons"
-    close.innerHTML = "clear"
-    close.onclick = () => {
-      element.remove()
-      // stream.getTracks().forEach((track) => track.stop())
-      onLeaveClick(user.id)
-    }
-    const volume = document.createElement("i")
-    volume.className = "material-icons"
-    volume.innerHTML = "volume_up"
-    volume.onclick = () => {
-      setAudio(false)
-    }
-
     const wrapper = document.createElement("div")
     wrapper.className = "wrapper"
-
-    icons.append(volume)
-    icons.append(close)
 
     wrapper.append(point)
     wrapper.append(name)
     wrapper.append(school)
-    wrapper.append(icons)
     element.append(wrapper)
   }
 
   function addVideoStream(video, stream, userId) {
     const videoGrid = document.getElementById("video-grid")
     video.srcObject = stream
-    // video.muted = true
     video.addEventListener("loadedmetadata", () => {
       video.play()
     })
@@ -215,7 +239,6 @@ const PictionaryGame = function () {
     const myPeer = new Peer({ host: "localhost", port: 3001 })
 
     const myVideo = document.createElement("video")
-    // myVideo.muted = true
 
     navigator.mediaDevices
       .getUserMedia({
@@ -223,6 +246,7 @@ const PictionaryGame = function () {
         audio,
       })
       .then((stream) => {
+        setMyStream(stream)
         addVideoStream(myVideo, stream, myPeer._id)
         myPeer.on("call", (call) => {
           call.answer(stream)
@@ -242,6 +266,8 @@ const PictionaryGame = function () {
     })
 
     socket.on("userDisConnected.room", (userId) => {
+      const element = document.getElementById(userId)
+      element.remove()
       peers[userId].close()
     })
 
@@ -353,6 +379,14 @@ const PictionaryGame = function () {
             </Typography>
             <Grid className={classes.videoCard}>
               <div id="video-grid" className={classes.videoGrid} />
+            </Grid>
+            <Grid>
+              <Button label="Leave" onClick={onLeftClick} />
+              <Button
+                label={video ? "show" : "notShow"}
+                onClick={onVideoClick}
+              />
+              <Button label={audio ? "seda" : "bised"} onClick={onAudioClick} />
             </Grid>
           </Card>
         </Grid>

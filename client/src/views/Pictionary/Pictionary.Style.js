@@ -155,6 +155,7 @@ export const styles = makeStyles((theme) => ({
         height: "100%",
         objectFit: "cover",
         borderRadius: 10,
+        backgroundColor: "#000"
       },
       "& .point": {
         position: "absolute",
@@ -185,6 +186,7 @@ export const styles = makeStyles((theme) => ({
           marginLeft: 5,
           color: "#fff",
           fontSize: 18,
+          cursor: "pointer",
         },
       },
       "& .name": {
@@ -207,9 +209,9 @@ export const styles = makeStyles((theme) => ({
   guessBox: {
     marginTop: 30,
   },
-  wordSelectCounter:{
-    position:"absolute",
-    top:25,
-    right:25
-  }
+  wordSelectCounter: {
+    position: "absolute",
+    top: 25,
+    right: 25,
+  },
 }))
