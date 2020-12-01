@@ -6,7 +6,7 @@ function userDTO(user) {
     email: user.email,
     university: user.university,
     description: user.description,
-    background:user.background,
+    background: user.background,
     active: user.active,
     inQueue: user.inQueue,
     inGame: user.inGame,

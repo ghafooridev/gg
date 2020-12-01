@@ -49,9 +49,6 @@
     "build": "webpack --mode production",
     "eject": "react-scripts eject",
     "postinstall": "yarn build",
-    "compile-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.css",
-    "minify-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.min.css --output-style compressed",
-    "map-sass": "node-sass src/assets/scss/paper-kit.scss src/assets/css/paper-kit.css --source-map true",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

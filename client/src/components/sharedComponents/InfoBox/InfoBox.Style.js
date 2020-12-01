@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles"
 
 const setBackground = (props, theme) => {
+  console.log(props)
   if (!props.background || props.background === "transparent") {
     return theme.palette.type === "dark" && theme.palette.custom.grayBlue
   }

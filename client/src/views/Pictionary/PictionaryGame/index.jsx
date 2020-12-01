@@ -11,12 +11,12 @@ import { useHistory } from "react-router-dom"
 import Card from "src/components/sharedComponents/Card"
 import ChatBox from "src/components/sharedComponents/ChatBox"
 
-import dialogAction from "src/redux/actions/dialogAction"
 import Peer from "peerjs"
 import { socketURL } from "src/helpers/utils"
 import Storage from "src/services/Storage"
 import Constant from "src/utils/Constant"
 import Button from "src/components/sharedComponents/Button"
+import dialogAction from "src/redux/actions/dialogAction"
 import ChooseWord from "../ChooseWord"
 import { styles } from "../Pictionary.Style"
 import PictionaryFrame from "../PictionaryFrame/Canvas"
@@ -94,7 +94,7 @@ const PictionaryGame = function () {
   }
 
   const getUserTurn = function (nextTurn) {
-    if (users.length) {
+    if (users && users.length) {
       socket.emit("usersTurn.room", { room, nextTurn })
     }
   }
@@ -382,9 +382,7 @@ const PictionaryGame = function () {
         <Grid item sm={12} md={4} className={classes.leftColGame}>
           <Card className={classes.itemCard}>
             <Grid className={classes.videoHeader}>
-              <Typography variant="h5">
-                Players
-              </Typography>
+              <Typography variant="h5">Players</Typography>
               <Grid>
                 <Button
                   className={classes.videoHeaderButton}
@@ -442,6 +440,7 @@ const PictionaryGame = function () {
             word={word}
             removeGuess={removeGuess}
             guessCorrectly={guessCorrectly}
+            turn={turn}
             height={370}
           />
         </Grid>

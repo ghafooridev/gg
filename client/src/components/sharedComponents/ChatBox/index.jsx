@@ -22,6 +22,7 @@ const ChatBox = function ({
   guessCorrectly,
   className,
   height,
+  turn,
 }) {
   const classes = styles()
   const [message, setMessage] = useState("")
@@ -45,6 +46,17 @@ const ChatBox = function ({
   }, [fetchMessages])
 
   useEffect(() => {
+    if (
+      messages.message &&
+      messages.username === turn &&
+      messages.message.includes(word)
+    ) {
+      return setList([
+        ...list,
+        { username: messages.username, message: "GUESS_BY_TURN_USER" },
+      ])
+    }
+
     if (messages.message === word) {
       if (typeof guessCorrectly === "function") {
         guessCorrectly(messages.username)
@@ -67,7 +79,12 @@ const ChatBox = function ({
         {title}
       </Typography>
       <Grid item xs={12} className={classes.chatBox}>
-        <Messages messages={list} username={username} height={height} />
+        <Messages
+          messages={list}
+          username={username}
+          height={height}
+          word={word}
+        />
       </Grid>
       <Grid item xs={12} className={classes.chatEntry}>
         <TextField

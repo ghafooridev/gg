@@ -58,8 +58,8 @@ const PictionaryLobby = function () {
     })
 
     return () => {
-      // socket.emit("leave.lobby", { username, room })
-      // socket.off()
+      socket.emit("leave.lobby", { username, room })
+      socket.off()
     }
   }, [room, username])
 
@@ -126,6 +126,7 @@ const PictionaryLobby = function () {
                   key={index}
                   title={item.username}
                   subTitle={item.university}
+                  background={item.background}
                 />
               )
             })}

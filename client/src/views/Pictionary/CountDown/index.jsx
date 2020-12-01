@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { CircularProgress, Typography, Box } from "@material-ui/core"
 
 function CircularProgressWithLabel(props) {

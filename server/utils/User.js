@@ -17,7 +17,7 @@ const addUser = async function ({ id, username, room, place, NOP, point }) {
       place,
       NOP,
       point,
-      // round
+      background: result.background,
     }
     users.push(user)
     return { user }
@@ -120,40 +120,19 @@ const getUserTurnByUsername = function (room, preTurn) {
 
   if (!preTurn) {
     const player = filteredUser[0]
-    return player.username
+    if (player) {
+      return player.username
+    }
   }
   const index = filteredUser.findIndex((user) => user.username === preTurn)
   if (index + 1 < filteredUser.length) {
     return filteredUser[index + 1].username
   }
-
-  return filteredUser[0].username
-}
-
-const getUserTurnByUsername2 = function (room, preTurn) {
-  const filteredUser = users.filter(
-    (user) => user.room === room && user.place === "game"
-  )
-  console.log(preTurn, filteredUser)
-  const lastPlayer = filteredUser.find((user) => user.NOP === 0)
-
-  if (lastPlayer) {
-    return lastPlayer.username
+  if (filteredUser[0]) {
+    return filteredUser[0].username
   }
 
-  let minPlayPlayer = filteredUser[0]
-  filteredUser.forEach((user) => {
-    if (user.NOP < minPlayPlayer.NOP) {
-      minPlayPlayer = user
-    }
-  })
-
-  if (minPlayPlayer.username === preTurn) {
-  }
-
-  if (minPlayPlayer) {
-    return minPlayPlayer.username
-  }
+  return null
 }
 
 module.exports = {

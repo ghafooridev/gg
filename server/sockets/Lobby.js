@@ -9,12 +9,13 @@ const {
 
 const joinLobby = function (socket, io) {
   socket.on("join.lobby", ({ username, game }, callback) => {
-    const { user } = addUser({
+    const newUser = {
       id: socket.id,
       username,
       game,
       place: "lobby",
-    }).then(() => {
+    }
+    const { user } = addUser(newUser).then(() => {
       socket.emit("message", {
         username: "GG BOT",
         message: `${username},welcome to ${game}`,

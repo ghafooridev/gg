@@ -11,13 +11,15 @@ const GameResult = function (props) {
   const [user, setUser] = useState([])
 
   useEffect(() => {
-    const updateUsers = users.map((user) => {
-      if (guessedUser && guessedUser.includes(user.username)) {
-        user.point += 5
+    const updateUsers =
+      users &&
+      users.map((user) => {
+        if (guessedUser && guessedUser.includes(user.username)) {
+          user.point += 5
+          return user
+        }
         return user
-      }
-      return user
-    })
+      })
 
     setUser([...updateUsers])
   }, [])
