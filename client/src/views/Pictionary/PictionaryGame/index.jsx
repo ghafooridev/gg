@@ -23,11 +23,12 @@ import PictionaryFrame from "../PictionaryFrame/Canvas"
 import Clue from "../Clue"
 import CountDown from "../CountDown"
 import GameResult from "../GameResult"
+import Waiting from "../Waiting"
 
 const ENDPOINT = socketURL()
 let socket
 const peers = []
-const callList = []
+let callList = []
 
 const PictionaryGame = function () {
   const { username, room } = queryString.parse(location.search)
@@ -56,6 +57,7 @@ const PictionaryGame = function () {
   const onLeaveClick = function (id) {
     socket.emit("leave.room", { username, room, id })
     if (id) {
+      callList = callList.filter((item) => item === id)
       removeCurrentWrapper(id)
     }
     socket.off()
@@ -68,7 +70,6 @@ const PictionaryGame = function () {
       `[data-username=${currentUser}]`
     )[0]
     const id = element.id
-    element.remove()
     myStream && myStream.getTracks().forEach((track) => track.stop())
     onLeaveClick(id)
   }
@@ -102,34 +103,42 @@ const PictionaryGame = function () {
   const onSelectWordTimesUp = function (turn) {
     dialogAction.hide()
     setCharIndex(1000)
-    setIsPlaying(false)
+    // setIsPlaying(false)
     socket.emit("usersUpdate.room", { room, turn })
-    // socket.emit("guessRemove.room", { room })
     getUserTurn(turn)
   }
 
-  const onShowChoseWordDialog = function (nextTurn) {
-    if (nextTurn === username) {
-      dialogAction.show({
-        component: (
-          <ChooseWord
-            socket={socket}
-            onSelectWordTimesUp={onSelectWordTimesUp}
-            turn={nextTurn}
-          />
-        ),
-        title: `Choose a word`,
+  const onShowChoseWordDialog = function (isPlaying, nextTurn) {
+    if (!isPlaying) {
+      if (nextTurn === username) {
+        return dialogAction.show({
+          component: (
+            <ChooseWord
+              socket={socket}
+              onSelectWordTimesUp={onSelectWordTimesUp}
+              turn={nextTurn}
+            />
+          ),
+          title: `Choose a word`,
+          disableCloseButton: true,
+          onAction: (type, data) => {
+            if (type === "submit") {
+              // setIsPlaying(true)
+              setWord(data)
+              dialogAction.hide()
+              socket.emit("wordSelect.room", data)
+              socket.emit("timer.room", data)
+              socket.emit("guessRemove.room", { room })
+            }
+          },
+        })
+      }
+
+      return dialogAction.show({
+        component: <Waiting turn={nextTurn} />,
+        size: "sm",
+        title: `Please Wait ... `,
         disableCloseButton: true,
-        onAction: (type, data) => {
-          if (type === "submit") {
-            setIsPlaying(true)
-            setWord(data)
-            dialogAction.hide()
-            socket.emit("wordSelect.room", data)
-            socket.emit("timer.room", data)
-            socket.emit("guessRemove.room", { room })
-          }
-        },
       })
     }
   }
@@ -155,7 +164,7 @@ const PictionaryGame = function () {
   const onTimesUp = function () {
     setWord("")
     setCharIndex(1000)
-    setIsPlaying(false)
+    // setIsPlaying(false)
     socket.emit("usersUpdate.room", { room, turn })
     onShowResult()
   }
@@ -184,6 +193,7 @@ const PictionaryGame = function () {
   const appendInformation = function (user) {
     const element = removeCurrentWrapper(user.id)
     element.setAttribute("data-username", user.username)
+
     const point = document.createElement("span")
     point.innerHTML = user.point
     point.className = "point"
@@ -205,7 +215,21 @@ const PictionaryGame = function () {
     element.append(wrapper)
   }
 
-  function addVideoStream(video, stream, userId) {
+  const onDetectTurnedUser = function (turnedUser) {
+    const element = document.querySelectorAll(
+      `[data-username=${turnedUser}]`
+    )[0]
+    const videoGrid = document.getElementById("video-grid")
+    videoGrid.querySelectorAll(".draw").forEach(el => el.remove());
+
+    const draw = document.createElement("i")
+    draw.innerHTML = "edit"
+    draw.className = "material-icons draw"
+
+    element.append(draw)
+  }
+
+  const addVideoStream = function (video, stream, userId) {
     const videoGrid = document.getElementById("video-grid")
     video.srcObject = stream
     video.addEventListener("loadedmetadata", () => {
@@ -221,7 +245,7 @@ const PictionaryGame = function () {
     socket.emit("getInfo.room", userId)
   }
 
-  function connectToNewUser(myPeer, user, stream) {
+  const connectToNewUser = function (myPeer, user, stream) {
     const call = myPeer.call(user.id, stream)
     const video = document.createElement("video")
     call.on("stream", (userVideoStream) => {
@@ -272,19 +296,27 @@ const PictionaryGame = function () {
       socket.emit("join.room", { username, room, id }, () => {})
     })
 
-    socket.on("userDisConnected.room", (userId) => {
+    socket.on("userDisConnected.room", ({ userId }) => {
       const element = document.getElementById(userId)
       element.remove()
       peers[userId].close()
     })
 
+    window.addEventListener("beforeunload", () => {
+      onLeftClick()
+    })
+
     checkReloadPage()
+
+    return () => {
+      socket.off("disconnect")
+    }
   }, [room, username])
 
   useEffect(() => {
-    socket.on("usersTurn.room", (nextTurn) => {
+    socket.on("usersTurn.room", ({ isPlaying, nextTurn }) => {
       if (nextTurn !== turn) {
-        onShowChoseWordDialog(nextTurn)
+        onShowChoseWordDialog(isPlaying, nextTurn)
         setTurn(nextTurn)
       }
     })
@@ -331,16 +363,27 @@ const PictionaryGame = function () {
     socket.on("guess", (guess) => {
       setGuess(guess)
     })
+
+    socket.on("message.game", (message) => {
+      setGuess(message)
+    })
+
+    return () => {
+      socket.off("message.game")
+    }
   }, [guess])
 
   useEffect(() => {
     socket.on("wordShow.room", ({ word, round }) => {
+      dialogAction.hide()
       setWord(word)
       setRound(round)
       setGuessedUser([])
     })
 
-    socket.on("timer.room", (timer) => {
+    socket.on("timer.room", ({ timer, word, turnedUser }) => {
+      onDetectTurnedUser(turnedUser)
+      setWord(word)
       setTimer(timer)
     })
   }, [word])
@@ -352,9 +395,12 @@ const PictionaryGame = function () {
   }, [isPlaying])
 
   useEffect(() => {
-    socket.on("users.room", (newUser, users) => {
+    socket.on("users.room", (isplaying, newUser, users) => {
       setUsers(users)
-      if (!isPlaying) {
+      if (
+        users.length === Constant.GAMES_CONDITIONS.PICTIONARY_USER &&
+        !isPlaying
+      ) {
         getUserTurn()
       }
     })
@@ -419,7 +465,6 @@ const PictionaryGame = function () {
           <Card className={classes.itemCard}>
             <Grid item xs={12} className={classes.pictionaryInfo}>
               <CountDown isStart={!!word} timer={timer} />
-
               <Clue
                 word={word}
                 username={username}

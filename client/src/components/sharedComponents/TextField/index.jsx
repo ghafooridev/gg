@@ -76,7 +76,7 @@ const TextField = function (props) {
       onKeyPress={onkeypress}
       inputProps={{
         "data-testid": testId || name,
-        className:classes.input
+        className: classes.input,
       }}
       InputProps={{
         startAdornment: icon && (

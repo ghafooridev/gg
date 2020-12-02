@@ -22,6 +22,7 @@ const TextField = function (props) {
     caption,
     error,
     placeholder,
+    onEnter,
   } = props
   const [data, setData] = React.useState("")
   const [isPassword, setIsPassword] = React.useState(true)
@@ -38,6 +39,18 @@ const TextField = function (props) {
   const onChangeViewClick = function () {
     setIsPassword(!isPassword)
   }
+
+  const onkeypress = function (event) {
+    const { value } = event.target
+    if (
+      value.trim().length &&
+      event.key === "Enter" &&
+      typeof onEnter === "function"
+    ) {
+      onEnter(value)
+    }
+  }
+
   return (
     <MuiTextField
       label={label}
@@ -54,6 +67,7 @@ const TextField = function (props) {
       }}
       className={className}
       onChange={onTextChange}
+      onKeyPress={onkeypress}
       InputProps={{
         startAdornment: icon && (
           <InputAdornment position="start">

@@ -6,6 +6,9 @@ export const styles = makeStyles((theme) => ({
   },
   container: {
     padding: "50px 150px 0",
+    [theme.breakpoints.down("sm")]: {
+      padding: 30,
+    },
   },
   inputs: {
     marginTop: 30,
@@ -19,10 +22,17 @@ export const styles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  title: {},
+  title: {
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
+  },
   subTitle: {
     margin: "10px 0 20px",
     zIndex: 1,
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
   },
   submitButton: {
     zIndex: 1,

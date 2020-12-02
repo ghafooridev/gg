@@ -67,7 +67,7 @@ const Header = function () {
           <Grid item className={classes.hamburger}>
             <Hamburger
               size={20}
-              color="#000"
+              color="#aaa"
               toggled={isOpen}
               toggle={setOpen}
               onToggle={(toggled) => onToggleHamburger(toggled)}

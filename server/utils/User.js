@@ -2,14 +2,34 @@ const UserModel = require("../models/User")
 
 let users = []
 
-const addUser = async function ({ id, username, room, place, NOP, point }) {
-  const existingUser = users.find(
-    (user) => user.id === id && user.room === room && user.place === place
-  )
+const addUser = async function ({
+  socketId,
+  id,
+  username,
+  room,
+  place,
+  NOP,
+  point,
+}) {
+  let existingUser
+
+  if (place === "lobby") {
+    existingUser = users.find(
+      (user) =>
+        user.username === username && user.room === room && user.place === place
+    )
+  }
+
+  if (place === "game") {
+    existingUser = users.find(
+      (user) => user.id === id && user.room === room && user.place === place
+    )
+  }
 
   if (!existingUser) {
     const result = await UserModel.findOne({ username })
     const user = {
+      socketId,
       id,
       username,
       room,

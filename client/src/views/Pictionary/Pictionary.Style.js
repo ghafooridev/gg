@@ -118,10 +118,15 @@ export const styles = makeStyles((theme) => ({
   resultTableRow: {
     display: "flex",
     justifyContent: "flex-start",
-    "& h5": {
+    "& h6": {
       width: 200,
       height: 40,
     },
+  },
+  resultButton: {
+    display: "flex",
+    justifyContent: "flex-end",
+    width: "100%",
   },
   roomButtons: {
     display: "flex",
@@ -162,29 +167,18 @@ export const styles = makeStyles((theme) => ({
         fontSize: 18,
         fontWeight: 600,
       },
-      "& .index": {
+      "& .draw": {
         position: "absolute",
         top: 5,
         left: 5,
-        width: 25,
-        height: 25,
+        width: 40,
+        height: 40,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "yellow",
         color: "#fff",
         borderRadius: "50%",
-      },
-      "& .icons": {
-        position: "absolute",
-        top: 25,
-        right: 5,
-        "& i": {
-          marginLeft: 5,
-          color: "#fff",
-          fontSize: 18,
-          cursor: "pointer",
-        },
       },
       "& .name": {
         position: "absolute",
@@ -223,5 +217,12 @@ export const styles = makeStyles((theme) => ({
     position: "absolute",
     top: 25,
     right: 25,
+  },
+  waitingTitle: {
+    display: "flex",
+    alignItems: "center",
+    "& h6": {
+      marginRight: 5,
+    },
   },
 }))

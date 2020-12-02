@@ -8,35 +8,35 @@ const {
 } = require("../utils/User")
 
 const joinLobby = function (socket, io) {
-  socket.on("join.lobby", ({ username, game }, callback) => {
+  socket.on("join.lobby", ({ username, room }, callback) => {
     const newUser = {
       id: socket.id,
       username,
-      game,
+      room,
       place: "lobby",
     }
     const { user } = addUser(newUser).then(() => {
       socket.emit("message", {
         username: "GG BOT",
-        message: `${username},welcome to ${game}`,
+        message: `${username},welcome to this room`,
       })
 
-      socket.broadcast.to(game).emit("message", {
+      socket.broadcast.to(room).emit("message", {
         username: "GG BOT",
-        message: `${username} has joined to ${game}`,
+        message: `${username} has joined to this room`,
       })
 
-      socket.join(game)
-      io.to(game).emit("users.lobby", getAllUsers(game, "lobby"))
+      socket.join(room)
+      io.to(room).emit("users.lobby", getAllUsers(room, "lobby"))
     })
   })
 }
 
 const chatLobby = function (socket, io) {
   socket.on("chat.lobby", ({ username, message }, callback) => {
-    const user = getUserByUsername(username,"lobby")
+    const user = getUserByUsername(username, "lobby")
     if (user) {
-      io.to(user.game).emit("message", {
+      io.to(user.room).emit("message", {
         username: user.username,
         message,
       })
@@ -44,7 +44,7 @@ const chatLobby = function (socket, io) {
       const newChat = new Chat({
         username,
         message,
-        game: user.game,
+        room: user.room,
       })
 
       newChat
@@ -61,13 +61,22 @@ const leaveLobby = function (socket, io) {
   socket.on("leave.lobby", ({ username }) => {
     const user = removeUserByUsername(username, "lobby")
     if (user) {
-      io.to(user.game).emit("message", {
+      io.to(user.room).emit("message", {
         username: "GG BOT",
-        message: `${user.username} has left the ${user.game}`,
+        message: `${user.username} has left from this room`,
       })
-      io.to(user.game).emit("users.lobby", getAllUsers(user.game, "lobby"))
+      io.to(user.room).emit("users.lobby", getAllUsers(user.room, "lobby"))
     }
   })
 }
 
-module.exports = { joinLobby, chatLobby, leaveLobby }
+const enterGame = function (socket, io) {
+  socket.on("enterGame.lobby", ({ username, room }, callback) => {
+    io.to(room).emit("enterGame.lobby", {
+      username: "GG BOT",
+      message: `${username}, entered the game `,
+    })
+  })
+}
+
+module.exports = { joinLobby, chatLobby, leaveLobby, enterGame }

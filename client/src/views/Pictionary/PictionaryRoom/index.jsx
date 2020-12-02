@@ -29,7 +29,6 @@ const rooms = [
 
 const PictionaryRoom = function () {
   const { username, game, room } = queryString.parse(location.search)
-  console.log(game)
   const classes = styles()
   const history = useHistory()
 

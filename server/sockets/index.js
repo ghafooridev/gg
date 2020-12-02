@@ -1,5 +1,5 @@
 const socketio = require("socket.io")
-const { joinLobby, chatLobby, leaveLobby } = require("./Lobby")
+const { joinLobby, chatLobby, leaveLobby, enterGame } = require("./Lobby")
 const {
   joinGame,
   guessGame,
@@ -15,7 +15,7 @@ const {
   countDown,
   getCurrentUser,
   getCurrentUserById,
-  selectWordTimer
+  selectWordTimer,
 } = require("./Game")
 
 const connections = (server) => {
@@ -25,6 +25,7 @@ const connections = (server) => {
     joinLobby(socket, io)
     chatLobby(socket, io)
     leaveLobby(socket, io)
+    enterGame(socket, io)
 
     joinGame(socket, io)
     guessGame(socket, io)
@@ -40,7 +41,7 @@ const connections = (server) => {
     countDown(socket, io)
     getCurrentUser(socket, io)
     getCurrentUserById(socket, io)
-    selectWordTimer(socket,io)
+    selectWordTimer(socket, io)
   })
 }
 

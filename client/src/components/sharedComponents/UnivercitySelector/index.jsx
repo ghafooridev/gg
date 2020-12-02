@@ -37,7 +37,15 @@ const MenuList = function ({ options, onSelectData }) {
 const UniversitySelector = function (props) {
   const classes = styles()
 
-  const { inputRef, style, className, caption, error, defaultValue,onSelect } = props
+  const {
+    inputRef,
+    style,
+    className,
+    caption,
+    error,
+    defaultValue,
+    onSelect,
+  } = props
   const [isExpand, setIsExpand] = useState(false)
   const [selectedData, setSelectedData] = useState({ value: "", text: "" })
 
@@ -49,7 +57,7 @@ const UniversitySelector = function (props) {
     setSelectedData(value)
     setIsExpand(false)
 
-    if(typeof onSelect==="function") {
+    if (typeof onSelect === "function") {
       onSelect(value)
     }
   }

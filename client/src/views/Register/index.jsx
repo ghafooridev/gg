@@ -12,17 +12,14 @@ import Constant from "src/utils/Constant"
 import userRepository from "src/repositories/user"
 import AlertAction from "src/redux/actions/AlertAction"
 import { useHistory } from "react-router-dom"
-import LoginContainer from "src/components/sharedComponents/LoginContainer"
 import UniversitySelector from "src/components/sharedComponents/UnivercitySelector"
 import { findCollegeId } from "src/helpers/utils"
 import JoyStick from "src/components/sharedComponents/JoyStick"
-import clsx from "clsx"
 import { styles } from "./Register.Style"
 
 const Register = function () {
   const classes = styles()
   const { register, handleSubmit, errors, reset } = useForm()
-  const history = useHistory()
   const [loading, setLoading] = useState(false)
 
   const onSubmit = function (data, e) {
@@ -50,7 +47,7 @@ const Register = function () {
   }
 
   return (
-    <Grid item xs={8} className={classes.root}>
+    <Grid item  sm={12} md={8} className={classes.root}>
       <JoyStick>
         <Grid item xs={12} className={classes.container}>
           <Typography variant="h3" className={classes.title}>
@@ -58,7 +55,7 @@ const Register = function () {
           </Typography>
           <Grid spacing={3} className={classes.inputs}>
             <Grid className={classes.row}>
-              <Grid item xs={6} className={classes.item}>
+              <Grid item md={6} sm={12} className={classes.item}>
                 <TextField
                   name="name"
                   label="Full name"
@@ -70,7 +67,7 @@ const Register = function () {
                   error={errors.name}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
+              <Grid item md={6} sm={12} className={classes.item}>
                 <TextField
                   name="email"
                   label="Email"
@@ -88,7 +85,7 @@ const Register = function () {
               </Grid>
             </Grid>
             <Grid className={classes.row}>
-              <Grid item xs={6} className={classes.item}>
+              <Grid item md={6} sm={12} className={classes.item}>
                 <TextField
                   name="username"
                   label="Username"
@@ -100,7 +97,7 @@ const Register = function () {
                   error={errors.username}
                 />
               </Grid>
-              <Grid item xs={6} className={classes.item}>
+              <Grid item md={6} sm={12} className={classes.item}>
                 <Password
                   name="password"
                   label="Password"

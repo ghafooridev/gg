@@ -10,10 +10,8 @@ import TextField from "src/components/sharedComponents/TextField"
 import Password from "src/components/sharedComponents/Password"
 import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button"
-import LoginContainer from "src/components/sharedComponents/LoginContainer"
 import userAction from "src/redux/actions/UserAction"
 import JoyStick from "src/components/sharedComponents/JoyStick"
-import SignInLogo from "../../assets/images/login.png"
 import { styles } from "./Login.Style"
 
 const Login = function () {
@@ -44,7 +42,7 @@ const Login = function () {
   }
 
   return (
-    <Grid item xs={8} className={classes.root}>
+    <Grid item md={6} sm={12} className={classes.root}>
       <JoyStick>
         <Grid item xs={12} className={classes.container}>
           <Typography variant="h3" className={classes.title}>

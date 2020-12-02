@@ -23,32 +23,9 @@ function CircularProgressWithLabel(props) {
   )
 }
 
-const CountDown = function ({ onTimesUp, timer, isStart }) {
-  // const [progress, setProgress] = useState(timer)
-
-  // const onEnd = function () {
-  //   onTimesUp()
-  // }
-
-  // useEffect(() => {
-  //   if (isStart) {
-  //     const timer = setInterval(() => {
-  //       setProgress((prevProgress) => prevProgress - 1)
-  //       if (progress === 1) {
-  //         clearInterval(timer)
-  //         setProgress(60)
-  //         return onEnd()
-  //       }
-  //     }, 1000)
-  //
-  //     return () => {
-  //       clearInterval(timer)
-  //     }
-  //   }
-  // }, [counter, isStart])
-
+const CountDown = function ({ timer }) {
   return (
-    <CircularProgressWithLabel size={50} value={Math.round((timer * 5) / 3)} />
+    <CircularProgressWithLabel size={50} value={Math.round((timer * 5) / 3)}/>
   )
 }
 

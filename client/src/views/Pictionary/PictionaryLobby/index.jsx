@@ -37,6 +37,8 @@ const PictionaryLobby = function () {
       pathname: `/pictionary-game/125`,
       search: `?username=${username}&game=${game}&room=${room}`,
     })
+
+    socket.emit("enterGame.lobby", { username, room })
   }
 
   const onSendClick = function (message) {
@@ -56,15 +58,13 @@ const PictionaryLobby = function () {
     chatRepository.getChatByGame(room).then((chats) => {
       setFetchMessages(chats)
     })
-
-    return () => {
-      socket.emit("leave.lobby", { username, room })
-      socket.off()
-    }
   }, [room, username])
 
   useEffect(() => {
     socket.on("message", (message) => {
+      setMessages(message)
+    })
+    socket.on("enterGame.lobby", (message) => {
       setMessages(message)
     })
   }, [messages])
@@ -73,7 +73,10 @@ const PictionaryLobby = function () {
     socket.on("users.lobby", (users) => {
       setUsers(users)
     })
-  }, [users])
+    return () => {
+      socket.off("users.lobby")
+    }
+  }, [])
 
   return (
     <Grid container>
@@ -89,7 +92,7 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
-        // disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
+        disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item xs={12} className={classes.leftCol}>
@@ -118,7 +121,7 @@ const PictionaryLobby = function () {
           <Card className={classes.itemCard}>
             <Typography variant="h5" className={classes.title}>
               IN QUEUE ({users.length}/
-              {Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER})
+              {Constant.GAMES_CONDITIONS.PICTIONARY_USER})
             </Typography>
             {users.map((item, index) => {
               return (

@@ -6,6 +6,9 @@ export const styles = makeStyles((theme) => ({
   },
   container: {
     padding: "50px 100px 0",
+    [theme.breakpoints.down("sm")]: {
+      padding: 30,
+    },
   },
   curves: {
     top: 260,
@@ -23,14 +26,28 @@ export const styles = makeStyles((theme) => ({
     flex: 1,
     justifyContent: "space-between",
     margin: "10px 0",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+      margin: 0,
+    },
   },
   item: {
     margin: "0 5px",
+    [theme.breakpoints.down("sm")]: {
+      marginBottom:20
+    },
   },
-  title: {},
+  title: {
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
+  },
   subTitle: {
-    margin: "10px 0",
+    margin: "10px 0 20px",
     zIndex: 1,
+    [theme.breakpoints.down("sm")]: {
+      textAlign: "center",
+    },
   },
   submitButton: {
     zIndex: 1,

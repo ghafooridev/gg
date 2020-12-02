@@ -12,17 +12,12 @@ import Constant from "src/utils/Constant"
 import userRepository from "src/repositories/user"
 import AlertAction from "src/redux/actions/AlertAction"
 import { useHistory } from "react-router-dom"
-import LoginContainer from "src/components/sharedComponents/LoginContainer"
-import UniversitySelector from "src/components/sharedComponents/UnivercitySelector"
-import { findCollegeId } from "src/helpers/utils"
 import JoyStick from "src/components/sharedComponents/JoyStick"
-import clsx from "clsx"
 import { styles } from "./ForgetPassword.Style"
 
 const Forget = function () {
   const classes = styles()
   const { register, handleSubmit, errors } = useForm()
-  const history = useHistory()
   const [passwordValue, setPasswordValue] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -49,7 +44,7 @@ const Forget = function () {
   }
 
   return (
-    <Grid item xs={6} className={classes.root}>
+    <Grid item md={6} sm={12} className={classes.root}>
       <JoyStick curveClass={classes.curves}>
         <Grid item xs={12} className={classes.container}>
           <Typography variant="h3" className={classes.title}>
