@@ -72,6 +72,12 @@ const PictionaryLobby = function () {
     })
     socket.on("enterGame.lobby", (message) => {
       setMessages(message)
+      setTimeout(() => {
+        history.push({
+          pathname: `/pictionary-game/125`,
+          search: `?username=${username}&game=${game}&room=${room}`,
+        })
+      }, 1000)
     })
   }, [messages])
 

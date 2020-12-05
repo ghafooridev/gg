@@ -116,9 +116,7 @@ export const styles = makeStyles((theme) => ({
     justifyContent: "space-evenly",
   },
   resultTableContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
+    height:250
   },
   resultTableRow: {
     display: "flex",

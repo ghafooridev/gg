@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
+import clsx from "clsx"
+
 import io from "socket.io-client"
 
 import queryString from "query-string"
@@ -467,17 +469,26 @@ const PictionaryGame = function () {
           </Card>
         </Grid>
         <Grid item sm={12} md={3} className={classes.rightColGame}>
-          <Card className={classes.itemCard}>
-            <Typography variant="h5" className={classes.title}>Result</Typography>
+          <Card
+            className={clsx(classes.itemCard, classes.resultTableContainer)}
+          >
+            <Grid className={classes.videoHeader}>
+              <Typography variant="h5">Result</Typography>
+              <Typography variant="h6">Round {round}</Typography>
+            </Grid>
             {users &&
-              users.map((item, index) => {
-                return (
-                  <Grid key={index} className={classes.resultTableRow}>
-                    <Typography variant="subtitle1">{item.username}</Typography>
-                    <Typography variant="subtitle1">{item.point}</Typography>
-                  </Grid>
-                )
-              })}
+              users
+                .sort((a, b) => b.point - a.point)
+                .map((item, index) => {
+                  return (
+                    <Grid key={index} className={classes.resultTableRow}>
+                      <Typography variant="subtitle1">
+                        {item.username}
+                      </Typography>
+                      <Typography variant="subtitle1">{item.point}</Typography>
+                    </Grid>
+                  )
+                })}
           </Card>
           <ChatBox
             className={classes.guessBox}
@@ -488,7 +499,7 @@ const PictionaryGame = function () {
             word={word}
             guessCorrectly={guessCorrectly}
             turn={turn}
-            height={window.innerHeight - 500}
+            height={window.innerHeight - 650}
           />
         </Grid>
       </Grid>
