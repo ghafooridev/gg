@@ -14,6 +14,7 @@ let isPlaying = false
 let turnedUser = ""
 let counter = 0
 let timer
+let selectWordCounter
 
 const joinGame = function (socket, io) {
   socket.on("join.room", ({ username, room, id }, callback) => {
@@ -126,6 +127,14 @@ const updatePoints = function (socket, io) {
   })
 }
 
+const guessAllCorrectly = function (socket, io) {
+  socket.on("guessAllCorrectly.room", () => {
+    counter = 60
+    clearInterval(timer)
+    io.emit("timersUp.room")
+  })
+}
+
 const showResult = function (socket, io) {
   socket.on("showResult.room", (callback) => {
     isPlaying = false
@@ -175,10 +184,11 @@ const countDown = function (socket, io) {
 
       if (counter === 0) {
         counter = 60
+        selectWordCounter = 20
         clearInterval(timer)
         return io.emit("timersUp.room")
       }
-      io.emit("timer.room", { timer: counter, word,turnedUser })
+      io.emit("timer.room", { timer: counter, word, turnedUser })
     }, 1000)
   })
 }
@@ -216,8 +226,8 @@ const leaveGame = function (socket, io) {
 }
 
 const selectWordTimer = function (socket, io) {
-  let selectWordCounter = 20
   socket.on("wordSelectTimer.room", (callback) => {
+    selectWordCounter = 20
     const selectWordTime = setInterval(() => {
       selectWordCounter -= 1
 
@@ -247,4 +257,5 @@ module.exports = {
   getCurrentUser,
   getCurrentUserById,
   selectWordTimer,
+  guessAllCorrectly,
 }

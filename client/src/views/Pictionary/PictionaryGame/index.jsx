@@ -177,7 +177,9 @@ const PictionaryGame = function () {
   }
 
   const guessCorrectly = function (username) {
-    setGuessedUser([...guessedUser, username])
+    if (!guessedUser.includes(username)) {
+      setGuessedUser([...guessedUser, username])
+    }
   }
 
   const removeCurrentWrapper = function (id) {
@@ -220,7 +222,7 @@ const PictionaryGame = function () {
       `[data-username=${turnedUser}]`
     )[0]
     const videoGrid = document.getElementById("video-grid")
-    videoGrid.querySelectorAll(".draw").forEach(el => el.remove());
+    videoGrid.querySelectorAll(".draw").forEach((el) => el.remove())
 
     const draw = document.createElement("i")
     draw.innerHTML = "edit"
@@ -312,6 +314,12 @@ const PictionaryGame = function () {
       socket.off("disconnect")
     }
   }, [room, username])
+
+  useEffect(() => {
+    if (guessedUser.length && guessedUser.length === users.length - 1) {
+      socket.emit("guessAllCorrectly.room", () => {})
+    }
+  }, [guessedUser])
 
   useEffect(() => {
     socket.on("usersTurn.room", ({ isPlaying, nextTurn }) => {

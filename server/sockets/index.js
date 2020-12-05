@@ -16,6 +16,7 @@ const {
   getCurrentUser,
   getCurrentUserById,
   selectWordTimer,
+  guessAllCorrectly
 } = require("./Game")
 
 const connections = (server) => {
@@ -42,6 +43,7 @@ const connections = (server) => {
     getCurrentUser(socket, io)
     getCurrentUserById(socket, io)
     selectWordTimer(socket, io)
+    guessAllCorrectly(socket,io)
   })
 }
 

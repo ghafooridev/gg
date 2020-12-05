@@ -7,22 +7,22 @@ import { styles } from "src/views/Pictionary/Pictionary.Style"
 const GameResult = function (props) {
   const { onAction, users, round, guessedUser } = props
   const classes = styles()
-
   const [user, setUser] = useState([])
-
-  useEffect(() => {
-    const updateUsers =
-      users &&
-      users.map((user) => {
-        if (guessedUser && guessedUser.includes(user.username)) {
-          user.point += 5
-          return user
-        }
-        return user
-      })
-
-    setUser([...updateUsers])
-  }, [])
+    console.log("us",users)
+    console.log("g",guessedUser)
+  // useEffect(() => {
+  //   const updateUsers =
+  //     users &&
+  //     users.map((user) => {
+  //       if (guessedUser && guessedUser.includes(user.username)) {
+  //         user.point += 5
+  //         return user
+  //       }
+  //       return user
+  //     })
+  //
+  //   setUser([...updateUsers])
+  // }, [guessedUser])
 
   return (
     <Grid container>
