@@ -41,7 +41,6 @@ const PictionaryGame = function () {
   const [turn, setTurn] = useState("")
   const [isPlaying, setIsPlaying] = useState(false)
   const [showResult, setShowResult] = useState(false)
-  const [removeGuess, setRemoveGuess] = useState(false)
   const [timer, setTimer] = useState(60)
   const [charIndex, setCharIndex] = useState(10000)
   const [audio, setAudio] = useState(true)
@@ -103,7 +102,6 @@ const PictionaryGame = function () {
   const onSelectWordTimesUp = function (turn) {
     dialogAction.hide()
     setCharIndex(1000)
-    // setIsPlaying(false)
     socket.emit("usersUpdate.room", { room, turn })
     getUserTurn(turn)
   }
@@ -123,12 +121,10 @@ const PictionaryGame = function () {
           disableCloseButton: true,
           onAction: (type, data) => {
             if (type === "submit") {
-              // setIsPlaying(true)
               setWord(data)
               dialogAction.hide()
               socket.emit("wordSelect.room", data)
               socket.emit("timer.room", data)
-              socket.emit("guessRemove.room", { room })
             }
           },
         })
@@ -145,26 +141,12 @@ const PictionaryGame = function () {
 
   const onShowResult = function () {
     setShowResult(true)
-    socket.emit("showResult.room", () => {
-      dialogAction.show({
-        component: (
-          <GameResult users={users} guessedUser={guessedUser} round={round} />
-        ),
-        title: "Result",
-        size: "sm",
-        onAction: () => {
-          users.map((item) => socket.emit("getInfo.room", item.id))
-          dialogAction.hide()
-          socket.emit("hideResult.room")
-        },
-      })
-    })
+    socket.emit("showResult.room", { room })
   }
 
   const onTimesUp = function () {
     setWord("")
     setCharIndex(1000)
-    // setIsPlaying(false)
     socket.emit("usersUpdate.room", { room, turn })
     onShowResult()
   }
@@ -304,6 +286,19 @@ const PictionaryGame = function () {
       peers[userId].close()
     })
 
+    socket.on("showResult.room", (users) => {
+      dialogAction.show({
+        component: <GameResult users={users} round={round} />,
+        title: "Result",
+        size: "sm",
+        onAction: () => {
+          users.map((item) => socket.emit("getInfo.room", item.id))
+          dialogAction.hide()
+          socket.emit("hideResult.room")
+        },
+      })
+    })
+
     window.addEventListener("beforeunload", () => {
       onLeftClick()
     })
@@ -396,11 +391,6 @@ const PictionaryGame = function () {
     })
   }, [word])
 
-  useEffect(() => {
-    socket.on("guessRemove.room", () => {
-      setRemoveGuess(!removeGuess)
-    })
-  }, [isPlaying])
 
   useEffect(() => {
     socket.on("users.room", (isplaying, newUser, users) => {
@@ -491,7 +481,6 @@ const PictionaryGame = function () {
             username={username}
             onSendClick={onSendClick}
             word={word}
-            removeGuess={removeGuess}
             guessCorrectly={guessCorrectly}
             turn={turn}
             height={370}

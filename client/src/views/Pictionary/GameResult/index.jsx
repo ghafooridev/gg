@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 
 import Button from "src/components/sharedComponents/Button"
 import { styles } from "src/views/Pictionary/Pictionary.Style"
 
 const GameResult = function (props) {
-  const { onAction, users, round, guessedUser } = props
+  const { onAction, users, round } = props
   const classes = styles()
-  const [user, setUser] = useState([])
-    console.log("us",users)
-    console.log("g",guessedUser)
-  // useEffect(() => {
-  //   const updateUsers =
-  //     users &&
-  //     users.map((user) => {
-  //       if (guessedUser && guessedUser.includes(user.username)) {
-  //         user.point += 5
-  //         return user
-  //       }
-  //       return user
-  //     })
-  //
-  //   setUser([...updateUsers])
-  // }, [guessedUser])
 
   return (
     <Grid container>
@@ -35,8 +19,8 @@ const GameResult = function (props) {
           <Typography variant="h6">Points</Typography>
         </Grid>
         <Grid item xs={12} className={classes.resultTableContainer}>
-          {user &&
-            user.map((item, index) => {
+          {users &&
+            users.map((item, index) => {
               return (
                 <Grid
                   key={index}

@@ -136,9 +136,9 @@ const guessAllCorrectly = function (socket, io) {
 }
 
 const showResult = function (socket, io) {
-  socket.on("showResult.room", (callback) => {
+  socket.on("showResult.room", ({ room }, callback) => {
     isPlaying = false
-    io.emit("showResult.room")
+    io.emit("showResult.room", getAllUsers(room, "game"))
     io.emit("isPlaying.room", isPlaying)
     if (typeof callback === "function") {
       callback()

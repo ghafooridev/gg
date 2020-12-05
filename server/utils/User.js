@@ -119,18 +119,6 @@ const updateUserPoint = function (room, round, place, username) {
   users = [...updateUsers]
 
   return users
-
-  // const index = filteredUser.findIndex((item) => item.username === username)
-  // const updateUsers = [...filteredUser]
-  // if (index !== -1) {
-  //   updateUsers[index] = {
-  //     ...updateUsers[index],
-  //     point: updateUsers[index].point + 50,
-  //   }
-  //   users = [...updateUsers]
-  //
-  //   return users
-  // }
 }
 
 const getUserTurnByUsername = function (room, preTurn) {

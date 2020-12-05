@@ -18,7 +18,6 @@ const ChatBox = function ({
   username,
   title,
   word,
-  removeGuess,
   guessCorrectly,
   className,
   height,
@@ -71,7 +70,7 @@ const ChatBox = function ({
 
   useEffect(() => {
     return setList([])
-  }, [removeGuess])
+  }, [turn])
 
   return (
     <Card className={clsx(classes.itemCard, className)}>
