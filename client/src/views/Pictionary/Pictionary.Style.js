@@ -26,6 +26,10 @@ export const styles = makeStyles((theme) => ({
     alignItems: "center",
     padding: 15,
     width: "100%",
+    flex:1,
+    "& h5":{
+      marginBottom:10
+    }
   },
   videoCard: {
     display: "flex",

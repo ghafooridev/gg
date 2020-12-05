@@ -28,7 +28,7 @@ let socket
 
 const ENDPOINT = socketURL()
 
-const Canvas = function ({ username, turn }) {
+const Canvas = function ({ username, turn,height }) {
   const classes = styles()
   const canvas = useRef(null)
   let ctx
@@ -53,7 +53,7 @@ const Canvas = function ({ username, turn }) {
   const onClearClick = function () {
     ctx = canvas.current.getContext("2d")
     ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, 600, 400)
+    ctx.fillRect(0, 0, 600, height)
     const options = {
       line: [],
       clear: true,
@@ -132,7 +132,7 @@ const Canvas = function ({ username, turn }) {
 
   const createCanvas = function () {
     canvas.current.width = 600
-    canvas.current.height = 400
+    canvas.current.height = height
     ctx = canvas.current.getContext("2d")
     ctx.lineJoin = "round"
     ctx.lineCap = "round"
@@ -151,7 +151,7 @@ const Canvas = function ({ username, turn }) {
 
       if (clear) {
         ctx.fillStyle = "white"
-        ctx.fillRect(0, 0, 600, 400)
+        ctx.fillRect(0, 0, 600, height)
       }
     })
   }, [line])

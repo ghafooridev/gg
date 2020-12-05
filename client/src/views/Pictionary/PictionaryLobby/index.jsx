@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react"
 
 import { useHistory } from "react-router-dom"
 
+import clsx from "clsx"
+
 import { Grid, Typography } from "@material-ui/core"
 
 import io from "socket.io-client"
@@ -49,6 +51,10 @@ const PictionaryLobby = function () {
     socket.emit("leave.lobby", { username, room })
     socket.off()
     history.push("/home")
+  }
+
+  const getHeight = function () {
+    return window.innerHeight - 650
   }
 
   useEffect(() => {
@@ -110,7 +116,8 @@ const PictionaryLobby = function () {
               maximus, nulla ut commodo sagittus, sapien dui mattis dui, non
               pulvinar lorem felis nec erat Lorem ipsu dolor sit amet,
               consectetur adipiscing elit. Nunc maximus, nulla ut commodo
-              sagittus, sapien dui mattis dui, non pulvinar lorem felis nec erat
+              sagittus, sapien dui mattis dui, non pulvinar lorem felis nec
+              erat.
             </Typography>
           </Card>
           <Card className={classes.itemCard}>
@@ -154,7 +161,7 @@ const PictionaryLobby = function () {
             fetchMessages={fetchMessages}
             username={username}
             onSendClick={onSendClick}
-            height={120}
+            height={getHeight()}
           />
         </Grid>
       </Grid>

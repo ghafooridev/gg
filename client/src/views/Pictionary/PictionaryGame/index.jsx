@@ -391,7 +391,6 @@ const PictionaryGame = function () {
     })
   }, [word])
 
-
   useEffect(() => {
     socket.on("users.room", (isplaying, newUser, users) => {
       setUsers(users)
@@ -416,6 +415,10 @@ const PictionaryGame = function () {
       socket.off("usersUpdate.room")
     }
   }, [users])
+
+  const getHeight = function () {
+    return window.innerHeight - 350
+  }
 
   return (
     <Grid className={classes.root}>
@@ -470,7 +473,11 @@ const PictionaryGame = function () {
                 charIndex={charIndex}
               />
             </Grid>
-            <PictionaryFrame username={username} turn={turn} />
+            <PictionaryFrame
+              username={username}
+              turn={turn}
+              height={getHeight()}
+            />
           </Card>
         </Grid>
         <Grid item sm={12} md={3} className={classes.rightColGame}>
@@ -483,7 +490,7 @@ const PictionaryGame = function () {
             word={word}
             guessCorrectly={guessCorrectly}
             turn={turn}
-            height={370}
+            height={getHeight()}
           />
         </Grid>
       </Grid>
