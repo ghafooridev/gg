@@ -22,7 +22,6 @@ import { styles } from "../Pictionary.Style"
 import PictionaryFrame from "../PictionaryFrame/Canvas"
 import Clue from "../Clue"
 import CountDown from "../CountDown"
-import GameResult from "../GameResult"
 import Waiting from "../Waiting"
 
 const ENDPOINT = socketURL()
@@ -287,16 +286,9 @@ const PictionaryGame = function () {
     })
 
     socket.on("showResult.room", (users) => {
-      dialogAction.show({
-        component: <GameResult users={users} round={round} />,
-        title: "Result",
-        size: "sm",
-        onAction: () => {
-          users.map((item) => socket.emit("getInfo.room", item.id))
-          dialogAction.hide()
-          socket.emit("hideResult.room")
-        },
-      })
+      setUsers(users)
+      users.map((item) => socket.emit("getInfo.room", item.id))
+      socket.emit("hideResult.room")
     })
 
     window.addEventListener("beforeunload", () => {
@@ -346,7 +338,6 @@ const PictionaryGame = function () {
 
   useEffect(() => {
     socket.on("hideResult.room", () => {
-      dialogAction.hide()
       setShowResult(false)
       getUserTurn(turn)
     })
@@ -416,10 +407,6 @@ const PictionaryGame = function () {
     }
   }, [users])
 
-  const getHeight = function () {
-    return window.innerHeight - 350
-  }
-
   return (
     <Grid className={classes.root}>
       <Grid item xs={12} className={classes.topPanel}>
@@ -456,7 +443,6 @@ const PictionaryGame = function () {
                 />
               </Grid>
             </Grid>
-
             <Grid className={classes.videoCard}>
               <div id="video-grid" className={classes.videoGrid} />
             </Grid>
@@ -476,11 +462,23 @@ const PictionaryGame = function () {
             <PictionaryFrame
               username={username}
               turn={turn}
-              height={getHeight()}
+              height={window.innerHeight - 350}
             />
           </Card>
         </Grid>
         <Grid item sm={12} md={3} className={classes.rightColGame}>
+          <Card className={classes.itemCard}>
+            <Typography variant="h5" className={classes.title}>Result</Typography>
+            {users &&
+              users.map((item, index) => {
+                return (
+                  <Grid key={index} className={classes.resultTableRow}>
+                    <Typography variant="subtitle1">{item.username}</Typography>
+                    <Typography variant="subtitle1">{item.point}</Typography>
+                  </Grid>
+                )
+              })}
+          </Card>
           <ChatBox
             className={classes.guessBox}
             title="Guess"
@@ -490,7 +488,7 @@ const PictionaryGame = function () {
             word={word}
             guessCorrectly={guessCorrectly}
             turn={turn}
-            height={getHeight()}
+            height={window.innerHeight - 500}
           />
         </Grid>
       </Grid>

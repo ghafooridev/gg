@@ -26,10 +26,10 @@ export const styles = makeStyles((theme) => ({
     alignItems: "center",
     padding: 15,
     width: "100%",
-    flex:1,
-    "& h5":{
-      marginBottom:10
-    }
+    flex: 1,
+    "& h5": {
+      marginBottom: 10,
+    },
   },
   videoCard: {
     display: "flex",
@@ -61,6 +61,7 @@ export const styles = makeStyles((theme) => ({
   },
   rightColGame: {
     display: "flex",
+    flexDirection: "column",
   },
   rightCol: {
     display: "flex",
@@ -121,11 +122,8 @@ export const styles = makeStyles((theme) => ({
   },
   resultTableRow: {
     display: "flex",
-    justifyContent: "flex-start",
-    "& h6": {
-      width: 200,
-      height: 40,
-    },
+    justifyContent: "space-between",
+    width: "100%",
   },
   resultButton: {
     display: "flex",
@@ -215,7 +213,7 @@ export const styles = makeStyles((theme) => ({
     marginLeft: 10,
   },
   guessBox: {
-    marginTop: 30,
+    marginTop: 20,
   },
   wordSelectCounter: {
     position: "absolute",
