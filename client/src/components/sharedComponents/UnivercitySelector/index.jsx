@@ -10,24 +10,26 @@ import clsx from "clsx"
 import MenuItem from "@material-ui/core/MenuItem"
 
 import { FixedSizeList as List } from "react-window"
-import collegeList from "src/assets/json/colleges.json"
+import { list } from "src/assets/json/collegeList"
 import { styles } from "./UniversitySelector.Style"
 
-const MenuList = function ({ options, onSelectData }) {
+const MenuList = function ({ options, onSelectData ,classes}) {
   return (
     <List
       height={110}
       itemCount={options.length}
       itemSize={35}
       initialScrollOffset={0}
+      style={{zIndex:100000}}
+      className={classes.menuOption}
     >
       {({ index, style }) => (
         <MenuItem
           style={style}
-          value={options[index].value}
+          value={options[index]}
           onClick={() => onSelectData(options[index])}
         >
-          {options[index].text}
+          {options[index]}
         </MenuItem>
       )}
     </List>
@@ -47,7 +49,7 @@ const UniversitySelector = function (props) {
     onSelect,
   } = props
   const [isExpand, setIsExpand] = useState(false)
-  const [selectedData, setSelectedData] = useState({ value: "", text: "" })
+  const [selectedData, setSelectedData] = useState(defaultValue|| "")
 
   const onExpandClick = function () {
     setIsExpand(!isExpand)
@@ -63,7 +65,7 @@ const UniversitySelector = function (props) {
   }
 
   useEffect(() => {
-    setSelectedData({ text: defaultValue } || "")
+    setSelectedData(defaultValue || "")
   }, [defaultValue])
 
   return (
@@ -76,7 +78,7 @@ const UniversitySelector = function (props) {
         error={!!error}
         helperText={error ? error.message : caption}
         inputRef={inputRef}
-        value={selectedData.text}
+        value={selectedData}
         onClick={onExpandClick}
         classes={{
           root: classes.root,
@@ -100,9 +102,7 @@ const UniversitySelector = function (props) {
       />
 
       <div className={classes.menuContainer}>
-        {isExpand && (
-          <MenuList options={collegeList} onSelectData={onSelectData} />
-        )}
+        {isExpand && <MenuList options={list} onSelectData={onSelectData} classes={classes}/>}
       </div>
     </div>
   )
@@ -112,10 +112,7 @@ UniversitySelector.propTypes = {
   className: PropTypes.string,
   caption: PropTypes.string,
   error: PropTypes.object,
-  defaultValue: PropTypes.shape({
-    text: PropTypes.string,
-    value: PropTypes.string,
-  }),
+  defaultValue: PropTypes.string,
   inputRef: PropTypes.func,
 }
 

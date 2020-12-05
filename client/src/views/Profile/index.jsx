@@ -5,38 +5,27 @@ import { Grid, Typography } from "@material-ui/core"
 import { useForm } from "react-hook-form"
 
 import TextField from "src/components/sharedComponents/TextField"
-import Password from "src/components/sharedComponents/Password"
 import { validationMessage } from "src/utils/ValidationMessage"
 import Button from "src/components/sharedComponents/Button"
 import Constant from "src/utils/Constant"
 import userRepository from "src/repositories/user"
 import AlertAction from "src/redux/actions/AlertAction"
-import { useHistory } from "react-router-dom"
-import LoginContainer from "src/components/sharedComponents/LoginContainer"
 import UniversitySelector from "src/components/sharedComponents/UnivercitySelector"
-import { findCollegeId } from "src/helpers/utils"
-import JoyStick from "src/components/sharedComponents/JoyStick"
-import clsx from "clsx"
 import { SketchPicker } from "react-color"
 import Card from "src/components/sharedComponents/Card"
 import InfoBox from "src/components/sharedComponents/InfoBox"
 import Storage from "src/services/Storage"
 import { styles } from "./Profile.Style"
 
-const Register = function (props) {
+const Register = function () {
   const classes = styles()
-  const { register, handleSubmit, errors, reset } = useForm()
-  const history = useHistory()
+  const { register, handleSubmit, errors } = useForm()
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState(null)
   const [showColor, setShowColor] = useState(false)
 
   const onSubmit = function (data, e) {
     let newData = data
-    const university = findCollegeId(data.university)
-    if (university) {
-      newData = { ...data, university }
-    }
     newData = { ...newData, background: user.background }
     setLoading(true)
     userRepository
@@ -69,7 +58,7 @@ const Register = function (props) {
   }
 
   const onSelectUniversity = function (value) {
-    setUser({ ...user, university: value.text })
+    setUser({ ...user, university: value })
   }
 
   useEffect(() => {

@@ -11,9 +11,7 @@ import Button from "src/components/sharedComponents/Button"
 import Constant from "src/utils/Constant"
 import userRepository from "src/repositories/user"
 import AlertAction from "src/redux/actions/AlertAction"
-import { useHistory } from "react-router-dom"
 import UniversitySelector from "src/components/sharedComponents/UnivercitySelector"
-import { findCollegeId } from "src/helpers/utils"
 import JoyStick from "src/components/sharedComponents/JoyStick"
 import { styles } from "./Register.Style"
 
@@ -23,14 +21,9 @@ const Register = function () {
   const [loading, setLoading] = useState(false)
 
   const onSubmit = function (data, e) {
-    let newData = data
-    const university = findCollegeId(data.university)
-    if (university) {
-      newData = { ...data, university }
-    }
     setLoading(true)
     userRepository
-      .register(newData)
+      .register(data)
       .then((result) => {
         setLoading(false)
         if (result) {
@@ -47,7 +40,7 @@ const Register = function () {
   }
 
   return (
-    <Grid item  sm={12} md={8} className={classes.root}>
+    <Grid item sm={12} md={8} className={classes.root}>
       <JoyStick>
         <Grid item xs={12} className={classes.container}>
           <Typography variant="h3" className={classes.title}>

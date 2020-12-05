@@ -22,7 +22,8 @@ export const styles = makeStyles((theme) => ({
   },
   menuContainer: {
     position: "absolute",
-    backgroundColor: theme.palette.type==="dark"?theme.palette.custom.grayBlue:"#fff",
+    backgroundColor:
+      theme.palette.type === "dark" ? theme.palette.custom.grayBlue : "#fff",
     width: "100%",
     overflowY: "auto",
     border: `1px solid #0000003b`,
@@ -30,5 +31,10 @@ export const styles = makeStyles((theme) => ({
     borderBottom: "none",
     borderRadius: 5,
     maxHeight: 150,
+  },
+  menuOption: {
+    zIndex: 1000,
+    backgroundColor:
+      theme.palette.type === "dark" ? theme.palette.custom.grayBlue : "#fff",
   },
 }))
