@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react"
 
 import { useHistory } from "react-router-dom"
 
-import clsx from "clsx"
-
 import { Grid, Typography } from "@material-ui/core"
 
 import io from "socket.io-client"
@@ -94,7 +92,11 @@ const PictionaryLobby = function () {
     <Grid container>
       <Grid item xs={12} className={classes.topPanel}>
         <Card className={classes.jumbotron}>
-          <Typography variant="h3">waiting for other players</Typography>
+          <Typography variant="h3">
+            {users.length < Constant.GAMES_CONDITIONS.PICTIONARY_USER
+              ? "waiting for other players"
+              : "Ready for playing"}
+          </Typography>
           <Typography variant="body2">
             47 other people playing Pictionary right now
           </Typography>
@@ -104,7 +106,7 @@ const PictionaryLobby = function () {
         label="play"
         className={classes.playButton}
         onClick={onPlayClick}
-        disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_MIN_USER}
+        disabled={users.length < Constant.GAMES_CONDITIONS.PICTIONARY_USER}
       />
       <Grid item xs={12} className={classes.bottomPanel}>
         <Grid item xs={12} className={classes.leftCol}>
