@@ -126,7 +126,7 @@ const PictionaryGame = function (props) {
               setWord(data)
               dialogAction.hide()
               socket.emit("wordSelect.room", data)
-              socket.emit("timer.room", data)
+              socket.emit("timer.room", {word:data,nextTurn})
             }
           },
         })
@@ -177,7 +177,7 @@ const PictionaryGame = function (props) {
   }
 
   const appendInformation = function (user) {
-    const element = removeCurrentWrapper(user.id)
+    const element = removeCurrentWrapper(user.socketId)
     element.setAttribute("data-username", user.username)
 
     const point = document.createElement("span")
@@ -233,11 +233,11 @@ const PictionaryGame = function (props) {
   }
 
   const connectToNewUser = function (myPeer, user, stream) {
-    const call = myPeer.call(user.id, stream)
+    const call = myPeer.call(user.socketId, stream)
     const video = document.createElement("video")
     call.on("stream", (userVideoStream) => {
       if (!callList[call.peer]) {
-        addVideoStream(video, userVideoStream, user.id)
+        addVideoStream(video, userVideoStream, user.socketId)
         callList[call.peer] = call
       }
     })
@@ -245,7 +245,7 @@ const PictionaryGame = function (props) {
       video.remove()
     })
 
-    peers[user.id] = call
+    peers[user.socketId] = call
   }
 
   useEffect(() => {
@@ -291,7 +291,7 @@ const PictionaryGame = function (props) {
 
     socket.on("showResult.room", (users) => {
       setUsers(users)
-      users.map((item) => socket.emit("getInfo.room", item.id))
+      users.map((item) => socket.emit("getInfo.room", item.socketId))
       socket.emit("hideResult.room")
     })
 

@@ -3,170 +3,122 @@ const UserModel = require("../models/User")
 let users = []
 
 const addUser = async function ({
-  socketId,
-  id,
-  username,
-  room,
-  place,
-  NOP,
-  point,
-}) {
-  let existingUser
-  if (place === "lobby") {
-    existingUser = users.find(
-      (user) =>
-        user.username === username && user.room === room && user.place === place
-    )
-  }
+                                    socketId,
+                                    username,
+                                    room,
+                                    place,
 
-  if (place === "game") {
-    existingUser = users.find(
-      (user) => user.id === id && user.room === room && user.place === place
-    )
-  }
+                                }) {
 
-  if (existingUser) {
-    users = [...users.filter((user) => user.username !== username)]
-  }
+    const user = await UserModel.findOne({username})
 
-  const result = await UserModel.findOne({ username })
-
-  const user = {
-    socketId,
-    id,
-    username,
-    room,
-    university: result.university,
-    place,
-    NOP,
-    point,
-    background: result.background,
-  }
-
-  users.push(user)
-  return { user }
-}
-
-const removeUser = function (id, place) {
-  const index = users.findIndex(
-    (user) => user.id === id && user.place === place
-  )
-
-  if (index !== -1) {
-    return users.splice(index, 1)[0]
-  }
-}
-
-const removeUserByUsername = function (username, place) {
-  const index = users.findIndex(
-    (user) => user.username === username && user.place === place
-  )
-
-  if (index !== -1) {
-    return users.splice(index, 1)[0]
-  }
-}
-
-const getUser = function (id, place) {
-  return users.find((user) => user.id === id && user.place === place)
-}
-
-const getUserByUsername = function (username, place) {
-  return users.find(
-    (user) => user.username === username && user.place === place
-  )
-}
-
-const getUserById = function (id, place) {
-  return users.find((user) => user.id === id && user.place === place)
-}
-
-const getAllUsers = function (room, place) {
-  console.log(">>>",users)
-  return users.filter((user) => user.room === room && user.place === place)
-}
-
-const updateUsersAfterTurn = function (room, place, turn) {
-  const filteredUser = users.filter(
-    (user) => user.room === room && user.place === place
-  )
-
-  const index = filteredUser.findIndex((item) => item.username === turn)
-  const updateUsers = [...filteredUser]
-  if (index !== -1) {
-    updateUsers[index] = {
-      ...updateUsers[index],
-      NOP: updateUsers[index].NOP + 1,
+    user.socketId = socketId
+    user.room = room
+    user.socketId = socketId
+    if (place === "lobby") {
+        user.inQueue = true
     }
-    users = [...updateUsers]
-    return users
-  }
-  return users
-}
-
-const updateUserPoint = function (room, round, place, username) {
-  const filteredUser = users.filter(
-    (user) => user.room === room && user.place === place
-  )
-
-  const updateUsers = filteredUser.map((user) => {
-    if (username && username.includes(user.username)) {
-      if (user.round !== round) {
-        user.point += 5
-        user.round = round
-      }
-      return user
+    if (place === "game") {
+        user.inQueue = false
+        user.inGame = true
     }
-    return user
-  })
+    await user.save()
 
-  users = [...updateUsers]
-
-  return users
+    return user;
 }
 
-const getUserTurnByUsername = function (room, preTurn) {
-  const filteredUser = users.filter(
-    (user) => user.room === room && user.place === "game"
-  )
 
-  if (!preTurn) {
-    const player = filteredUser[0]
-    if (player) {
-      return player.username
+const removeUserByUsername = async function (username, place) {
+    const user = await UserModel.findOne({username})
+    user.inGame = false
+    user.inQueue = false
+    user.room = ""
+    user.point = 0
+    user.round = 0
+    user.save()
+}
+
+const getUserByUsername = async function (username, place) {
+    return await UserModel.findOne({username})
+}
+
+const getUserBySocketId = async function (socketId, place) {
+    return await UserModel.findOne({socketId})
+}
+
+const getAllUsers = async function (room, place) {
+    if (place === "game") {
+        return await UserModel.find({room, inGame: true})
     }
-  }
-  const index = filteredUser.findIndex((user) => user.username === preTurn)
-  if (index + 1 < filteredUser.length) {
-    return filteredUser[index + 1].username
-  }
-  if (filteredUser[0]) {
-    return filteredUser[0].username
-  }
-
-  return null
+    if (place === "lobby") {
+        return await UserModel.find({
+            $and: [
+                {room},
+                {$or: [{inGame: true}, {inQueue: true}]}
+            ]
+        })
+    }
 }
 
-const getRandomHostUser = function (room) {
-  const filteredUser = users.filter(
-    (user) => user.room === room && user.place === "lobby"
-  )
-  if (filteredUser.length) {
-    return filteredUser[Math.floor(Math.random() * filteredUser.length)]
-      .username
-  }
+const updateUsersAfterTurn = async function (room, place, turn) {
+    return await UserModel.find({room, inGame: true})
+}
+
+const updateUserPoint = async function (room, round, place, username) {
+    const filteredUser = await UserModel.find({room, inGame: true})
+
+    const updateUsers = filteredUser.map((user) => {
+        if (username && username.includes(user.username)) {
+            if (user.round !== round) {
+                user.point += 5
+                user.round = round
+                user.save()
+            }
+            return user
+        }
+        return user
+    })
+
+    return updateUsers
+}
+
+const getUserTurnByUsername = async function (room, preTurn) {
+    const filteredUser = await UserModel.find({room, inGame: true})
+
+    if (!preTurn) {
+        const player = filteredUser[0]
+        if (player) {
+            return player.username
+        }
+    }
+    const index = filteredUser.findIndex((user) => user.username === preTurn)
+    if (index + 1 < filteredUser.length) {
+        return filteredUser[index + 1].username
+    }
+    if (filteredUser[0]) {
+        return filteredUser[0].username
+    }
+
+    return null
+}
+
+const getRandomHostUser = async function (room) {
+    const filteredUser = await UserModel.find({room, inGame: false, inQueue: true})
+
+    if (filteredUser.length) {
+        return filteredUser[Math.floor(Math.random() * filteredUser.length)]
+            .username
+    }
 }
 
 module.exports = {
-  addUser,
-  removeUser,
-  getUser,
-  removeUserByUsername,
-  getUserByUsername,
-  getAllUsers,
-  getUserTurnByUsername,
-  updateUsersAfterTurn,
-  updateUserPoint,
-  getUserById,
-  getRandomHostUser,
+    addUser,
+    removeUserByUsername,
+    getUserByUsername,
+    getAllUsers,
+    getUserTurnByUsername,
+    updateUsersAfterTurn,
+    updateUserPoint,
+    getUserBySocketId,
+    getRandomHostUser,
 }
