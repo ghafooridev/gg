@@ -34,8 +34,9 @@ const PictionaryRoom = function () {
 
   const onCreateRoom = function () {
     history.push({
-      pathname: `/${game}-lobby/123`,
-      search: `?username=${username}&game=${game}&room=${123}`,
+      pathname: `/${game.toLowerCase()}-lobby/123`,
+      //search: `?username=${username}&game=${game}&room=${123}`,
+      state: { username, game, room: "123" },
     })
   }
 

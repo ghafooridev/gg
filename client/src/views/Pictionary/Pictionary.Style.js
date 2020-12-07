@@ -149,7 +149,7 @@ export const styles = makeStyles((theme) => ({
     flexWrap: "wrap",
     "& .videoBox": {
       width: "47%",
-      height: 150,
+      // height: "100%",
       position: "relative",
       margin: 5,
       "& video": {

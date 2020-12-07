@@ -12,7 +12,6 @@ const addUser = async function ({
   point,
 }) {
   let existingUser
-
   if (place === "lobby") {
     existingUser = users.find(
       (user) =>
@@ -26,22 +25,26 @@ const addUser = async function ({
     )
   }
 
-  if (!existingUser) {
-    const result = await UserModel.findOne({ username })
-    const user = {
-      socketId,
-      id,
-      username,
-      room,
-      university: result.university,
-      place,
-      NOP,
-      point,
-      background: result.background,
-    }
-    users.push(user)
-    return { user }
+  if (existingUser) {
+    users = [...users.filter((user) => user.username !== username)]
   }
+
+  const result = await UserModel.findOne({ username })
+
+  const user = {
+    socketId,
+    id,
+    username,
+    room,
+    university: result.university,
+    place,
+    NOP,
+    point,
+    background: result.background,
+  }
+
+  users.push(user)
+  return { user }
 }
 
 const removeUser = function (id, place) {
@@ -79,6 +82,7 @@ const getUserById = function (id, place) {
 }
 
 const getAllUsers = function (room, place) {
+  console.log(">>>",users)
   return users.filter((user) => user.room === room && user.place === place)
 }
 
@@ -143,6 +147,16 @@ const getUserTurnByUsername = function (room, preTurn) {
   return null
 }
 
+const getRandomHostUser = function (room) {
+  const filteredUser = users.filter(
+    (user) => user.room === room && user.place === "lobby"
+  )
+  if (filteredUser.length) {
+    return filteredUser[Math.floor(Math.random() * filteredUser.length)]
+      .username
+  }
+}
+
 module.exports = {
   addUser,
   removeUser,
@@ -154,4 +168,5 @@ module.exports = {
   updateUsersAfterTurn,
   updateUserPoint,
   getUserById,
+  getRandomHostUser,
 }

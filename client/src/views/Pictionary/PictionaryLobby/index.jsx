@@ -22,22 +22,22 @@ import { styles } from "../Pictionary.Style"
 const ENDPOINT = socketURL()
 let socket
 
-const PictionaryLobby = function () {
-  const { username, game, room } = queryString.parse(location.search)
-
+const PictionaryLobby = function (props) {
+  const { username, game, room } = props.location.state // queryString.parse(location.search)
   const classes = styles()
   const history = useHistory()
 
   const [messages, setMessages] = useState([])
   const [fetchMessages, setFetchMessages] = useState([])
   const [users, setUsers] = useState([])
+  const [timer, setTimer] = useState(10)
 
   const onPlayClick = function () {
     history.push({
       pathname: `/pictionary-game/125`,
-      search: `?username=${username}&game=${game}&room=${room}`,
+      state: { username, game, room },
+      // search: `?username=${username}&game=${game}&room=${room}`,
     })
-
     socket.emit("enterGame.lobby", { username, room })
   }
 
@@ -55,6 +55,30 @@ const PictionaryLobby = function () {
     return window.innerHeight - 650
   }
 
+  const enterGame = function () {
+    socket.on("enterGame.lobby", (message) => {
+      setMessages(message)
+      setTimeout(() => {
+        history.push({
+          pathname: `/pictionary-game/125`,
+          state: { username, game, room },
+          // search: `?username=${username}&game=${game}&room=${room}`,
+        })
+      }, 2000)
+    })
+  }
+
+  const addTimer = () => {
+    let number = 10
+    const counter = setInterval(() => {
+      number -= 1
+      setTimer(number)
+      if (number === 0) {
+        clearInterval(counter)
+      }
+    }, 1000)
+  }
+
   useEffect(() => {
     socket = io(ENDPOINT)
     socket.emit("join.lobby", { username, room })
@@ -68,23 +92,28 @@ const PictionaryLobby = function () {
     socket.on("message", (message) => {
       setMessages(message)
     })
-    socket.on("enterGame.lobby", (message) => {
-      setMessages(message)
-      setTimeout(() => {
-        history.push({
-          pathname: `/pictionary-game/125`,
-          search: `?username=${username}&game=${game}&room=${room}`,
-        })
-      }, 1000)
-    })
+
+    enterGame()
   }, [messages])
 
   useEffect(() => {
     socket.on("users.lobby", (users) => {
       setUsers(users)
+      if (users.length === Constant.GAMES_CONDITIONS.PICTIONARY_USER) {
+        socket.emit("startGameTimer.lobby", { room })
+        addTimer()
+      }
     })
+
+    socket.on("startGameTimerUp.lobby", (randomUser) => {
+      if (randomUser === username) {
+        onPlayClick()
+      }
+    })
+
     return () => {
       socket.off("users.lobby")
+      socket.off("startGameTimer.lobby")
     }
   }, [])
 
@@ -97,9 +126,11 @@ const PictionaryLobby = function () {
               ? "waiting for other players"
               : "Ready for playing"}
           </Typography>
-          <Typography variant="body2">
-            47 other people playing Pictionary right now
-          </Typography>
+          {users.length === Constant.GAMES_CONDITIONS.PICTIONARY_USER && (
+            <Typography variant="body2">
+              Starting game in {timer} second or click on play Button
+            </Typography>
+          )}
         </Card>
       </Grid>
       <Button

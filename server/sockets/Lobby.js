@@ -5,6 +5,7 @@ const {
   getAllUsers,
   removeUserByUsername,
   getUserByUsername,
+  getRandomHostUser,
 } = require("../utils/User")
 
 const joinLobby = function (socket, io) {
@@ -79,4 +80,12 @@ const enterGame = function (socket, io) {
   })
 }
 
-module.exports = { joinLobby, chatLobby, leaveLobby, enterGame }
+const startGameTimer = function (socket, io) {
+  socket.on("startGameTimer.lobby", ({ room }, callback) => {
+    setTimeout(() => {
+      io.emit("startGameTimerUp.lobby", getRandomHostUser(room))
+    }, 10000)
+  })
+}
+
+module.exports = { joinLobby, chatLobby, leaveLobby, enterGame, startGameTimer }

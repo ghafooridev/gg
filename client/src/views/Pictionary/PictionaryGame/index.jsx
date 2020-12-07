@@ -31,8 +31,9 @@ let socket
 const peers = []
 let callList = []
 
-const PictionaryGame = function () {
-  const { username, room } = queryString.parse(location.search)
+const PictionaryGame = function (props) {
+  // const { username, room } = queryString.parse(location.search)
+  const { username, room } = props.location.state
   const classes = styles()
   const history = useHistory()
 
@@ -223,6 +224,7 @@ const PictionaryGame = function () {
 
     const videoBox = document.createElement("div")
     videoBox.className = "videoBox"
+    videoBox.style.height = `${window.innerHeight - 600}px`
     videoBox.id = userId
     videoBox.append(video)
 

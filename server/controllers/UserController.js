@@ -177,7 +177,6 @@ exports.editUser = function (req, res) {
   // id, req.body, {new: true},
   User.findByIdAndUpdate(userId, req.body)
     .then((user) => {
-      console.log("user",user)
       res.json(user)
     })
     .catch((err) => {
