@@ -1,7 +1,7 @@
 require("dotenv").config()
 const express = require("express")
 const passport = require("passport")
-
+const cors = require('cors');
 const app = express()
 const bodyParser = require("body-parser")
 
@@ -47,6 +47,14 @@ if (process.env.PROD) {
 // })
 //
 // app.use("/peerjs", peerServer)
+
+//
+// const peerServer = ExpressPeerServer(server, {
+//   path: '/',
+// });
+// app.use('/peerjs', peerServer);
+
+
 
 connections(server)
 

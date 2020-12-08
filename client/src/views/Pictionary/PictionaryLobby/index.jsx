@@ -35,7 +35,7 @@ const PictionaryLobby = function (props) {
   const onPlayClick = function () {
     history.push({
       pathname: `/pictionary-game/125`,
-      state: { username, game, room },
+      state: { username, game, room ,initiator:username},
       // search: `?username=${username}&game=${game}&room=${room}`,
     })
     socket.emit("enterGame.lobby", { username, room })

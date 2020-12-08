@@ -23,12 +23,12 @@ const {
   getCurrentUserById,
   selectWordTimer,
   guessAllCorrectly,
+  peer
 } = require("./Game")
 
 const connections = (server) => {
   const io = socketio(server)
-
-  io.on("connection", (socket) => {
+  io.on('connect', (socket) => {
     joinLobby(socket, io)
     chatLobby(socket, io)
     leaveLobby(socket, io)
@@ -51,6 +51,7 @@ const connections = (server) => {
     getCurrentUserById(socket, io)
     selectWordTimer(socket, io)
     guessAllCorrectly(socket, io)
+    peer(socket,io)
   })
 }
 
