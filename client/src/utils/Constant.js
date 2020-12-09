@@ -24,6 +24,7 @@ const Constant = {
   STORAGE: {
     CURRENT_USER: "CURRENT_USER",
     MODE: "MODE",
+    CURRENT_LINK:"CURRENT_LINK"
   },
   MESSAGES: {
     SEND_ACTIVATION_LINK:
@@ -40,7 +41,7 @@ const Constant = {
     FORGET: "FORGET",
   },
   GAMES_CONDITIONS: {
-    PICTIONARY_USER: 2,
+    PICTIONARY_USER: 3,
   },
 }
 export default Constant

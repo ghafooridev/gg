@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, {useEffect, useState} from "react"
 
-import { useHistory } from "react-router-dom"
+import {useHistory} from "react-router-dom"
 
-import { Grid, Typography } from "@material-ui/core"
+import {Grid, Typography} from "@material-ui/core"
 
 import io from "socket.io-client"
-
-import queryString from "query-string"
 
 import TextField from "src/components/sharedComponents/TextField"
 import Button from "src/components/sharedComponents/Button"
@@ -15,38 +13,39 @@ import InfoBox from "src/components/sharedComponents/InfoBox"
 import ChatBox from "src/components/sharedComponents/ChatBox"
 import Constant from "src/utils/Constant"
 import chatRepository from "src/repositories/chat"
-import { socketURL } from "src/helpers/utils"
-
-import { styles } from "../Pictionary.Style"
+import {socketURL} from "src/utils/helpers"
+import {getUserNameFromLocalStorage} from "src/utils/helpers"
+import {styles} from "../Pictionary.Style"
+import { useStateIfMounted } from "use-state-if-mounted";
 
 const ENDPOINT = socketURL()
 let socket
 
 const PictionaryLobby = function (props) {
-  const { username, game, room } = props.location.state // queryString.parse(location.search)
-  const classes = styles()
   const history = useHistory()
+  const {room} = props.match.params;
+  const username = getUserNameFromLocalStorage(history)
+  const classes = styles()
 
-  const [messages, setMessages] = useState([])
-  const [fetchMessages, setFetchMessages] = useState([])
-  const [users, setUsers] = useState([])
-  const [timer, setTimer] = useState(10)
+  const [messages, setMessages] = useStateIfMounted([])
+  const [fetchMessages, setFetchMessages] = useStateIfMounted([])
+  const [users, setUsers] = useStateIfMounted([])
+  const [timer, setTimer] = useStateIfMounted(10)
 
   const onPlayClick = function () {
     history.push({
       pathname: `/pictionary-game/125`,
-      state: { username, game, room ,initiator:username},
-      // search: `?username=${username}&game=${game}&room=${room}`,
     })
-    socket.emit("enterGame.lobby", { username, room })
+    socket.emit("enterGame.lobby", {username, room})
   }
 
   const onSendClick = function (message) {
-    socket.emit("chat.lobby", { username, message }, () => {})
+    socket.emit("chat.lobby", {username, message}, () => {
+    })
   }
 
   const onLeaveClick = function () {
-    socket.emit("leave.lobby", { username, room })
+    socket.emit("leave.lobby", {username, room})
     socket.off()
     history.push("/home")
   }
@@ -61,8 +60,6 @@ const PictionaryLobby = function (props) {
       setTimeout(() => {
         history.push({
           pathname: `/pictionary-game/125`,
-          state: { username, game, room },
-          // search: `?username=${username}&game=${game}&room=${room}`,
         })
       }, 2000)
     })
@@ -81,11 +78,12 @@ const PictionaryLobby = function (props) {
 
   useEffect(() => {
     socket = io(ENDPOINT)
-    socket.emit("join.lobby", { username, room })
+    socket.emit("join.lobby", {username, room})
 
     chatRepository.getChatByGame(room).then((chats) => {
       setFetchMessages(chats)
     })
+
   }, [room, username])
 
   useEffect(() => {
@@ -100,7 +98,7 @@ const PictionaryLobby = function (props) {
     socket.on("users.lobby", (users) => {
       setUsers(users)
       if (users.length === Constant.GAMES_CONDITIONS.PICTIONARY_USER) {
-        socket.emit("startGameTimer.lobby", { room })
+        socket.emit("startGameTimer.lobby", {room})
         addTimer()
       }
     })
@@ -179,7 +177,7 @@ const PictionaryLobby = function (props) {
                 />
               )
             })}
-            <Button label="leave queue" onClick={onLeaveClick} />
+            <Button label="leave queue" onClick={onLeaveClick}/>
           </Card>
         </Grid>
         <Grid item xs={12} className={classes.rightCol}>
@@ -190,9 +188,9 @@ const PictionaryLobby = function (props) {
             <TextField
               rows={2}
               label="What is your favorite cuisine?"
-              style={{ marginBottom: 10 }}
+              style={{marginBottom: 10}}
             />
-            <Button label="submit" />
+            <Button label="submit"/>
           </Card>
           <ChatBox
             title="Chat"

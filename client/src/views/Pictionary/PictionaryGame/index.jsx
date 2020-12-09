@@ -6,17 +6,14 @@ import clsx from "clsx"
 
 import io from "socket.io-client"
 
-import queryString from "query-string"
-
 import {useHistory} from "react-router-dom"
 
+import SimplePeer from "simple-peer"
+
+import {getUserNameFromLocalStorage} from "src/utils/helpers"
 import Card from "src/components/sharedComponents/Card"
 import ChatBox from "src/components/sharedComponents/ChatBox"
-
-import Peer from "peerjs"
-import SimplePeer from "simple-peer"
-import {socketURL} from "src/helpers/utils"
-import Storage from "src/services/Storage"
+import {socketURL} from "src/utils/helpers"
 import Constant from "src/utils/Constant"
 import Button from "src/components/sharedComponents/Button"
 import dialogAction from "src/redux/actions/dialogAction"
@@ -26,18 +23,18 @@ import PictionaryFrame from "../PictionaryFrame/Canvas"
 import Clue from "../Clue"
 import CountDown from "../CountDown"
 import Waiting from "../Waiting"
+import LOADING from "../../../assets/images/loading.gif"
 
 const ENDPOINT = socketURL()
 let socket
 const peers = []
-let callList = []
 let localStream = null;
 
 const PictionaryGame = function (props) {
-  // const { username, room } = queryString.parse(location.search)
-  const {username, room} = props.location.state
-  const classes = styles()
   const history = useHistory()
+  const {room} = props.match.params;
+  const username = getUserNameFromLocalStorage(history)
+  const classes = styles()
 
   const [guess, setGuess] = useState([])
   const [users, setUsers] = useState([])
@@ -69,10 +66,8 @@ const PictionaryGame = function (props) {
   }
 
   const onLeftClick = function () {
-    const currentUser = Storage.pull(Constant.STORAGE.CURRENT_USER).username
-
     myStream && myStream.getTracks().forEach((track) => track.stop())
-    onLeaveClick(currentUser)
+    onLeaveClick(username)
   }
 
   const onVideoClick = function () {
@@ -166,51 +161,10 @@ const PictionaryGame = function (props) {
     }
   }
 
-
-  const addVideoStream = function (video, stream, userId) {
-    const videoGrid = document.getElementById("video-grid")
-    video.srcObject = stream
-    video.addEventListener("loadedmetadata", () => {
-      video.play()
-    })
-
-    const videoBox = document.createElement("div")
-    videoBox.className = "videoBox"
-    videoBox.style.height = `${window.innerHeight - 600}px`
-    videoBox.id = userId
-    videoBox.append(video)
-
-    videoGrid.append(videoBox)
-    socket.emit("getInfo.room", userId)
-  }
-
-  const connectToNewUser = function (myPeer, user, stream) {
-    const call = myPeer.call(user.socketId, stream)
-    const video = document.createElement("video")
-    call.on("stream", (userVideoStream) => {
-      if (!callList[call.peer]) {
-        addVideoStream(video, userVideoStream, user.socketId)
-        callList[call.peer] = call
-      }
-    })
-    call.on("close", () => {
-      video.remove()
-    })
-
-    peers[user.socketId] = call
-  }
-
-
-
-
-
   function removePeer(socket_id) {
-
     let videoEl = document.getElementById(socket_id)
     if (videoEl) {
-
       const tracks = videoEl.srcObject.getTracks();
-
       tracks.forEach(function (track) {
         track.stop()
       })
@@ -223,15 +177,15 @@ const PictionaryGame = function (props) {
   }
 
   const onDetectTurnedUser = function (turnedUser) {
-    const element = document.getElementById(turnedUser)
-    const videoGrid = document.getElementById("video-grid")
-    videoGrid.querySelectorAll(".draw").forEach((el) => el.remove())
-
-    const draw = document.createElement("i")
-    draw.innerHTML = "edit"
-    draw.className = "material-icons draw"
-
-    element.append(draw)
+    // const element = document.getElementById(turnedUser)
+    // const videoGrid = document.getElementById("video-grid")
+    // videoGrid.querySelectorAll(".draw").forEach((el) => el.remove())
+    //
+    // const draw = document.createElement("i")
+    // draw.innerHTML = "edit"
+    // draw.className = "material-icons draw"
+    //
+    // element.append(draw)
   }
 
   const removeCurrentWrapper = function (element) {
@@ -270,7 +224,25 @@ const PictionaryGame = function (props) {
     }
   }
 
+  const createVideoElement=function (username){
+    const videoBox = document.createElement("div")
+    videoBox.className = "videoBox"
+    videoBox.id = username
+    const wrapper = document.createElement("div")
+    wrapper.className = "wrapper"
+    const videos = document.getElementById('video-grid')
+    let newVid = document.createElement('video')
+    newVid.setAttribute('poster',LOADING);
+    videoBox.append(newVid)
+    videoBox.append(wrapper)
+    videos.append(videoBox)
+
+    return newVid
+  }
+
   function addPeer(socket_id, am_initiator, username) {
+    const videoElement=createVideoElement(username)
+
     peers[socket_id] = new SimplePeer({
       initiator: am_initiator,
       stream: localStream,
@@ -282,61 +254,17 @@ const PictionaryGame = function (props) {
         socket_id: socket_id
       })
     })
-    const videoBox = document.createElement("div")
-    videoBox.className = "videoBox"
-    videoBox.id = username
-    const wrapper = document.createElement("div")
-    wrapper.className = "wrapper"
-
-    const videos = document.getElementById('video-grid')
 
     peers[socket_id].on('stream', stream => {
-      let newVid = document.createElement('video')
-      newVid.srcObject = stream
-      newVid.playsinline = false
-      newVid.autoplay = true
-      videoBox.append(newVid)
-      videoBox.append(wrapper)
-      videos.append(videoBox)
+      videoElement.srcObject = stream
+      videoElement.playsinline = false
+      videoElement.autoplay = true
       socket.emit("getCurrentUser.room", {username, room})
     })
   }
 
   useEffect(() => {
     socket = io(ENDPOINT)
-
-    // const myPeer = new Peer({ host: "localhost", port: 3001 })
-    //
-    // const myVideo = document.createElement("video")
-    //
-    // navigator.mediaDevices
-    //   .getUserMedia({
-    //     video: true,
-    //     audio: true,
-    //   })
-    //   .then((stream) => {
-    //     setMyStream(stream)
-    //     addVideoStream(myVideo, stream, myPeer._id)
-    //     myPeer.on("call", (call) => {
-    //       call.answer(stream)
-    //       const video = document.createElement("video")
-    //       call.on("stream", (userVideoStream) => {
-    //         if (!callList[call.peer]) {
-    //           addVideoStream(video, userVideoStream, call.peer)
-    //           callList[call.peer] = call
-    //         }
-    //       })
-    //     })
-    //
-    //     socket.on("userConnected.room", (user) => {
-    //       connectToNewUser(myPeer, user, stream)
-    //     })
-    //   })
-    //
-    // myPeer.on("open", (id) => {
-    //   socket.emit("join.room", { username, room, id }, () => {})
-    // })
-
 
     navigator.mediaDevices
       .getUserMedia({
@@ -376,16 +304,14 @@ const PictionaryGame = function (props) {
       peers[data.socket_id].signal(data.signal)
     })
 
-
     socket.on("userDisConnected.room", ({username}) => {
       const element = document.getElementById(username)
       element.remove()
-      //peers[userId].close()
     })
 
     socket.on("showResult.room", (users) => {
       setUsers(users)
-      users.map((item) => socket.emit("getInfo.room", item.socketId))
+      users.map((item) => socket.emit("getCurrentUser.room", {username:item.username, room}))
       socket.emit("hideResult.room")
     })
 
@@ -547,7 +473,7 @@ const PictionaryGame = function (props) {
               <div id="video-grid" className={classes.videoGrid}>
                 <div className="videoBox" id={username}>
                   <div className="wrapper"/>
-                  <video id="localVideo" autoPlay muted/>
+                  <video id="localVideo" autoPlay muted poster={LOADING}/>
                 </div>
               </div>
             </Grid>

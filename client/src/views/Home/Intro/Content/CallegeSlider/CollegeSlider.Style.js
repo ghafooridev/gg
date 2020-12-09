@@ -18,6 +18,11 @@ export const styles = makeStyles((theme) => ({
   subTitle: {
     marginBottom: 50,
     color: theme.palette.custom.bgBlue,
+    "& span":{
+      color: theme.palette.primary.main,
+      cursor:"pointer",
+      marginLeft:4
+    }
   },
   image: {
     width: 130,

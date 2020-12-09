@@ -33,7 +33,7 @@ const GameBox = function (props) {
   }
 
   const onPlayClick = function () {
-    history.push(`${type}-room/123?username=${user.username}&game=${type}`)
+    history.push(`${type.toLowerCase()}-room`)
   }
 
   return (

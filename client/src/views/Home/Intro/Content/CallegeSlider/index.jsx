@@ -12,6 +12,7 @@ import C6 from "../../../../../assets/images/CollegeLogo/c6.png"
 import C7 from "../../../../../assets/images/CollegeLogo/c7.jpg"
 import C8 from "../../../../../assets/images/CollegeLogo/c8.png"
 import C9 from "../../../../../assets/images/CollegeLogo/c9.png"
+import {useHistory} from "react-router-dom";
 
 const Intro = function () {
   const classes = styles()
@@ -19,16 +20,23 @@ const Intro = function () {
   const breakPoints = [
     { width: 1, itemsToShow: 2 },
     { width: 550, itemsToShow: 3 },
-    { width: 850, itemsToShow: 4 },
-    { width: 1150, itemsToShow: 6 },
+    { width: 850, itemsToShow: 6 },
   ]
+
+  const history = useHistory()
+
+  const onLogin=function (){
+    history.push("/register")
+  }
+
+
   return (
     <div className={classes.root}>
       <Typography variant="h3" className={classes.title}>
         Who is playing ?
       </Typography>
         <Typography variant="subtitle1" className={classes.subTitle}>
-            Over 10+ universities are part of the GGchat community. Don’t see your school here? Sign up today for free!
+            Over 10+ universities are part of the GGchat community. Don’t see your school here?<span onClick={onLogin}>Sign up</span>  today for free!
         </Typography>
       <Carousel
         ref={carousel}

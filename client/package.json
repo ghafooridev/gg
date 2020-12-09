@@ -42,7 +42,8 @@
     "simple-peer": "9.6.2",
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.1.1",
-    "use-immer": "^0.4.1"
+    "use-immer": "^0.4.1",
+    "use-state-if-mounted": "^1.0.4"
   },
   "scripts": {
     "start": "webpack-dev-server --open --mode development",

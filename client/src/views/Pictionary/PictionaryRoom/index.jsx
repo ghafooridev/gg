@@ -15,7 +15,7 @@ import ChatBox from "src/components/sharedComponents/ChatBox"
 import Constant from "src/utils/Constant"
 import chatRepository from "src/repositories/chat"
 import RoomTable from "src/views/Pictionary/PictionaryRoom/RoomTable"
-import { socketURL } from "src/helpers/utils"
+import { socketURL } from "src/utils/helpers"
 import { styles } from "../Pictionary.Style"
 
 const ENDPOINT = socketURL()
@@ -26,17 +26,14 @@ const rooms = [
   { name: "yyy", status: "round2", players: 4, capacity: 15 },
   { name: "xxx", status: "waiting", players: 3, capacity: 8 },
 ]
-
-const PictionaryRoom = function () {
-  const { username, game, room } = queryString.parse(location.search)
+const game="pictionary"
+const PictionaryRoom = function (props) {
   const classes = styles()
   const history = useHistory()
 
   const onCreateRoom = function () {
     history.push({
-      pathname: `/${game.toLowerCase()}-lobby/123`,
-      //search: `?username=${username}&game=${game}&room=${123}`,
-      state: { username, game, room: "123" },
+      pathname: `/${game}-lobby/123`,
     })
   }
 
