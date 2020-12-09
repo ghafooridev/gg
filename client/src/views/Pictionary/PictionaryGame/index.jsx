@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, {useEffect, useState} from "react"
 
-import { Grid, Typography } from "@material-ui/core"
+import {Grid, Typography} from "@material-ui/core"
 
 import clsx from "clsx"
 
@@ -8,20 +8,20 @@ import io from "socket.io-client"
 
 import queryString from "query-string"
 
-import { useHistory } from "react-router-dom"
+import {useHistory} from "react-router-dom"
 
 import Card from "src/components/sharedComponents/Card"
 import ChatBox from "src/components/sharedComponents/ChatBox"
 
 import Peer from "peerjs"
 import SimplePeer from "simple-peer"
-import { socketURL } from "src/helpers/utils"
+import {socketURL} from "src/helpers/utils"
 import Storage from "src/services/Storage"
 import Constant from "src/utils/Constant"
 import Button from "src/components/sharedComponents/Button"
 import dialogAction from "src/redux/actions/dialogAction"
 import ChooseWord from "../ChooseWord"
-import { styles } from "../Pictionary.Style"
+import {styles} from "../Pictionary.Style"
 import PictionaryFrame from "../PictionaryFrame/Canvas"
 import Clue from "../Clue"
 import CountDown from "../CountDown"
@@ -35,7 +35,7 @@ let localStream = null;
 
 const PictionaryGame = function (props) {
   // const { username, room } = queryString.parse(location.search)
-  const { username, room } = props.location.state
+  const {username, room} = props.location.state
   const classes = styles()
   const history = useHistory()
 
@@ -54,14 +54,15 @@ const PictionaryGame = function (props) {
   const [myStream, setMyStream] = useState(null)
 
   const onSendClick = function (message) {
-    socket.emit("guess.room", { username, message }, () => {})
+    socket.emit("guess.room", {username, message}, () => {
+    })
   }
 
   const onLeaveClick = function (id) {
-    socket.emit("leave.room", { username, room, id })
+    socket.emit("leave.room", {username, room})
     if (id) {
-      callList = callList.filter((item) => item === id)
-      removeCurrentWrapper(id)
+      const element=document.getElementById(id)
+      removeCurrentWrapper(element)
     }
     socket.off()
     history.push("/home")
@@ -69,44 +70,41 @@ const PictionaryGame = function (props) {
 
   const onLeftClick = function () {
     const currentUser = Storage.pull(Constant.STORAGE.CURRENT_USER).username
-    const element = document.querySelectorAll(
-      `[data-username=${currentUser}]`
-    )[0]
-    const id = element.id
+
     myStream && myStream.getTracks().forEach((track) => track.stop())
-    onLeaveClick(id)
+    onLeaveClick(currentUser)
   }
 
   const onVideoClick = function () {
     myStream &&
-      myStream.getTracks().forEach(function (track) {
-        if (track.readyState === "live" && track.kind === "video") {
-          setVideo(!videos)
-          track.enabled = !track.enabled
-        }
-      })
+    myStream.getTracks().forEach(function (track) {
+      if (track.readyState === "live" && track.kind === "video") {
+        setVideo(!videos)
+        track.enabled = !track.enabled
+      }
+    })
   }
 
   const onAudioClick = function () {
     myStream &&
-      myStream.getTracks().forEach(function (track) {
-        if (track.readyState === "live" && track.kind === "audio") {
-          setAudio(!audio)
-          track.enabled = !track.enabled
-        }
-      })
+    myStream.getTracks().forEach(function (track) {
+      if (track.readyState === "live" && track.kind === "audio") {
+        setAudio(!audio)
+        track.enabled = !track.enabled
+      }
+    })
   }
 
   const getUserTurn = function (nextTurn) {
     if (users && users.length) {
-      socket.emit("usersTurn.room", { room, nextTurn })
+      socket.emit("usersTurn.room", {room, nextTurn})
     }
   }
 
   const onSelectWordTimesUp = function (turn) {
     dialogAction.hide()
     setCharIndex(1000)
-    socket.emit("usersUpdate.room", { room, turn })
+    socket.emit("usersUpdate.room", {room, turn})
     getUserTurn(turn)
   }
 
@@ -128,14 +126,14 @@ const PictionaryGame = function (props) {
               setWord(data)
               dialogAction.hide()
               socket.emit("wordSelect.room", data)
-              socket.emit("timer.room", {word:data,nextTurn})
+              socket.emit("timer.room", {word: data, nextTurn})
             }
           },
         })
       }
 
       return dialogAction.show({
-        component: <Waiting turn={nextTurn} />,
+        component: <Waiting turn={nextTurn}/>,
         size: "sm",
         title: `Please Wait ... `,
         disableCloseButton: true,
@@ -145,13 +143,13 @@ const PictionaryGame = function (props) {
 
   const onShowResult = function () {
     setShowResult(true)
-    socket.emit("showResult.room", { room })
+    socket.emit("showResult.room", {room})
   }
 
   const onTimesUp = function () {
     setWord("")
     setCharIndex(1000)
-    socket.emit("usersUpdate.room", { room, turn })
+    socket.emit("usersUpdate.room", {room, turn})
     onShowResult()
   }
 
@@ -168,54 +166,6 @@ const PictionaryGame = function (props) {
     }
   }
 
-  const removeCurrentWrapper = function (id) {
-    const element = document.getElementById(id)
-    const wrapperClass = element.getElementsByClassName("wrapper")
-    if (wrapperClass && wrapperClass[0]) {
-      wrapperClass[0].remove()
-    }
-
-    return element
-  }
-
-  const appendInformation = function (user) {
-    const element = removeCurrentWrapper(user.socketId)
-    element.setAttribute("data-username", user.username)
-
-    const point = document.createElement("span")
-    point.innerHTML = user.point
-    point.className = "point"
-
-    const name = document.createElement("span")
-    name.innerHTML = user.username
-    name.className = "name"
-
-    const school = document.createElement("span")
-    school.innerHTML = user.university
-    school.className = "school"
-
-    const wrapper = document.createElement("div")
-    wrapper.className = "wrapper"
-
-    wrapper.append(point)
-    wrapper.append(name)
-    wrapper.append(school)
-    element.append(wrapper)
-  }
-
-  const onDetectTurnedUser = function (turnedUser) {
-    const element = document.querySelectorAll(
-      `[data-username=${turnedUser}]`
-    )[0]
-    const videoGrid = document.getElementById("video-grid")
-    videoGrid.querySelectorAll(".draw").forEach((el) => el.remove())
-
-    const draw = document.createElement("i")
-    draw.innerHTML = "edit"
-    draw.className = "material-icons draw"
-
-    element.append(draw)
-  }
 
   const addVideoStream = function (video, stream, userId) {
     const videoGrid = document.getElementById("video-grid")
@@ -251,6 +201,9 @@ const PictionaryGame = function (props) {
   }
 
 
+
+
+
   function removePeer(socket_id) {
 
     let videoEl = document.getElementById(socket_id)
@@ -269,11 +222,58 @@ const PictionaryGame = function (props) {
     delete peers[socket_id]
   }
 
-  function addPeer(socket_id, am_initiator) {
+  const onDetectTurnedUser = function (turnedUser) {
+    const element = document.getElementById(turnedUser)
+    const videoGrid = document.getElementById("video-grid")
+    videoGrid.querySelectorAll(".draw").forEach((el) => el.remove())
+
+    const draw = document.createElement("i")
+    draw.innerHTML = "edit"
+    draw.className = "material-icons draw"
+
+    element.append(draw)
+  }
+
+  const removeCurrentWrapper = function (element) {
+    if (element) {
+      const wrapperClass = element.getElementsByClassName("wrapper")
+      if (wrapperClass && wrapperClass[0]) {
+        wrapperClass[0].remove()
+      }
+    }
+  }
+
+  const appendInformation = function (user) {
+    const element = document.getElementById(user.username)
+    removeCurrentWrapper(element)
+
+    if (element) {
+      const point = document.createElement("span")
+      point.innerHTML = user.point
+      point.className = "point"
+
+      const name = document.createElement("span")
+      name.innerHTML = user.username
+      name.className = "name"
+
+      const school = document.createElement("span")
+      school.innerHTML = user.university
+      school.className = "school"
+
+      const wrapper = document.createElement("div")
+      wrapper.className = "wrapper"
+
+      wrapper.append(point)
+      wrapper.append(name)
+      wrapper.append(school)
+      element.append(wrapper)
+    }
+  }
+
+  function addPeer(socket_id, am_initiator, username) {
     peers[socket_id] = new SimplePeer({
       initiator: am_initiator,
       stream: localStream,
-      //config: configuration
     })
 
     peers[socket_id].on('signal', data => {
@@ -282,49 +282,25 @@ const PictionaryGame = function (props) {
         socket_id: socket_id
       })
     })
+    const videoBox = document.createElement("div")
+    videoBox.className = "videoBox"
+    videoBox.id = username
+    const wrapper = document.createElement("div")
+    wrapper.className = "wrapper"
+
+    const videos = document.getElementById('video-grid')
 
     peers[socket_id].on('stream', stream => {
       let newVid = document.createElement('video')
       newVid.srcObject = stream
-      newVid.id = socket_id
       newVid.playsinline = false
       newVid.autoplay = true
-      newVid.className = "vid"
-      const videos=document.getElementById('xxx')
-      videos.appendChild(newVid)
+      videoBox.append(newVid)
+      videoBox.append(wrapper)
+      videos.append(videoBox)
+      socket.emit("getCurrentUser.room", {username, room})
     })
   }
-
-  const initP2P=function() {
-    socket = io(ENDPOINT)
-    socket.on('initReceive', socket_id => {
-      addPeer(socket_id, false)
-      socket.emit('initSend', socket_id)
-    })
-
-
-    socket.on('initSend', socket_id => {
-      addPeer(socket_id, true)
-    })
-
-    socket.on('removePeer', socket_id => {
-      console.log('removing peer ' + socket_id)
-      removePeer(socket_id)
-    })
-
-    socket.on('disconnect', () => {
-      console.log('GOT DISCONNECTED')
-      for (let socket_id in peers) {
-        removePeer(socket_id)
-      }
-    })
-
-    socket.on('signal', data => {
-      peers[data.socket_id].signal(data.signal)
-    })
-  }
-
-
 
   useEffect(() => {
     socket = io(ENDPOINT)
@@ -362,32 +338,49 @@ const PictionaryGame = function (props) {
     // })
 
 
-
-
-
-
-
     navigator.mediaDevices
       .getUserMedia({
         video: true,
         audio: true,
       })
       .then((stream) => {
+        socket.emit("join.room", {username, room}, (user) => {})
+        setMyStream(stream)
         const myVideo = document.getElementById("localVideo")
         myVideo.srcObject = stream;
         localStream = stream;
-        initP2P()
+        socket.emit("initReceive", username)
       })
+    socket.on('initReceive', (socket_id, otherUser) => {
+      addPeer(socket_id, false, otherUser)
+      socket.emit('initSend', socket_id, username)
+    })
+
+    socket.on('initSend', (socket_id, otherUser) => {
+      addPeer(socket_id, true, otherUser)
+    })
+
+    socket.on('removePeer', socket_id => {
+      console.log('removing peer ' + socket_id)
+      removePeer(socket_id)
+    })
+
+    socket.on('disconnect', () => {
+      console.log('GOT DISCONNECTED')
+      for (let socket_id in peers) {
+        removePeer(socket_id)
+      }
+    })
+
+    socket.on('signal', data => {
+      peers[data.socket_id].signal(data.signal)
+    })
 
 
-
-
-
-
-    socket.on("userDisConnected.room", ({ userId }) => {
-      const element = document.getElementById(userId)
+    socket.on("userDisConnected.room", ({username}) => {
+      const element = document.getElementById(username)
       element.remove()
-      peers[userId].close()
+      //peers[userId].close()
     })
 
     socket.on("showResult.room", (users) => {
@@ -409,12 +402,13 @@ const PictionaryGame = function (props) {
 
   useEffect(() => {
     if (guessedUser.length && guessedUser.length === users.length - 1) {
-      socket.emit("guessAllCorrectly.room", () => {})
+      socket.emit("guessAllCorrectly.room", () => {
+      })
     }
   }, [guessedUser])
 
   useEffect(() => {
-    socket.on("usersTurn.room", ({ isPlaying, nextTurn }) => {
+    socket.on("usersTurn.room", ({isPlaying, nextTurn}) => {
       if (nextTurn !== turn) {
         onShowChoseWordDialog(isPlaying, nextTurn)
         setTurn(nextTurn)
@@ -435,6 +429,7 @@ const PictionaryGame = function (props) {
     socket.on("charShow.room", (charIndex) => {
       setCharIndex(charIndex)
     })
+
     return () => {
       socket.off("timersUp.room")
       socket.off("charShow.room")
@@ -447,7 +442,7 @@ const PictionaryGame = function (props) {
       getUserTurn(turn)
     })
 
-    socket.emit("usersUpdatePoint.room", { room, round, guessedUser })
+    socket.emit("usersUpdatePoint.room", {room, round, guessedUser})
     socket.on("usersUpdatePoint.room", (users) => {
       setUsers(users)
     })
@@ -473,14 +468,14 @@ const PictionaryGame = function (props) {
   }, [guess])
 
   useEffect(() => {
-    socket.on("wordShow.room", ({ word, round }) => {
+    socket.on("wordShow.room", ({word, round}) => {
       dialogAction.hide()
       setWord(word)
       setRound(round)
       setGuessedUser([])
     })
 
-    socket.on("timer.room", ({ timer, word, turnedUser }) => {
+    socket.on("timer.room", ({timer, word, turnedUser}) => {
       onDetectTurnedUser(turnedUser)
       setWord(word)
       setTimer(timer)
@@ -498,7 +493,7 @@ const PictionaryGame = function (props) {
       }
     })
 
-    socket.on("getInfo.room", (user) => {
+    socket.on("getCurrentUser.room", (user) => {
       appendInformation(user)
     })
 
@@ -514,10 +509,6 @@ const PictionaryGame = function (props) {
 
   return (
     <Grid className={classes.root}>
-      <video id="localVideo" className="vid" autoPlay muted></video>
-      <div id='xxx'>
-
-      </div>
       <Grid item xs={12} className={classes.topPanel}>
         <Typography variant="h2">Pictionary</Typography>
       </Grid>
@@ -553,14 +544,19 @@ const PictionaryGame = function (props) {
               </Grid>
             </Grid>
             <Grid className={classes.videoCard}>
-              <div id="video-grid" className={classes.videoGrid} />
+              <div id="video-grid" className={classes.videoGrid}>
+                <div className="videoBox" id={username}>
+                  <div className="wrapper"/>
+                  <video id="localVideo" autoPlay muted/>
+                </div>
+              </div>
             </Grid>
           </Card>
         </Grid>
         <Grid item sm={12} md={5} className={classes.pictionaryPanel}>
           <Card className={classes.itemCard}>
             <Grid item xs={12} className={classes.pictionaryInfo}>
-              <CountDown isStart={!!word} timer={timer} />
+              <CountDown isStart={!!word} timer={timer}/>
               <Clue
                 word={word}
                 username={username}
@@ -584,18 +580,18 @@ const PictionaryGame = function (props) {
               <Typography variant="h6">Round {round}</Typography>
             </Grid>
             {users &&
-              users
-                .sort((a, b) => b.point - a.point)
-                .map((item, index) => {
-                  return (
-                    <Grid key={index} className={classes.resultTableRow}>
-                      <Typography variant="subtitle1">
-                        {item.username}
-                      </Typography>
-                      <Typography variant="subtitle1">{item.point}</Typography>
-                    </Grid>
-                  )
-                })}
+            users
+              .sort((a, b) => b.point - a.point)
+              .map((item, index) => {
+                return (
+                  <Grid key={index} className={classes.resultTableRow}>
+                    <Typography variant="subtitle1">
+                      {item.username}
+                    </Typography>
+                    <Typography variant="subtitle1">{item.point}</Typography>
+                  </Grid>
+                )
+              })}
           </Card>
           <ChatBox
             className={classes.guessBox}

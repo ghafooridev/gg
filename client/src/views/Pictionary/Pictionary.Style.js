@@ -193,7 +193,7 @@ export const styles = makeStyles((theme) => ({
         bottom: 5,
         left: 5,
         color: "#fff",
-        fontSize: 14,
+        fontSize: 10,
       },
     },
   },

@@ -35,7 +35,8 @@ const removeUserByUsername = async function (username, place) {
     user.room = ""
     user.point = 0
     user.round = 0
-    user.save()
+    await user.save()
+    return user
 }
 
 const getUserByUsername = async function (username, place) {
