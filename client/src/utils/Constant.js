@@ -41,7 +41,7 @@ const Constant = {
     FORGET: "FORGET",
   },
   GAMES_CONDITIONS: {
-    PICTIONARY_USER: 3,
+    PICTIONARY_USER: 2,
   },
 }
 export default Constant
