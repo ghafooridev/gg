@@ -16,6 +16,8 @@ import { useSelector } from "react-redux"
 import HeaderProfile from "./HeaderProfile"
 import { styles } from "./Header.Style"
 import Logo from "../../../assets/images/logo_light.png"
+import dialogAction from "../../../redux/actions/dialogAction";
+import Feedback from "../../../views/Feedback";
 
 const Header = function () {
   const currentUser = useSelector((state) => state.user)
@@ -43,6 +45,17 @@ const Header = function () {
       },
       inviteFriend: () => {
         alert("not implemented")
+      },
+      provideFeedback: () => {
+        dialogAction.show({
+          component: (
+            <Feedback/>
+          ),
+          size: "sm",
+          title: `Provide Feedback`,
+          onAction: (type, data) => {
+          },
+        })
       },
       home: () => {
         history.push("/home")
@@ -80,6 +93,14 @@ const Header = function () {
               isOpen ? classes.buttonGroupCollapse : classes.buttonGroupExpand
             )}
           >
+            {!isEmpty(currentUser) && (
+              <Button
+                label="Provide Feedback"
+                type="grey"
+                className={classes.button}
+                onClick={() => onMenuClick("provideFeedback")}
+              />
+            )}
             {!isEmpty(currentUser) && (
               <Button
                 label="Invite Friends"

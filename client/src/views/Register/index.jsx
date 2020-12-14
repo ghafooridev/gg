@@ -105,16 +105,6 @@ const Register = function () {
             </Grid>
             <Grid className={classes.dropDown}>
               <Grid item xs={12}>
-                {/* <Selector */}
-                {/*  name="university" */}
-                {/*  label="University" */}
-                {/*  icon="account_circle" */}
-                {/*  inputRef={register({ */}
-                {/*    required: validationMessage("University", "required"), */}
-                {/*  })} */}
-                {/*  error={errors.university} */}
-                {/*  options={collegeList} */}
-                {/* /> */}
                 <UniversitySelector
                   name="university"
                   inputRef={register({

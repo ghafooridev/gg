@@ -13,7 +13,7 @@ import Constant from "../utils/Constant"
 
 import AlertAction from "../redux/actions/AlertAction"
 
-const Feedback = function () {
+const OldFeedback = function () {
   const [state, setState] = useImmer({
     name: "",
     email: "",
@@ -98,4 +98,4 @@ const Feedback = function () {
   )
 }
 
-export default Feedback
+export default OldFeedback

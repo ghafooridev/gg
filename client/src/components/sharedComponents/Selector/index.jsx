@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, {useEffect, useState} from "react"
 
 import MuiTextField from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"
@@ -9,7 +9,7 @@ import clsx from "clsx"
 
 import MenuItem from "@material-ui/core/MenuItem"
 
-import { styles } from "./Selector.Style"
+import {styles} from "./Selector.Style"
 
 const Selector = function (props) {
   const classes = styles()
@@ -19,7 +19,6 @@ const Selector = function (props) {
     label,
     style,
     className,
-    defaultValue,
     caption,
     error,
     icon,
@@ -27,26 +26,26 @@ const Selector = function (props) {
     placeholder,
   } = props
 
-  const initValue = defaultValue || { text: "", value: "" }
-
   const [list, setList] = useState(options)
-  const [selectedData, setSelectedData] = useState(initValue)
-  const [data, setData] = useState(defaultValue && defaultValue.text)
+  const [selectedData, setSelectedData] = useState(null)
   const [isExpand, setIsExpand] = useState(false)
 
   const onSelectChange = function (event) {
-    const { value } = event.target
+    const {value} = event.target
 
-    setData(data)
-    setSelectedData(initValue)
+    setSelectedData(value)
 
     if (value) {
-      const filteredList = options.filter((item) =>
-        item.text.startsWith(value.toLowerCase())
+      const filteredList = options.filter((item) => {
+          return (
+            item.toLowerCase().startsWith(value.toLowerCase())
+          )
+        }
       )
+      setIsExpand(true)
       return setList(filteredList)
     }
-
+    setIsExpand(false)
     setList([])
   }
 
@@ -61,10 +60,10 @@ const Selector = function (props) {
       return (
         <MenuItem
           key={index}
-          value={item.value}
+          value={item}
           onClick={() => onSelectData(item)}
         >
-          {item.text}
+          {item}
         </MenuItem>
       )
     })
@@ -80,12 +79,11 @@ const Selector = function (props) {
     }
   }
 
-  // Just for making sure the list is empty before typing a character
-  useEffect(() => {
-    if (!data) {
-      setList([])
+  const onBlur = function () {
+    if (!options.includes(selectedData)) {
+      setSelectedData('')
     }
-  }, [data])
+  }
 
   return (
     <div className={classes.container}>
@@ -97,13 +95,14 @@ const Selector = function (props) {
         error={!!error}
         helperText={error ? error.message : caption}
         inputRef={inputRef}
-        value={selectedData.text ? selectedData.text : data}
+        value={selectedData}
         classes={{
           root: classes.root,
         }}
         onChange={onSelectChange}
         placeholder={placeholder}
         className={className}
+        onBlur={onBlur}
         InputProps={{
           startAdornment: icon && (
             <InputAdornment position="start">
@@ -120,7 +119,7 @@ const Selector = function (props) {
         }}
       />
 
-      <div className={classes.menuContainer}>{loadItems()}</div>
+      {isExpand && <div className={classes.menuContainer}>{loadItems()}</div>}
     </div>
   )
 }

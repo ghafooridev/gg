@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles"
+import {makeStyles} from "@material-ui/core/styles"
 
 export const styles = makeStyles((theme) => ({
   container: {
@@ -9,6 +9,10 @@ export const styles = makeStyles((theme) => ({
     [theme.breakpoints.down("xs")]: {
       width: "100% !important",
     },
+    "& .MuiInputBase-root": {
+      backgroundColor:
+        theme.palette.type === "dark" && theme.palette.custom.grayBlue,
+    }
   },
   icon: {
     color: theme.palette.grey[700],
@@ -19,7 +23,9 @@ export const styles = makeStyles((theme) => ({
   },
   menuContainer: {
     position: "absolute",
-    backgroundColor: "#fff",
+    zIndex: 1000,
+    backgroundColor:
+      theme.palette.type === "dark" ? theme.palette.custom.grayBlue : "#fff",
     width: "100%",
     overflowY: "auto",
     border: `1px solid #0000003b`,
@@ -27,5 +33,6 @@ export const styles = makeStyles((theme) => ({
     borderBottom: "none",
     borderRadius: 5,
     maxHeight: 150,
+    "& li": {padding: 15}
   },
 }))
