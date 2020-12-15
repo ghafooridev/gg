@@ -1,7 +1,7 @@
 import React from "react"
 
-import Intro from "src/views/Home/Intro"
-import Update from "src/views/Home/Update"
+import Intro from "../../views/Home/Intro"
+import Update from "../../views/Home/Update"
 import Landing from "./Landing"
 
 import { styles } from "./Home.Style"

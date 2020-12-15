@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Grid, Paper, Typography } from "@material-ui/core"
-import { styles } from "src/views/Pictionary/Pictionary.Style"
+import { styles } from "../Pictionary.Style"
 
 const Clue = function ({ word, username, turn, charIndex }) {
   const wordArray = word.split("")

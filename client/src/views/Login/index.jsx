@@ -6,14 +6,14 @@ import {useHistory} from "react-router-dom"
 
 import {useForm} from "react-hook-form"
 
-import TextField from "src/components/sharedComponents/TextField"
-import Password from "src/components/sharedComponents/Password"
-import {validationMessage} from "src/utils/ValidationMessage"
-import Button from "src/components/sharedComponents/Button"
-import userAction from "src/redux/actions/UserAction"
-import JoyStick from "src/components/sharedComponents/JoyStick"
-import Constant from "src/utils/Constant"
-import Storage from "src/services/Storage"
+import TextField from "../../components/sharedComponents/TextField"
+import Password from "../../components/sharedComponents/Password"
+import {validationMessage} from "../../utils/ValidationMessage"
+import Button from "../../components/sharedComponents/Button"
+import userAction from "../../redux/actions/UserAction"
+import JoyStick from "../../components/sharedComponents/JoyStick"
+import Constant from "../../utils/Constant"
+import Storage from "../../services/Storage"
 import {styles} from "./Login.Style"
 
 const Login = function () {

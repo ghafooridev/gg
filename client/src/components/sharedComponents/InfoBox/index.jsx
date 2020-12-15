@@ -4,7 +4,7 @@ import { Grid, Paper, Typography } from "@material-ui/core"
 
 import clsx from "clsx"
 
-import Chip from "src/components/sharedComponents/Chip"
+import Chip from "../Chip"
 import { styles } from "./InfoBox.Style"
 import Gif from "../../../assets/images/p.png"
 

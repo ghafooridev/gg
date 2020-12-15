@@ -2,8 +2,8 @@ import React from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
-import Button from "src/components/sharedComponents/Button"
-import JoyStick from "src/components/sharedComponents/JoyStick"
+import Button from "../../../components/sharedComponents/Button"
+import JoyStick from "../../../components/sharedComponents/JoyStick"
 
 import { styles } from "./Update.Style"
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { Grid, Typography } from "@material-ui/core"
 import samplesize from "lodash.samplesize"
-import { words } from "src/utils/Words"
-import Button from "src/components/sharedComponents/Button"
-import { styles } from "src/views/Pictionary/Pictionary.Style"
+import { words } from "../../../utils/Words"
+import Button from "../../../components/sharedComponents/Button"
+import { styles } from "../../../views/Pictionary/Pictionary.Style"
 
 const ChooseWord = function (props) {
   const classes = styles()

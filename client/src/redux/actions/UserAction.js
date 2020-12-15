@@ -1,5 +1,5 @@
-import userRepository from "src/repositories/user"
-import Storage from "src/services/Storage"
+import userRepository from "../../repositories/user"
+import Storage from "../../services/Storage"
 import Constant from "../../utils/Constant"
 import store from "../store"
 

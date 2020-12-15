@@ -4,15 +4,14 @@ import { Grid, Typography } from "@material-ui/core"
 
 import { useForm } from "react-hook-form"
 
-import TextField from "src/components/sharedComponents/TextField"
-import Password from "src/components/sharedComponents/Password"
-import { validationMessage } from "src/utils/ValidationMessage"
-import Button from "src/components/sharedComponents/Button"
-import Constant from "src/utils/Constant"
-import userRepository from "src/repositories/user"
-import AlertAction from "src/redux/actions/AlertAction"
-import { useHistory } from "react-router-dom"
-import JoyStick from "src/components/sharedComponents/JoyStick"
+import TextField from "../../components/sharedComponents/TextField"
+import Password from "../../components/sharedComponents/Password"
+import { validationMessage } from "../../utils/ValidationMessage"
+import Button from "../../components/sharedComponents/Button"
+import Constant from "../../utils/Constant"
+import userRepository from "../../repositories/user"
+import AlertAction from "../../redux/actions/AlertAction"
+import JoyStick from "../../components/sharedComponents/JoyStick"
 import { styles } from "./ForgetPassword.Style"
 
 const Forget = function () {

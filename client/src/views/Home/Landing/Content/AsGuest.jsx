@@ -1,9 +1,9 @@
 import React from "react"
 
 import { Grid, Typography } from "@material-ui/core"
-import GameBox from "src/components/sharedComponents/GameBox"
-import Button from "src/components/sharedComponents/Button"
-import Constant from "src/utils/Constant"
+import GameBox from "../../../../components/sharedComponents/GameBox"
+import Button from "../../../../components/sharedComponents/Button"
+import Constant from "../../../../utils/Constant"
 import { styles } from "../Landing.Style"
 
 const AsGuest = function () {

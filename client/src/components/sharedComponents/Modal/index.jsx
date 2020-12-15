@@ -1,6 +1,6 @@
 import React from "react"
 import { useSelector } from "react-redux"
-import dialogAction from "src/redux/actions/dialogAction"
+import dialogAction from "../../../redux/actions/dialogAction"
 import { Grid, Dialog, Typography } from "@material-ui/core"
 import { styles } from "./Modal.Style"
 

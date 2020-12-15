@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React  from "react"
 
 import MuiTextField from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"

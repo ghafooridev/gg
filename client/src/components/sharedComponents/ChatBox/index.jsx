@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
-import TextField from "src/components/sharedComponents/TextField"
+import TextField from "../TextField"
 
-import Button from "src/components/sharedComponents/Button"
+import Button from "../Button"
 
-import Card from "src/components/sharedComponents/Card"
-import Messages from "src/components/sharedComponents/ChatBox/Messages"
+import Card from "../Card"
+import Messages from "./Messages"
 import clsx from "clsx"
 import { styles } from "./ChatBox.Style"
 

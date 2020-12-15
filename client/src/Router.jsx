@@ -1,15 +1,15 @@
 import React from "react"
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 
-import Login from "src/views/Login"
-import Register from "src/views/Register"
-import ForgetPassword from "src/views/ForgetPassword"
-import SiteContainer from "src/components/SiteContainer"
-import Home from "src/views/Home"
-import Profile from "src/views/Profile"
-import PictionaryLobby from "src/views/Pictionary/PictionaryLobby"
-import PictionaryRoom from "src/views/Pictionary/PictionaryRoom"
-import PictionaryGame from "src/views/Pictionary/PictionaryGame"
+import Login from "./views/Login"
+import Register from "./views/Register"
+import ForgetPassword from "./views/ForgetPassword"
+import SiteContainer from "./components/SiteContainer"
+import Home from "./views/Home"
+import Profile from "./views/Profile"
+import PictionaryLobby from "./views/Pictionary/PictionaryLobby"
+import PictionaryRoom from "./views/Pictionary/PictionaryRoom"
+import PictionaryGame from "./views/Pictionary/PictionaryGame"
 
 const Router = function () {
   return (

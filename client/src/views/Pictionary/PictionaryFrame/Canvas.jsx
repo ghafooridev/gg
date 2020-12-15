@@ -6,8 +6,8 @@ import { Grid } from "@material-ui/core"
 
 import io from "socket.io-client"
 
-import pen from "src/assets/images/pen.png"
-import { socketURL } from "src/utils/helpers"
+import pen from "../../../assets/images/pen.png"
+import { socketURL } from "../../../utils/helpers"
 
 import { styles } from "./PictionaryFrame.Style"
 

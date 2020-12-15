@@ -2,20 +2,13 @@ import React, { useEffect, useState } from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
-import TextField from "src/components/sharedComponents/TextField"
+import Button from "../../../components/sharedComponents/Button"
 
-import Button from "src/components/sharedComponents/Button"
-
-import Card from "src/components/sharedComponents/Card"
-import InfoBox from "src/components/sharedComponents/InfoBox"
+import Card from "../../../components/sharedComponents/Card"
 import { useHistory } from "react-router-dom"
-import queryString from "query-string"
-import io from "socket.io-client"
-import ChatBox from "src/components/sharedComponents/ChatBox"
-import Constant from "src/utils/Constant"
-import chatRepository from "src/repositories/chat"
-import RoomTable from "src/views/Pictionary/PictionaryRoom/RoomTable"
-import { socketURL } from "src/utils/helpers"
+
+import RoomTable from "../../../views/Pictionary/PictionaryRoom/RoomTable"
+import { socketURL } from "../../../utils/helpers"
 import { styles } from "../Pictionary.Style"
 
 const ENDPOINT = socketURL()

@@ -2,7 +2,7 @@ import React from "react"
 
 import { Grid, Typography } from "@material-ui/core"
 
-import { styles } from "src/views/Pictionary/Pictionary.Style"
+import { styles } from "../Pictionary.Style"
 
 const Waiting = function ({ turn }) {
   const classes = styles()

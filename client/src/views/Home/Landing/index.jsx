@@ -1,9 +1,9 @@
 import React from "react"
 
-import AsGuest from "src/views/Home/Landing/Content/AsGuest"
+import AsGuest from "../../../views/Home/Landing/Content/AsGuest"
 import { useSelector } from "react-redux"
 import isEmpty from "lodash.isempty"
-import AsUser from "src/views/Home/Landing/Content/AsUser"
+import AsUser from "../../../views/Home/Landing/Content/AsUser"
 import { styles } from "./Landing.Style"
 
 const Landing = function () {

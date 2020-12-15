@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect} from "react"
 
 import {useHistory} from "react-router-dom"
 
@@ -6,15 +6,15 @@ import {Grid, Typography} from "@material-ui/core"
 
 import io from "socket.io-client"
 
-import TextField from "src/components/sharedComponents/TextField"
-import Button from "src/components/sharedComponents/Button"
-import Card from "src/components/sharedComponents/Card"
-import InfoBox from "src/components/sharedComponents/InfoBox"
-import ChatBox from "src/components/sharedComponents/ChatBox"
-import Constant from "src/utils/Constant"
-import chatRepository from "src/repositories/chat"
-import {socketURL} from "src/utils/helpers"
-import {getUserNameFromLocalStorage} from "src/utils/helpers"
+import TextField from "../../../components/sharedComponents/TextField"
+import Button from "../../../components/sharedComponents/Button"
+import Card from "../../../components/sharedComponents/Card"
+import InfoBox from "../../../components/sharedComponents/InfoBox"
+import ChatBox from "../../../components/sharedComponents/ChatBox"
+import Constant from "../../../utils/Constant"
+import chatRepository from "../../../repositories/chat"
+import {socketURL} from "../../../utils/helpers"
+import {getUserNameFromLocalStorage} from "../../../utils/helpers"
 import {styles} from "../Pictionary.Style"
 import { useStateIfMounted } from "use-state-if-mounted";
 

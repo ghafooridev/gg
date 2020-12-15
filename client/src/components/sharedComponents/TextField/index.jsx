@@ -3,7 +3,7 @@ import React, { useEffect } from "react"
 import MuiTextField from "@material-ui/core/TextField"
 import InputAdornment from "@material-ui/core/InputAdornment"
 
-import PropTypes, { func } from "prop-types"
+import PropTypes from "prop-types"
 
 import clsx from "clsx"
 

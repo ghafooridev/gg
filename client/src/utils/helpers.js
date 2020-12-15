@@ -1,5 +1,5 @@
-import Constant from "src/utils/Constant"
-import Storage from "src/services/Storage"
+import Constant from "../utils/Constant"
+import Storage from "../services/Storage"
 
 export const socketURL = function () {
   if (process.env.DEBUG) {

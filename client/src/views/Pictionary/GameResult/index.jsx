@@ -1,8 +1,8 @@
 import React from "react"
 import { Grid, Typography } from "@material-ui/core"
 
-import Button from "src/components/sharedComponents/Button"
-import { styles } from "src/views/Pictionary/Pictionary.Style"
+import Button from "../../../components/sharedComponents/Button"
+import { styles } from "../Pictionary.Style"
 
 const GameResult = function (props) {
   const { onAction, users, round } = props

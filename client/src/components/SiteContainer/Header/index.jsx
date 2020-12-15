@@ -10,8 +10,8 @@ import clsx from "clsx"
 
 import isEmpty from "lodash.isempty"
 
-import ThemeContext from "src/Contexts/Theme/ThemeContext"
-import Button from "src/components/sharedComponents/Button"
+import ThemeContext from "../../../Contexts/Theme/ThemeContext"
+import Button from "../../sharedComponents/Button"
 import { useSelector } from "react-redux"
 import HeaderProfile from "./HeaderProfile"
 import { styles } from "./Header.Style"

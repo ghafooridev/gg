@@ -1,8 +1,8 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
-import Alert from "src/components/sharedComponents/Alert"
-import ThemeContextProvider from "src/Contexts/Theme"
+import Alert from "./components/sharedComponents/Alert"
+import ThemeContextProvider from "./Contexts/Theme"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 

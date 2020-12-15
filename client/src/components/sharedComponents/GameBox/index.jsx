@@ -6,7 +6,7 @@ import clsx from "clsx"
 
 import { useHistory } from "react-router-dom"
 
-import Button from "src/components/sharedComponents/Button"
+import Button from "../Button"
 import Covidopoly from "../../../assets/images/covidopoly.jpg"
 import Pictionary from "../../../assets/images/pictionary.jpg"
 import ForbiddenIsland from "../../../assets/images/forbiden_island.jpg"

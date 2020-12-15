@@ -5,7 +5,7 @@ import { useSelector } from "react-redux"
 import Snackbar from "@material-ui/core/Snackbar"
 import MuiAlert from "@material-ui/lab/Alert"
 
-import AlertAction from "src/redux/actions/AlertAction"
+import AlertAction from "../../../redux/actions/AlertAction"
 
 const Alert = function () {
   const { show, text, type } = useSelector((state) => state.alert)

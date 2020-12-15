@@ -1,16 +1,14 @@
-import React, {useState} from "react"
+import React from "react"
 
-import {Grid, Typography} from "@material-ui/core"
+import {Grid} from "@material-ui/core"
 
 import {useForm} from "react-hook-form"
 
-import TextField from "src/components/sharedComponents/TextField"
-import Password from "src/components/sharedComponents/Password"
-import {validationMessage} from "src/utils/ValidationMessage"
-import Button from "src/components/sharedComponents/Button"
-import Constant from "src/utils/Constant"
-import userRepository from "src/repositories/user"
-import AlertAction from "src/redux/actions/AlertAction"
+import TextField from "../../components/sharedComponents/TextField"
+import {validationMessage} from "../../utils/ValidationMessage"
+import Button from "../../components/sharedComponents/Button"
+import Constant from "../../utils/Constant"
+import AlertAction from "../../redux/actions/AlertAction"
 import {styles} from "./Feedback.Style"
 import feedbackRepository from "../../repositories/feedback";
 import Selector from "../../components/sharedComponents/Selector";

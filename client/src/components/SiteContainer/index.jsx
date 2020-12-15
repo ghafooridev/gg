@@ -1,7 +1,6 @@
 import React from "react"
 
-import Header from "src/components/SiteContainer/Header"
-import Footer from "src/components/SiteContainer/Footer"
+import Header from "../../components/SiteContainer/Header"
 
 import { styles } from "./SiteContainer.Style"
 

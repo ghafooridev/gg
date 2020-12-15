@@ -1,7 +1,7 @@
 import React from "react"
 
 import { Grid, Typography } from "@material-ui/core"
-import Button from "src/components/sharedComponents/Button"
+import Button from "../../../../components/sharedComponents/Button"
 import { styles } from "../Intro.Style"
 import Gif from "../../../../assets/images/gif2.gif"
 import CollegeSlider from "./CallegeSlider"

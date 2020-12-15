@@ -10,7 +10,7 @@ import clsx from "clsx"
 import MenuItem from "@material-ui/core/MenuItem"
 
 import { FixedSizeList as List } from "react-window"
-import { list } from "src/assets/json/collegeList"
+import { list } from "../../../assets/json/collegeList"
 import { styles } from "./UniversitySelector.Style"
 
 const MenuList = function ({ options, onSelectData ,classes}) {

@@ -4,8 +4,8 @@ import { useSelector } from "react-redux"
 
 import isEmpty from "lodash.isempty"
 
-import AsGuest from "src/views/Home/Intro/Content/AsGuest"
-import AsUser from "src/views/Home/Intro/Content/AsUser"
+import AsGuest from "../../../views/Home/Intro/Content/AsGuest"
+import AsUser from "../../../views/Home/Intro/Content/AsUser"
 import { styles } from "./Intro.Style"
 
 const Intro = function () {

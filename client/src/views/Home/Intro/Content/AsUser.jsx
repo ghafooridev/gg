@@ -1,7 +1,7 @@
 import React from "react"
 
 import { Grid, Typography } from "@material-ui/core"
-import InfoBox from "src/components/sharedComponents/InfoBox"
+import InfoBox from "../../../../components/sharedComponents/InfoBox"
 import { styles } from "../Intro.Style"
 
 const AsUser = function () {
