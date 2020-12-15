@@ -13,6 +13,8 @@ const ROOM_CLEAN_INTERVAL = 10800000
 
 const BCRYPT_SALT_WORK_FACTOR = 10
 
+const secretOrKey = "secret"
+
 module.exports = {
   gamesList,
   gameSizes,
@@ -20,4 +22,5 @@ module.exports = {
   LOBBY_ID_LEN,
   ROOM_CLEAN_INTERVAL,
   SALT_WORK_FACTOR: BCRYPT_SALT_WORK_FACTOR,
+  secretOrKey
 }

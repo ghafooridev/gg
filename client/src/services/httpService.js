@@ -15,7 +15,7 @@ export default {
       })
       .catch((error) => {
         AlertAction.show({
-          type: "danger",
+          type: "error",
           text: error.response.data,
         })
         return Promise.reject(error)
@@ -29,12 +29,29 @@ export default {
         return Promise.resolve(response.data)
       })
       .catch((error) => {
+        console.log(error.response)
         AlertAction.show({
-          type: "danger",
+          type: "error",
           text: error.response.data,
         })
         return Promise.reject(error)
       })
   },
+
+  put(options) {
+    return axios
+      .put(options.url, options.data, requestConfig())
+      .then((response) => {
+        return Promise.resolve(response)
+      })
+      .catch((error) => {
+        AlertAction.show({
+          type: "error",
+          text: error.response.data,
+        })
+        return Promise.reject(error)
+      })
+  },
+
   // TODO: add another http requests here
 }

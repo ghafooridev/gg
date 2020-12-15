@@ -88,19 +88,19 @@ const Room = ({ match, location }) => {
     USER_COLORS[getRandomInt(USER_COLORS.length)]
   )
 
-  useEffect(() => {
-    if (location.state && location.state.gameName) {
-      setGameName(location.state.gameName)
-    } else {
-      const requestOptions = { method: "GET" }
-      fetch(`${config.apiUrl}/room/gameName?roomId=${roomID}`, requestOptions)
-        .then((res) => res.json())
-        .then((resJson) => setGameName(resJson.gameName))
-    }
-
-    // get rand color for this user
-    setRandColor(USER_COLORS[getRandomInt(USER_COLORS.length)])
-  }, [location.state, roomID])
+  // useEffect(() => {
+  //   if (location.state && location.state.gameName) {
+  //     setGameName(location.state.gameName)
+  //   } else {
+  //     const requestOptions = { method: "GET" }
+  //     fetch(`${config.apiUrl}/room/gameName?roomId=${roomID}`, requestOptions)
+  //       .then((res) => res.json())
+  //       .then((resJson) => setGameName(resJson.gameName))
+  //   }
+  //
+  //   // get rand color for this user
+  //   setRandColor(USER_COLORS[getRandomInt(USER_COLORS.length)])
+  // }, [location.state, roomID])
 
   useEffect(() => {
     console.log("Running use effect")
@@ -132,6 +132,7 @@ const Room = ({ match, location }) => {
 
         // create peer for newly joined user
         const processNewUser = (payload) => {
+          console.log("payload",payload)
           const peer = addPeer(payload.signal, payload.callerID, stream)
           peersRef.current.push({ peerID: payload.callerID, peer })
 
@@ -216,28 +217,28 @@ const Room = ({ match, location }) => {
     // eslint-disable-next-line
   }, []);
 
-  useEffect(() => {
-    console.log("state changed: ", peers, peerStreams)
-  }, [peers, peerStreams])
-
-  useEffect(() => {
-    console.log("peerUserMap changed: ", peerUserMap)
-  }, [peerUserMap])
-
-  useEffect(() => {
-    Object.values(peerUserMap).forEach((userId) => {
-      console.log(userId)
-      const requestOptions = { method: "GET" }
-      fetch(`${config.apiUrl}/user/getInfo?userId=${userId}`, requestOptions)
-        .then((res) => res.json())
-        .then((resJson) => {
-          setUserObjMap((curUserObjMap) => ({
-            ...curUserObjMap,
-            [userId]: resJson,
-          }))
-        })
-    })
-  }, [peerUserMap])
+  // useEffect(() => {
+  //   console.log("state changed: ", peers, peerStreams)
+  // }, [peers, peerStreams])
+  //
+  // useEffect(() => {
+  //   console.log("peerUserMap changed: ", peerUserMap)
+  // }, [peerUserMap])
+  //
+  // useEffect(() => {
+  //   Object.values(peerUserMap).forEach((userId) => {
+  //     console.log(userId)
+  //     const requestOptions = { method: "GET" }
+  //     fetch(`${config.apiUrl}/user/getInfo?userId=${userId}`, requestOptions)
+  //       .then((res) => res.json())
+  //       .then((resJson) => {
+  //         setUserObjMap((curUserObjMap) => ({
+  //           ...curUserObjMap,
+  //           [userId]: resJson,
+  //         }))
+  //       })
+  //   })
+  // }, [peerUserMap])
 
   function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({
@@ -295,69 +296,69 @@ const Room = ({ match, location }) => {
     return peer
   }
 
-  // TODO: update this to new structure
-  function removePeer(peerID, userId) {
-    console.log("REMOVING THE PEER!")
-
-    // remove from peerStreams state
-    setPeerStreams((userStreams) =>
-      userStreams.filter((peerStream) => peerStream.peerID !== peerID)
-    )
-
-    // remove from peers
-    setPeers((curPeers) => curPeers.filter((userID) => userID !== peerID))
-
-    // remove from peersRef
-    let remove = null
-    const updatedPeers = []
-
-    peersRef.current.forEach((peerRefObj) => {
-      console.log(peerRefObj)
-      if (peerRefObj.peerID !== peerID) {
-        updatedPeers.push(peerRefObj.peerID)
-      } else {
-        remove = peerRefObj
-      }
-    })
-
-    if (remove) {
-      const idx = peersRef.current.indexOf(remove)
-
-      if (idx > -1) {
-        peersRef.current.splice(idx, 1)
-      }
-    }
-  }
-
-  // send chat message to room
-  function sendMessage(message) {
-    console.log("send message invoked!", message)
-    socketRef.current.emit("user message", {
-      message,
-      sender: user.name,
-      id: user._id,
-      room: true,
-      color: randomColor,
-    })
-  }
-
-  // toggle audio
-  const toggleAudio = () => {
-    console.log("toggle audio called!")
-
-    setMuted((curMuted) => !curMuted)
-
-    const audioTracks = userVideo.current.srcObject.getAudioTracks()
-    for (let i = 0; i < audioTracks.length; i += 1) {
-      audioTracks[i].enabled = !audioTracks[i].enabled
-    }
-  }
-
-  const linkSubmitted = (url) => {
-    console.log("Link submitted! url = ", url)
-    setJoiningWithLink(true)
-    setLinkUrl(url)
-  }
+  // // TODO: update this to new structure
+  // function removePeer(peerID, userId) {
+  //   console.log("REMOVING THE PEER!")
+  //
+  //   // remove from peerStreams state
+  //   setPeerStreams((userStreams) =>
+  //     userStreams.filter((peerStream) => peerStream.peerID !== peerID)
+  //   )
+  //
+  //   // remove from peers
+  //   setPeers((curPeers) => curPeers.filter((userID) => userID !== peerID))
+  //
+  //   // remove from peersRef
+  //   let remove = null
+  //   const updatedPeers = []
+  //
+  //   peersRef.current.forEach((peerRefObj) => {
+  //     console.log(peerRefObj)
+  //     if (peerRefObj.peerID !== peerID) {
+  //       updatedPeers.push(peerRefObj.peerID)
+  //     } else {
+  //       remove = peerRefObj
+  //     }
+  //   })
+  //
+  //   if (remove) {
+  //     const idx = peersRef.current.indexOf(remove)
+  //
+  //     if (idx > -1) {
+  //       peersRef.current.splice(idx, 1)
+  //     }
+  //   }
+  // }
+  //
+  // // send chat message to room
+  // function sendMessage(message) {
+  //   console.log("send message invoked!", message)
+  //   socketRef.current.emit("user message", {
+  //     message,
+  //     sender: user.name,
+  //     id: user._id,
+  //     room: true,
+  //     color: randomColor,
+  //   })
+  // }
+  //
+  // // toggle audio
+  // const toggleAudio = () => {
+  //   console.log("toggle audio called!")
+  //
+  //   setMuted((curMuted) => !curMuted)
+  //
+  //   const audioTracks = userVideo.current.srcObject.getAudioTracks()
+  //   for (let i = 0; i < audioTracks.length; i += 1) {
+  //     audioTracks[i].enabled = !audioTracks[i].enabled
+  //   }
+  // }
+  //
+  // const linkSubmitted = (url) => {
+  //   console.log("Link submitted! url = ", url)
+  //   setJoiningWithLink(true)
+  //   setLinkUrl(url)
+  // }
 
   return (
     <div className="room__container">

@@ -55,6 +55,7 @@ const LandingPageHeader = ({
     <>
       <div
         style={{
+          zIndex:111,
           backgroundImage:
             'url(' + require('../../assets/img/boardgames.jpg') + ')',
         }}

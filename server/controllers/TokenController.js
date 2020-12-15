@@ -3,7 +3,7 @@ const Constant = require("../utils/Constant")
 const Token = require("../models/Token")
 const { sendMail } = require("../services/mailService/SendMail")
 
-exports.EmailActivationToken = function (user, req, res) {
+exports.EmailActivationToken = function (type, user, req, res) {
   const token = new Token({
     _userId: user._id,
     token: crypto.randomBytes(16).toString("hex"),
@@ -20,8 +20,7 @@ exports.EmailActivationToken = function (user, req, res) {
       host: req.headers.host,
       token: token.token,
     }
-
-    sendMail("activation", activationMailOptions)
+    return sendMail(type, activationMailOptions)
       .then(() => {
         return res.status(200).json({
           success: true,
