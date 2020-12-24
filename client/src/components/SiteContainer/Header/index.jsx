@@ -1,78 +1,76 @@
-import React, { useContext, useState } from "react"
+import React, { useContext, useState } from "react";
 
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
 
-import { Grid } from "@material-ui/core"
+import { Grid } from "@material-ui/core";
 
-import { Squash as Hamburger } from "hamburger-react"
+import { Squash as Hamburger } from "hamburger-react";
 
-import clsx from "clsx"
+import clsx from "clsx";
 
-import isEmpty from "lodash.isempty"
+import isEmpty from "lodash.isempty";
 
-import ThemeContext from "../../../Contexts/Theme/ThemeContext"
-import Button from "../../sharedComponents/Button"
-import { useSelector } from "react-redux"
-import HeaderProfile from "./HeaderProfile"
-import { styles } from "./Header.Style"
-import Logo from "../../../assets/images/logo_light.png"
+import ThemeContext from "../../../Contexts/Theme/ThemeContext";
+import Button from "../../sharedComponents/Button";
+import { useSelector } from "react-redux";
+import HeaderProfile from "./HeaderProfile";
+import { styles } from "./Header.Style";
+import LogoLight from "../../../assets/images/logo_light.png";
+import LogoDark from "../../../assets/images/logo_dark.png";
 import dialogAction from "../../../redux/actions/dialogAction";
 import Feedback from "../../../views/Feedback";
 
 const Header = function () {
-  const currentUser = useSelector((state) => state.user)
+  const currentUser = useSelector((state) => state.user);
 
-  const { toggleTheme, theme } = useContext(ThemeContext)
-  const mode = theme.Theme.palette.type
+  const { toggleTheme, theme } = useContext(ThemeContext);
+  const mode = theme.Theme.palette.type;
 
-  const history = useHistory()
+  const history = useHistory();
 
-  const [isOpen, setOpen] = useState(false)
+  const [isOpen, setOpen] = useState(false);
 
-  const classes = styles(isOpen)
+  const classes = styles(isOpen);
 
   const onToggleHamburger = function (toggle) {
-    setOpen(toggle)
-  }
+    setOpen(toggle);
+  };
 
   const onMenuClick = function (type) {
     const types = {
       signIn: () => {
-        history.push("/login")
+        history.push("/login");
       },
       signUp: () => {
-        history.push("/register")
+        history.push("/register");
       },
       inviteFriend: () => {
-        alert("not implemented")
+        alert("not implemented");
       },
       provideFeedback: () => {
         dialogAction.show({
-          component: (
-            <Feedback/>
-          ),
+          component: <Feedback />,
           size: "sm",
           title: `Provide Feedback`,
-          onAction: (type, data) => {
-          },
-        })
+          onAction: (type, data) => {},
+        });
       },
       home: () => {
-        history.push("/home")
+        history.push("/home");
       },
-    }
+    };
 
     if (types[type]) {
-      return types[type]()
+      return types[type]();
     }
-  }
+  };
 
   return (
     <div className={classes.root}>
       <Grid container className={classes.container}>
         <img
           alt="logo"
-          src={Logo}
+          src={mode === "dark" ? LogoDark : LogoLight}
           className={classes.logo}
           onClick={() => onMenuClick("home")}
         />
@@ -149,7 +147,7 @@ const Header = function () {
         </div>
       </Grid>
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

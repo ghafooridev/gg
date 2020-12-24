@@ -48,7 +48,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-sccripts eject",
+    "build": "react-scripts build",
     "postinstall": "yarn build",
     "test": "jest",
     "test:watch": "jest --watch",

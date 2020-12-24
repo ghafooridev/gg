@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 const rootStyle = function (props, theme) {
-  const { type, icon, label, disabled } = props
+  const { type, icon, label, disabled } = props;
   return {
     cursor: "pointer",
     backgroundColor: disabled
@@ -31,8 +31,8 @@ const rootStyle = function (props, theme) {
       alignItems: "center",
       justifyContent: "center",
     },
-  }
-}
+  };
+};
 
 export const styles = makeStyles((theme) => ({
   root: (props) => rootStyle(props, theme),
@@ -40,4 +40,4 @@ export const styles = makeStyles((theme) => ({
     color: "#fff",
     float: "right",
   },
-}))
+}));

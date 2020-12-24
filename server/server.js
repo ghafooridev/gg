@@ -201,21 +201,21 @@ if (process.env.PROD) {
     res.sendFile(path.join(__dirname, "../client/build/index.html"))
   })
 
-  app.get("/login", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"))
-  })
-
-  app.get("/room", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"))
-  })
-
-  app.get("/room/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"))
-  })
-
-  app.get("/lobby", (req, res) => {
-    res.sendFile(path.join(__dirname, "../client/build/index.html"))
-  })
+  // app.get("/login", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "../client/build/index.html"))
+  // })
+  //
+  // app.get("/room", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "../client/build/index.html"))
+  // })
+  //
+  // app.get("/room/*", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "../client/build/index.html"))
+  // })
+  //
+  // app.get("/lobby", (req, res) => {
+  //   res.sendFile(path.join(__dirname, "../client/build/index.html"))
+  // })
 }
 
 const port = process.env.PORT || 5000

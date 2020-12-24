@@ -1,18 +1,18 @@
-import React, { useState} from "react"
+import React, { useState } from "react";
 
-import MuiTextField from "@material-ui/core/TextField"
-import InputAdornment from "@material-ui/core/InputAdornment"
+import MuiTextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
-import clsx from "clsx"
+import clsx from "clsx";
 
-import MenuItem from "@material-ui/core/MenuItem"
+import MenuItem from "@material-ui/core/MenuItem";
 
-import {styles} from "./Selector.Style"
+import { styles } from "./Selector.Style";
 
 const Selector = function (props) {
-  const classes = styles()
+  const classes = styles();
   const {
     name,
     inputRef,
@@ -24,66 +24,60 @@ const Selector = function (props) {
     icon,
     options,
     placeholder,
-  } = props
+  } = props;
 
-  const [list, setList] = useState(options)
-  const [selectedData, setSelectedData] = useState(null)
-  const [isExpand, setIsExpand] = useState(false)
+  const [list, setList] = useState(options);
+  const [selectedData, setSelectedData] = useState(null);
+  const [isExpand, setIsExpand] = useState(false);
 
   const onSelectChange = function (event) {
-    const {value} = event.target
+    const { value } = event.target;
 
-    setSelectedData(value)
+    setSelectedData(value);
 
     if (value) {
       const filteredList = options.filter((item) => {
-          return (
-            item.toLowerCase().startsWith(value.toLowerCase())
-          )
-        }
-      )
-      setIsExpand(true)
-      return setList(filteredList)
+        return item.toLowerCase().startsWith(value.toLowerCase());
+      });
+      setIsExpand(true);
+      return setList(filteredList);
     }
-    setIsExpand(false)
-    setList([])
-  }
+    setIsExpand(false);
+    setList([]);
+  };
 
   const onSelectData = function (item) {
-    setSelectedData(item)
-    setList([])
-    setIsExpand(false)
-  }
+    setSelectedData(item);
+    setList([]);
+    setIsExpand(false);
+  };
 
   const loadItems = function () {
     return list.map((item, index) => {
       return (
-        <MenuItem
-          key={index}
-          value={item}
-          onClick={() => onSelectData(item)}
-        >
+        <MenuItem key={index} value={item} onClick={() => onSelectData(item)}>
           {item}
         </MenuItem>
-      )
-    })
-  }
+      );
+    });
+  };
 
   const onExpandClick = function () {
     if (isExpand) {
-      setList([])
-      setIsExpand(false)
+      setList([]);
+      setIsExpand(false);
     } else {
-      setList(options)
-      setIsExpand(true)
+      setList(options);
+      setIsExpand(true);
     }
-  }
+  };
 
   const onBlur = function () {
     if (!options.includes(selectedData)) {
-      setSelectedData('')
+      setSelectedData("");
     }
-  }
+  };
+  //aria-invalid={errors.firstName ? "true" : "false"}
 
   return (
     <div className={classes.container}>
@@ -121,8 +115,8 @@ const Selector = function (props) {
 
       {isExpand && <div className={classes.menuContainer}>{loadItems()}</div>}
     </div>
-  )
-}
+  );
+};
 
 Selector.propTypes = {
   label: PropTypes.string,
@@ -139,7 +133,6 @@ Selector.propTypes = {
   }),
   inputRef: PropTypes.func,
   options: PropTypes.array,
-}
+};
 
-
-export default Selector
+export default Selector;

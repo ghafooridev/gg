@@ -1,16 +1,16 @@
-import React, { useEffect } from "react"
+import React, { useEffect } from "react";
 
-import MuiTextField from "@material-ui/core/TextField"
-import InputAdornment from "@material-ui/core/InputAdornment"
+import MuiTextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
-import clsx from "clsx"
+import clsx from "clsx";
 
-import { styles } from "./TextField.Style"
+import { styles } from "./TextField.Style";
 
 const TextField = function (props) {
-  const classes = styles()
+  const classes = styles();
   const {
     inputRef,
     name,
@@ -27,32 +27,32 @@ const TextField = function (props) {
     type,
     testId,
     onEnter,
-  } = props
-  const [data, setData] = React.useState(defaultValue)
+  } = props;
+  const [data, setData] = React.useState(defaultValue);
 
   const onTextChange = function (event) {
-    const { value } = event.target
-    setData(value)
+    const { value } = event.target;
+    setData(value);
 
     if (typeof onChange === "function") {
-      onChange({ name, value })
+      onChange({ name, value });
     }
-  }
+  };
 
   const onkeypress = function (event) {
-    const { value } = event.target
+    const { value } = event.target;
     if (
       value.trim().length &&
       event.key === "Enter" &&
       typeof onEnter === "function"
     ) {
-      onEnter(value)
+      onEnter(value);
     }
-  }
+  };
 
   useEffect(() => {
-    setData(defaultValue || "")
-  }, [defaultValue])
+    setData(defaultValue || "");
+  }, [defaultValue]);
 
   return (
     <MuiTextField
@@ -86,8 +86,8 @@ const TextField = function (props) {
         ),
       }}
     />
-  )
-}
+  );
+};
 
 TextField.propTypes = {
   label: PropTypes.string,
@@ -104,11 +104,11 @@ TextField.propTypes = {
   defaultValue: PropTypes.string,
   testId: PropTypes.string,
   onEnter: PropTypes.func,
-}
+};
 
 TextField.defaultProps = {
   rows: "1",
   type: "text",
-}
+};
 
-export default TextField
+export default TextField;

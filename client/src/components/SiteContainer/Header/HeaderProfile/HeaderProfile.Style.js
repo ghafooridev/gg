@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 export const styles = makeStyles((theme) => ({
   root: {
@@ -9,8 +9,9 @@ export const styles = makeStyles((theme) => ({
   },
   rootButton: {
     cursor: "pointer",
-    backgroundColor: "#fff",
-    color: "#000",
+    backgroundColor:
+      theme.palette.type === "light" ? "#fff" : theme.palette.custom.bgBlue,
+    color: theme.palette.type === "light" ? "#000" : "#fff",
     letterSpacing: 0,
     transition: "none",
     margin: "0 2px",
@@ -38,10 +39,10 @@ export const styles = makeStyles((theme) => ({
     alignItems: "center",
     margin: "10px 0",
   },
-  settingButton:{
-    borderRadius:"0 100px 100px 0"
+  settingButton: {
+    borderRadius: "0 100px 100px 0",
   },
-  logOutButton:{
-    borderRadius:"100px 0 0 100px"
+  logOutButton: {
+    borderRadius: "100px 0 0 100px",
   },
-}))
+}));

@@ -1,11 +1,13 @@
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 export const styles = makeStyles((theme) => ({
   root: {
     width: "100%",
     borderRadius: 5,
-    backgroundColor:
+    "& .MuiInputBase-root": {
+      backgroundColor:
         theme.palette.type === "dark" && theme.palette.custom.grayBlue,
+    },
     [theme.breakpoints.down("xs")]: {
       width: "100% !important",
     },
@@ -13,4 +15,4 @@ export const styles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.grey[700],
   },
-}))
+}));

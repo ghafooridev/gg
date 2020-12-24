@@ -1,10 +1,11 @@
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 export const styles = makeStyles((theme) => ({
   root: {
     bottom: "auto",
     top: 0,
-    backgroundColor: theme.palette.type === "light" ? "#fff" : theme.palette.custom.bgBlue,
+    backgroundColor:
+      theme.palette.type === "light" ? "#fff" : theme.palette.custom.bgBlue,
     position: "sticky",
     zIndex: 1000,
   },
@@ -42,8 +43,9 @@ export const styles = makeStyles((theme) => ({
   },
   button: {
     cursor: "pointer",
-    backgroundColor: "#fff",
-    color: "#000",
+    backgroundColor:
+      theme.palette.type === "light" ? "#fff" : theme.palette.custom.bgBlue,
+    color: theme.palette.type === "light" ? "#000" : "#fff",
     letterSpacing: 0,
     transition: "none",
     margin: "0 2px",
@@ -70,8 +72,9 @@ export const styles = makeStyles((theme) => ({
   modeButton: {
     minWidth: 50,
     cursor: "pointer",
-    backgroundColor: "#fff",
-    color: "#000",
+    backgroundColor:
+      theme.palette.type === "light" ? "#fff" : theme.palette.custom.bgBlue,
+    color: theme.palette.type === "light" ? "#000" : "#fff",
     transition: "none",
     margin: "0 2px",
     "&:hover": {
@@ -79,4 +82,4 @@ export const styles = makeStyles((theme) => ({
       backgroundColor: "#fff",
     },
   },
-}))
+}));

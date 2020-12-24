@@ -1,8 +1,16 @@
-import { makeStyles } from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 export const styles = makeStyles((theme) => ({
   root: {
-    margin: "20px auto 0",
+    marginTop: 30,
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    [theme.breakpoints.down("sm")]: {
+      position: "inherit",
+      transform: "none",
+    },
   },
   container: {
     padding: "50px 100px 0",
@@ -34,7 +42,7 @@ export const styles = makeStyles((theme) => ({
   item: {
     margin: "0 5px",
     [theme.breakpoints.down("sm")]: {
-      marginBottom:20
+      marginBottom: 20,
     },
   },
   title: {
@@ -61,4 +69,4 @@ export const styles = makeStyles((theme) => ({
     margin: "0 5px",
     textDecoration: "none",
   },
-}))
+}));

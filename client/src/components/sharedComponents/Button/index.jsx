@@ -1,12 +1,12 @@
-import React from "react"
+import React from "react";
 
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
-import clsx from "clsx"
+import clsx from "clsx";
 
-import { CircularProgress } from "@material-ui/core"
+import { CircularProgress } from "@material-ui/core";
 
-import { styles } from "./Button.Style"
+import { styles } from "./Button.Style";
 
 const Button = function (props) {
   const {
@@ -18,15 +18,15 @@ const Button = function (props) {
     htmlType,
     loading,
     disabled,
-  } = props
+  } = props;
 
-  const classes = styles(props)
+  const classes = styles(props);
 
   const onButtonClick = function (event) {
     if (typeof onClick === "function") {
-      onClick(event)
+      onClick(event);
     }
-  }
+  };
 
   return (
     <button
@@ -45,8 +45,8 @@ const Button = function (props) {
         {loading ? "loading..." : label}
       </span>
     </button>
-  )
-}
+  );
+};
 
 Button.propTypes = {
   label: PropTypes.string,
@@ -57,11 +57,11 @@ Button.propTypes = {
   htmlType: PropTypes.string,
   loading: PropTypes.bool,
   disabled: PropTypes.bool,
-}
+};
 
 Button.defaultProps = {
   type: "primary",
   htmlType: "button",
-}
+};
 
-export default Button
+export default Button;

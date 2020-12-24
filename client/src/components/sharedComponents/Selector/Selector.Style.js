@@ -1,4 +1,4 @@
-import {makeStyles} from "@material-ui/core/styles"
+import { makeStyles } from "@material-ui/core/styles";
 
 export const styles = makeStyles((theme) => ({
   container: {
@@ -12,7 +12,7 @@ export const styles = makeStyles((theme) => ({
     "& .MuiInputBase-root": {
       backgroundColor:
         theme.palette.type === "dark" && theme.palette.custom.grayBlue,
-    }
+    },
   },
   icon: {
     color: theme.palette.grey[700],
@@ -32,7 +32,7 @@ export const styles = makeStyles((theme) => ({
     borderTop: "none",
     borderBottom: "none",
     borderRadius: 5,
-    maxHeight: 150,
-    "& li": {padding: 15}
+    maxHeight: 300,
+    "& li": { padding: 10 },
   },
-}))
+}));

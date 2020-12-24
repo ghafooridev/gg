@@ -1,43 +1,45 @@
-import React, { useState } from "react"
+import React, { useState } from "react";
 
-import { Grid, Typography } from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core";
 
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 
-import TextField from "../../components/sharedComponents/TextField"
-import Password from "../../components/sharedComponents/Password"
-import { validationMessage } from "../../utils/ValidationMessage"
-import Button from "../../components/sharedComponents/Button"
-import Constant from "../../utils/Constant"
-import userRepository from "../../repositories/user"
-import AlertAction from "../../redux/actions/AlertAction"
-import UniversitySelector from "../../components/sharedComponents/UnivercitySelector"
-import JoyStick from "../../components/sharedComponents/JoyStick"
-import { styles } from "./Register.Style"
+import TextField from "../../components/sharedComponents/TextField";
+import Password from "../../components/sharedComponents/Password";
+import { validationMessage } from "../../utils/ValidationMessage";
+import Button from "../../components/sharedComponents/Button";
+import Constant from "../../utils/Constant";
+import userRepository from "../../repositories/user";
+import AlertAction from "../../redux/actions/AlertAction";
+import UniversitySelector from "../../components/sharedComponents/UnivercitySelector";
+import JoyStick from "../../components/sharedComponents/JoyStick";
+import Selector from "../../components/sharedComponents/Selector";
+import { styles } from "./Register.Style";
+import { list } from "../../assets/json/colleges";
 
 const Register = function () {
-  const classes = styles()
-  const { register, handleSubmit, errors, reset } = useForm()
-  const [loading, setLoading] = useState(false)
+  const classes = styles();
+  const { register, handleSubmit, errors, reset } = useForm();
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = function (data, e) {
-    setLoading(true)
+    setLoading(true);
     userRepository
       .register(data)
       .then((result) => {
-        setLoading(false)
+        setLoading(false);
         if (result) {
           AlertAction.show({
             type: "success",
             text: Constant.MESSAGES.SEND_ACTIVATION_LINK,
-          })
-          e.target.reset()
+          });
+          e.target.reset();
         }
       })
       .catch(() => {
-        setLoading(false)
-      })
-  }
+        setLoading(false);
+      });
+  };
 
   return (
     <Grid item sm={12} md={8} className={classes.root}>
@@ -105,16 +107,28 @@ const Register = function () {
             </Grid>
             <Grid className={classes.dropDown}>
               <Grid item xs={12}>
-                <UniversitySelector
+                {/* <UniversitySelector
                   name="university"
                   inputRef={register({
                     required: validationMessage("University", "required"),
                   })}
                   className={classes.input}
                   error={errors.university}
+                /> */}
+                <Selector
+                  className={classes.input}
+                  name="university"
+                  label="university"
+                  icon="school"
+                  inputRef={register({
+                    required: validationMessage("University", "required"),
+                  })}
+                  error={errors.category}
+                  options={list}
                 />
               </Grid>
             </Grid>
+
             <Typography
               variant="body2"
               className={classes.subTitle}
@@ -139,7 +153,7 @@ const Register = function () {
         </Grid>
       </JoyStick>
     </Grid>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
