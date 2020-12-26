@@ -3,7 +3,7 @@ import Storage from "../services/Storage";
 
 export const socketURL = function () {
   console.log(process.env);
-  if (process.env.DEBUG) {
+  if (process.env.NODE_ENV === "development") {
     return "localhost:5000";
   }
 

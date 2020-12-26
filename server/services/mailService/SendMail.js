@@ -4,14 +4,17 @@ const feedbackTemplate = require("./template/feedbackTemplate");
 const activationRegisterTemplate = require("./template/activationRegisterTemplate");
 const activationPasswordTemplate = require("./template/activationPasswordTemplate");
 
+const user="ggchat1234@gmail.com",
+const pass ="devggchatio"
+
 exports.sendMail = function (mailTypes, options) {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth: {
-      user: process.env.AUTH_EMAIL_USER,
-      pass: process.env.AUTH_EMAIL_PASS,
+      user: user,
+      pass: pass,
     },
   });
 
@@ -21,20 +24,20 @@ exports.sendMail = function (mailTypes, options) {
       feedback: () => {
         const { sender, category, description } = options;
         mailOptions.from = sender;
-        mailOptions.to = process.env.AUTH_EMAIL_USER;
+        mailOptions.to = user;
         mailOptions.subject = `GG Chat Feedback from ${sender}`;
         mailOptions.html = feedbackTemplate(category, description);
       },
       activationRegister: () => {
         const { name, host, email, token } = options;
-        mailOptions.from = process.env.AUTH_EMAIL_USER;
+        mailOptions.from = user;
         mailOptions.to = email;
         mailOptions.subject = `Activation Email From GG Chat`;
         mailOptions.html = activationRegisterTemplate(name, host, email, token);
       },
       activationPassword: () => {
         const { name, host, email, token } = options;
-        mailOptions.from = process.env.AUTH_EMAIL_USER;
+        mailOptions.from = user;
         mailOptions.to = email;
         mailOptions.subject = `Activation Password Email From GG Chat`;
         mailOptions.html = activationPasswordTemplate(name, host, email, token);
