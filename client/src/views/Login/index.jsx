@@ -1,54 +1,54 @@
-import React, {useState} from "react"
+import React, { useState } from "react";
 
-import {Grid, Typography} from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core";
 
-import {useHistory} from "react-router-dom"
+import { useHistory } from "react-router-dom";
 
-import {useForm} from "react-hook-form"
+import { useForm } from "react-hook-form";
 
-import TextField from "../../components/sharedComponents/TextField"
-import Password from "../../components/sharedComponents/Password"
-import {validationMessage} from "../../utils/ValidationMessage"
-import Button from "../../components/sharedComponents/Button"
-import userAction from "../../redux/actions/UserAction"
-import JoyStick from "../../components/sharedComponents/JoyStick"
-import Constant from "../../utils/Constant"
-import Storage from "../../services/Storage"
-import {styles} from "./Login.Style"
+import TextField from "../../components/sharedComponents/TextField";
+import Password from "../../components/sharedComponents/Password";
+import { validationMessage } from "../../utils/ValidationMessage";
+import Button from "../../components/sharedComponents/Button";
+import userAction from "../../redux/actions/UserAction";
+import JoyStick from "../../components/sharedComponents/JoyStick";
+import Constant from "../../utils/Constant";
+import Storage from "../../services/Storage";
+import { styles } from "./Login.Style";
 
 const Login = function () {
-  const classes = styles()
-  const {register, handleSubmit, errors} = useForm()
-  const history = useHistory()
-  const [loading, setLoading] = useState(false)
+  const classes = styles();
+  const { register, handleSubmit, errors } = useForm();
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   const onSignUpClick = function () {
-    history.push("/register")
-  }
+    history.push("/register");
+  };
 
   const onSubmit = function (data) {
-    setLoading(true)
+    setLoading(true);
     userAction
       .login(data)
       .then(() => {
-        setLoading(false)
-        const link = Storage.pull(Constant.STORAGE.CURRENT_LINK)
+        setLoading(false);
+        const link = Storage.pull(Constant.STORAGE.CURRENT_LINK);
         if (link) {
-          return history.push(link)
+          return history.push(link);
         }
-        history.push("/home")
+        history.push("/home");
       })
       .catch(() => {
-        setLoading(false)
-      })
-  }
+        setLoading(false);
+      });
+  };
 
   const onForgetPassword = function () {
-    history.push("/forget-password")
-  }
+    history.push("/forget-password");
+  };
 
   return (
-    <Grid item md={8} sm={12} className={classes.root}>
+    <Grid item className={classes.root}>
       <JoyStick>
         <Grid item xs={12} className={classes.container}>
           <Typography variant="h3" className={classes.title}>
@@ -108,7 +108,7 @@ const Login = function () {
         </Grid>
       </JoyStick>
     </Grid>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

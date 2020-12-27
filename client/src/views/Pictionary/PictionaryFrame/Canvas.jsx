@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef } from "react";
 
-import clsx from "clsx"
+import clsx from "clsx";
 
-import { Grid } from "@material-ui/core"
+import { Grid } from "@material-ui/core";
 
-import io from "socket.io-client"
+import io from "socket.io-client";
 
-import pen from "../../../assets/images/pen.png"
-import { socketURL } from "../../../utils/helpers"
+import pen from "../../../assets/images/pen.png";
+import { socketURL } from "../../../utils/helpers";
 
-import { styles } from "./PictionaryFrame.Style"
+import { styles } from "./PictionaryFrame.Style";
 
 const PALETTE = {
   BLACK: "#000",
@@ -18,55 +18,55 @@ const PALETTE = {
   BLUE: "#3943B7",
   GREEN: "#1EA896",
   PURPLE: "#BB6BD9",
-}
+};
 const SIZE = {
   LG: 15,
   MD: 10,
   SM: 5,
-}
-let socket
+};
+let socket;
 
-const ENDPOINT = socketURL()
+const ENDPOINT = socketURL();
 
-const Canvas = function ({ username, turn,height }) {
-  const classes = styles()
-  const canvas = useRef(null)
-  let ctx
-  let brushColor = PALETTE.BLACK
-  let brushSize = SIZE.MD
-  let isPainting = false
+const Canvas = function ({ username, turn, height }) {
+  const classes = styles();
+  const canvas = useRef(null);
+  let ctx;
+  let brushColor = PALETTE.BLACK;
+  let brushSize = SIZE.MD;
+  let isPainting = false;
 
-  let line = []
-  let prevPos = { offsetX: 0, offsetY: 0 }
+  let line = [];
+  let prevPos = { offsetX: 0, offsetY: 0 };
   const onClickColor = function (pointColor) {
-    brushColor = pointColor
-  }
+    brushColor = pointColor;
+  };
 
   const isMyTurn = function () {
-    return username === turn
-  }
+    return username === turn;
+  };
 
   const onClickSize = function (pointSize) {
-    brushSize = pointSize
-  }
+    brushSize = pointSize;
+  };
 
   const onClearClick = function () {
-    ctx = canvas.current.getContext("2d")
-    ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, 600, height)
+    ctx = canvas.current.getContext("2d");
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, 600, height);
     const options = {
       line: [],
       clear: true,
-    }
+    };
 
     socket.emit("paint.room", options, () => {
-      line = []
-    })
-  }
+      line = [];
+    });
+  };
 
   const onUndoClick = function () {
-    brushColor = "#fff"
-  }
+    brushColor = "#fff";
+  };
 
   const Point = function ({ size, color, className, onClick }) {
     return (
@@ -75,29 +75,29 @@ const Canvas = function ({ username, turn,height }) {
         style={{ backgroundColor: color || brushColor }}
         onClick={onClick}
       />
-    )
-  }
+    );
+  };
 
   const onMouseDown = function ({ nativeEvent }) {
     if (isMyTurn()) {
-      const { offsetX, offsetY } = nativeEvent
-      isPainting = true
-      prevPos = { offsetX, offsetY }
+      const { offsetX, offsetY } = nativeEvent;
+      isPainting = true;
+      prevPos = { offsetX, offsetY };
     }
-  }
+  };
 
   const paint = function (prePos, currPos, style) {
-    const { offsetX, offsetY } = currPos
-    const { offsetX: x, offsetY: y } = prePos
+    const { offsetX, offsetY } = currPos;
+    const { offsetX: x, offsetY: y } = prePos;
 
-    ctx.beginPath()
-    ctx.strokeStyle = style.color
-    ctx.lineWidth = style.size
-    ctx.moveTo(x, y)
-    ctx.lineTo(offsetX, offsetY)
-    ctx.stroke()
-    prevPos = { offsetX, offsetY }
-  }
+    ctx.beginPath();
+    ctx.strokeStyle = style.color;
+    ctx.lineWidth = style.size;
+    ctx.moveTo(x, y);
+    ctx.lineTo(offsetX, offsetY);
+    ctx.stroke();
+    prevPos = { offsetX, offsetY };
+  };
 
   const sendPaintData = function () {
     const options = {
@@ -106,55 +106,55 @@ const Canvas = function ({ username, turn,height }) {
       size: brushSize,
       username,
       clear: false,
-    }
+    };
     socket.emit("paint.room", options, () => {
-      line = []
-    })
-  }
+      line = [];
+    });
+  };
 
   const onMouseMove = function ({ nativeEvent }) {
     if (isPainting) {
-      const { offsetX, offsetY } = nativeEvent
-      const offSetData = { offsetX, offsetY }
+      const { offsetX, offsetY } = nativeEvent;
+      const offSetData = { offsetX, offsetY };
       const position = {
         start: { ...prevPos },
         stop: { ...offSetData },
-      }
-      line = line.concat(position)
-      paint(prevPos, offSetData, { color: brushColor, size: brushSize })
-      sendPaintData()
+      };
+      line = line.concat(position);
+      paint(prevPos, offSetData, { color: brushColor, size: brushSize });
+      sendPaintData();
     }
-  }
+  };
 
   const endPaintEvent = function () {
-    isPainting = false
-  }
+    isPainting = false;
+  };
 
   const createCanvas = function () {
-    canvas.current.width = 600
-    canvas.current.height = height
-    ctx = canvas.current.getContext("2d")
-    ctx.lineJoin = "round"
-    ctx.lineCap = "round"
-  }
+    canvas.current.width = 600;
+    canvas.current.height = height;
+    ctx = canvas.current.getContext("2d");
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+  };
 
   useEffect(() => {
-    createCanvas()
+    createCanvas();
 
-    socket = io(ENDPOINT)
+    socket = io();
 
     socket.on("draw", (options) => {
-      const { line, color, size, clear } = options
+      const { line, color, size, clear } = options;
       line.forEach((position) => {
-        paint(position.start, position.stop, { color, size })
-      })
+        paint(position.start, position.stop, { color, size });
+      });
 
       if (clear) {
-        ctx.fillStyle = "white"
-        ctx.fillRect(0, 0, 600, height)
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, 600, height);
       }
-    })
-  }, [line])
+    });
+  }, [line]);
 
   return (
     <div>
@@ -231,7 +231,7 @@ const Canvas = function ({ username, turn,height }) {
         </Grid>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(Canvas)
+export default React.memo(Canvas);

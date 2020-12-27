@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 
 import { useHistory } from "react-router-dom";
 
-import { Grid } from "@material-ui/core";
+import { Grid, Typography } from "@material-ui/core";
 
 import { Squash as Hamburger } from "hamburger-react";
 
@@ -68,12 +68,17 @@ const Header = function () {
   return (
     <div className={classes.root}>
       <Grid container className={classes.container}>
-        <img
-          alt="logo"
-          src={mode === "dark" ? LogoDark : LogoLight}
-          className={classes.logo}
-          onClick={() => onMenuClick("home")}
-        />
+        <Grid className={classes.logoContainer}>
+          <img
+            alt="logo"
+            src={mode === "dark" ? LogoDark : LogoLight}
+            className={classes.logo}
+            onClick={() => onMenuClick("home")}
+          />
+          <Typography variant="h4" color="primary">
+            GG chat
+          </Typography>
+        </Grid>
         <div className={classes.menu}>
           <Grid item className={classes.hamburger}>
             <Hamburger

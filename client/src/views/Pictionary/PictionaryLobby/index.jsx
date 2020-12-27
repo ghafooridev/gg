@@ -1,119 +1,117 @@
-import React, {useEffect} from "react"
+import React, { useEffect } from "react";
 
-import {useHistory} from "react-router-dom"
+import { useHistory } from "react-router-dom";
 
-import {Grid, Typography} from "@material-ui/core"
+import { Grid, Typography } from "@material-ui/core";
 
-import io from "socket.io-client"
+import io from "socket.io-client";
 
-import TextField from "../../../components/sharedComponents/TextField"
-import Button from "../../../components/sharedComponents/Button"
-import Card from "../../../components/sharedComponents/Card"
-import InfoBox from "../../../components/sharedComponents/InfoBox"
-import ChatBox from "../../../components/sharedComponents/ChatBox"
-import Constant from "../../../utils/Constant"
-import chatRepository from "../../../repositories/chat"
-import {socketURL} from "../../../utils/helpers"
-import {getUserNameFromLocalStorage} from "../../../utils/helpers"
-import {styles} from "../Pictionary.Style"
+import TextField from "../../../components/sharedComponents/TextField";
+import Button from "../../../components/sharedComponents/Button";
+import Card from "../../../components/sharedComponents/Card";
+import InfoBox from "../../../components/sharedComponents/InfoBox";
+import ChatBox from "../../../components/sharedComponents/ChatBox";
+import Constant from "../../../utils/Constant";
+import chatRepository from "../../../repositories/chat";
+import { socketURL } from "../../../utils/helpers";
+import { getUserNameFromLocalStorage } from "../../../utils/helpers";
+import { styles } from "../Pictionary.Style";
 import { useStateIfMounted } from "use-state-if-mounted";
 
-const ENDPOINT = socketURL()
-let socket
+const ENDPOINT = socketURL();
+let socket;
 
 const PictionaryLobby = function (props) {
-  const history = useHistory()
-  const {room} = props.match.params;
-  const username = getUserNameFromLocalStorage(history)
-  const classes = styles()
+  const history = useHistory();
+  const { room } = props.match.params;
+  const username = getUserNameFromLocalStorage(history);
+  const classes = styles();
 
-  const [messages, setMessages] = useStateIfMounted([])
-  const [fetchMessages, setFetchMessages] = useStateIfMounted([])
-  const [users, setUsers] = useStateIfMounted([])
-  const [timer, setTimer] = useStateIfMounted(10)
+  const [messages, setMessages] = useStateIfMounted([]);
+  const [fetchMessages, setFetchMessages] = useStateIfMounted([]);
+  const [users, setUsers] = useStateIfMounted([]);
+  const [timer, setTimer] = useStateIfMounted(10);
 
   const onPlayClick = function () {
     history.push({
       pathname: `/pictionary-game/125`,
-    })
-    socket.emit("enterGame.lobby", {username, room})
-  }
+    });
+    socket.emit("enterGame.lobby", { username, room });
+  };
 
   const onSendClick = function (message) {
-    socket.emit("chat.lobby", {username, message}, () => {
-    })
-  }
+    socket.emit("chat.lobby", { username, message }, () => {});
+  };
 
   const onLeaveClick = function () {
-    socket.emit("leave.lobby", {username, room})
-    socket.off()
-    history.push("/home")
-  }
+    socket.emit("leave.lobby", { username, room });
+    socket.off();
+    history.push("/home");
+  };
 
   const getHeight = function () {
-    return window.innerHeight - 650
-  }
+    return window.innerHeight - 650;
+  };
 
   const enterGame = function () {
     socket.on("enterGame.lobby", (message) => {
-      setMessages(message)
+      setMessages(message);
       setTimeout(() => {
         history.push({
           pathname: `/pictionary-game/125`,
-        })
-      }, 2000)
-    })
-  }
+        });
+      }, 2000);
+    });
+  };
 
   const addTimer = () => {
-    let number = 10
+    let number = 10;
     const counter = setInterval(() => {
-      number -= 1
-      setTimer(number)
+      number -= 1;
+      setTimer(number);
       if (number === 0) {
-        clearInterval(counter)
+        clearInterval(counter);
       }
-    }, 1000)
-  }
+    }, 1000);
+  };
 
   useEffect(() => {
-    socket = io(ENDPOINT)
-    socket.emit("join.lobby", {username, room})
+    socket = io();
+    socket.emit("join.lobby", { username, room });
 
     chatRepository.getChatByGame(room).then((chats) => {
-      setFetchMessages(chats)
-    })
-
-  }, [room, username])
+      setFetchMessages(chats);
+    });
+  }, [room, username]);
 
   useEffect(() => {
     socket.on("message", (message) => {
-      setMessages(message)
-    })
+      setMessages(message);
+    });
 
-    enterGame()
-  }, [messages])
+    enterGame();
+  }, [messages]);
 
   useEffect(() => {
     socket.on("users.lobby", (users) => {
-      setUsers(users)
+      setUsers(users);
       if (users.length === Constant.GAMES_CONDITIONS.PICTIONARY_USER) {
-        socket.emit("startGameTimer.lobby", {room})
-        addTimer()
+        socket.emit("startGameTimer.lobby", { room });
+        addTimer();
       }
-    })
+    });
 
     socket.on("startGameTimerUp.lobby", (randomUser) => {
       if (randomUser === username) {
-        onPlayClick()
+        onPlayClick();
       }
-    })
+    });
 
     return () => {
-      socket.off("users.lobby")
-      socket.off("startGameTimer.lobby")
-    }
-  }, [])
+      socket.off("users.lobby");
+      socket.off("startGameTimer.lobby");
+    };
+  }, []);
 
   return (
     <Grid container>
@@ -175,9 +173,9 @@ const PictionaryLobby = function (props) {
                   subTitle={item.university}
                   background={item.background}
                 />
-              )
+              );
             })}
-            <Button label="leave queue" onClick={onLeaveClick}/>
+            <Button label="leave queue" onClick={onLeaveClick} />
           </Card>
         </Grid>
         <Grid item xs={12} className={classes.rightCol}>
@@ -188,9 +186,9 @@ const PictionaryLobby = function (props) {
             <TextField
               rows={2}
               label="What is your favorite cuisine?"
-              style={{marginBottom: 10}}
+              style={{ marginBottom: 10 }}
             />
-            <Button label="submit"/>
+            <Button label="submit" />
           </Card>
           <ChatBox
             title="Chat"
@@ -203,7 +201,7 @@ const PictionaryLobby = function (props) {
         </Grid>
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
-export default PictionaryLobby
+export default PictionaryLobby;

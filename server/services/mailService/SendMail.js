@@ -4,17 +4,17 @@ const feedbackTemplate = require("./template/feedbackTemplate");
 const activationRegisterTemplate = require("./template/activationRegisterTemplate");
 const activationPasswordTemplate = require("./template/activationPasswordTemplate");
 
-const user="ggchat1234@gmail.com",
-const pass ="devggchatio"
-
 exports.sendMail = function (mailTypes, options) {
+  const user = "ggchat1234@gmail.com";
+  const pass = "devggchatio";
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth: {
-      user: user,
-      pass: pass,
+      user,
+      pass,
     },
   });
 

@@ -59,9 +59,20 @@ export const styles = makeStyles((theme) => ({
       margin: "2px 0",
     },
   },
+  logoContainer: {
+    display: "flex",
+    alignItems: "center",
+    [theme.breakpoints.down("xs")]: {
+      "& h4": {
+        position: "absolute",
+        left: 50,
+      },
+    },
+  },
   logo: {
     width: 80,
     height: 80,
+    marginRight: 5,
     [theme.breakpoints.down("xs")]: {
       position: "absolute",
       top: 0,
