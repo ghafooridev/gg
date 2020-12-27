@@ -10,12 +10,12 @@ exports.sendMail = function (mailTypes, options) {
 
   const transporter = nodemailer.createTransport({
     host: "smtp.mail.yahoo.com",
-    port: 465,
+    port: 587,
     service: "yahoo",
     secure: false,
     auth: {
-      user: senderMail,
-      pass: "mypassword",
+      user,
+      pass,
     },
     debug: false,
     logger: true,
