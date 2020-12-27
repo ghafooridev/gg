@@ -141,7 +141,7 @@ const Canvas = function ({ username, turn, height }) {
   useEffect(() => {
     createCanvas();
 
-    socket = io();
+    socket = io(ENDPOINT);
 
     socket.on("draw", (options) => {
       const { line, color, size, clear } = options;

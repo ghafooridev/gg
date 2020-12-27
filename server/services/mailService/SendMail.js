@@ -5,17 +5,27 @@ const activationRegisterTemplate = require("./template/activationRegisterTemplat
 const activationPasswordTemplate = require("./template/activationPasswordTemplate");
 
 exports.sendMail = function (mailTypes, options) {
-  const user = "ggchat1234@gmail.com";
-  const pass = "devggchatio";
+  const user = "alighafooridev";
+  const pass = "Gh@f00r!";
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp.mail.yahoo.com",
     port: 465,
-    secure: true,
+    service: "yahoo",
+    secure: false,
     auth: {
-      user,
-      pass,
+      user: senderMail,
+      pass: "mypassword",
     },
+    debug: false,
+    logger: true,
+    // host: "smtp.gmail.com",
+    // port: 465,
+    // secure: true,
+    // auth: {
+    //   user,
+    //   pass,
+    // },
   });
 
   return new Promise((resolve, reject) => {

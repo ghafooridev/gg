@@ -2,12 +2,13 @@ import Constant from "../utils/Constant";
 import Storage from "../services/Storage";
 
 export const socketURL = function () {
-  console.log(process.env);
-  if (process.env.NODE_ENV === "development") {
-    return "localhost:5000";
-  }
+  // console.log(process.env);
+  // if (process.env.NODE_ENV === "development") {
+  //   return "localhost:5000";
+  // }
 
-  return "www.ggchat.io";
+  // return "www.ggchat.io";
+  return "https://ghafooridev-gg.zeet.app";
 };
 
 export const getUserNameFromLocalStorage = function (history) {

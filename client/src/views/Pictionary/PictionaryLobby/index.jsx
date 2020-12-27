@@ -76,7 +76,7 @@ const PictionaryLobby = function (props) {
   };
 
   useEffect(() => {
-    socket = io();
+    socket = io(ENDPOINT);
     socket.emit("join.lobby", { username, room });
 
     chatRepository.getChatByGame(room).then((chats) => {

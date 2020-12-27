@@ -263,7 +263,7 @@ const PictionaryGame = function (props) {
   }
 
   useEffect(() => {
-    socket = io();
+    socket = io(ENDPOINT);
 
     navigator.mediaDevices
       .getUserMedia({

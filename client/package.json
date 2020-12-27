@@ -64,7 +64,6 @@
       ".+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$": "babel-jest"
     }
   },
-  "proxy": "http://localhost:5000",
   "eslintConfig": {
     "settings": {
       "react": {

@@ -8,5 +8,5 @@ if (process.env.NODE_ENV === "development") {
 }
 
 module.exports = {
-  apiUrl: "https://ghafooridev-gg.zeet.app/",
+  apiUrl: "https://ghafooridev-gg.zeet.app/api",
 };
