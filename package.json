@@ -40,6 +40,7 @@
     "client": "cd ./client && yarn start",
     "lint": "eslint .",
     "heroku-postbuild": "cd ./client && yarn && yarn build",
+    "build":"cd ./client && yarn build",
     "test": "cd client && yarn test"
   },
   "devDependencies": {
