@@ -22,9 +22,10 @@ module.exports = Object.freeze({
       "Your verification link may have expired. Please click on resend for verify your Email.",
     USER_NOT_FOUND: "We were unable to find a user for this verification",
     SEND_ACTIVATION_EMAIL:
-      "A verification email has been sent to your Email. It will be expire after one day",
+      "A verification email has been sent to your Email in a few seconds. It will be expire after one day",
     REGISTER_DUPLICATE_EMAIL: "This Email address hase been taken",
+    REGISTER_DUPLICATE_USERNAME: "This Username has been taken",
     NOT_VERIFIED_USER: "Your account has not been verified",
-    CHATS_NOT_FOUND:"Chats not found"
+    CHATS_NOT_FOUND: "Chats not found",
   },
-})
+});
