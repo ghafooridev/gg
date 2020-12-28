@@ -17,6 +17,7 @@
     "google-auth-library": "^6.0.6",
     "jsonwebtoken": "^8.5.1",
     "lodash.isempty": "^4.4.0",
+    "mailgun-js": "^0.22.0",
     "mongodb": "^3.6.0",
     "mongoose": "^5.10.1",
     "node-sass": "^4.14.1",
@@ -40,7 +41,7 @@
     "client": "cd ./client && yarn start",
     "lint": "eslint .",
     "heroku-postbuild": "cd ./client && yarn && yarn build",
-    "build":"cd ./client && yarn build",
+    "build": "cd ./client && yarn build",
     "test": "cd client && yarn test"
   },
   "devDependencies": {

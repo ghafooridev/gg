@@ -20,15 +20,18 @@ exports.EmailActivationToken = function (type, user, req, res) {
       host: req.headers.host,
       token: token.token,
     };
-    return sendMail(type, activationMailOptions)
-      .then(() => {
-        return res.status(200).json({
-          success: true,
-          message: Constant.MESSAGES.SEND_ACTIVATION_EMAIL,
-        });
-      })
-      .catch((error) => {
-        return res.status(400).json(error);
-      });
+    return (
+      sendMail(type, activationMailOptions)
+        // return sendMail(user.email, { subject: "hi", text: "test" })
+        .then(() => {
+          return res.status(200).json({
+            success: true,
+            message: Constant.MESSAGES.SEND_ACTIVATION_EMAIL,
+          });
+        })
+        .catch((error) => {
+          return res.status(400).json(error);
+        })
+    );
   });
 };

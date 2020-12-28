@@ -9,4 +9,5 @@ if (process.env.NODE_ENV === "development") {
 
 module.exports = {
   apiUrl: "https://ghafooridev-gg.zeet.app/api",
+  // apiUrl: "http://localhost:5000/api",
 };

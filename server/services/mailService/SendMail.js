@@ -5,20 +5,14 @@ const activationRegisterTemplate = require("./template/activationRegisterTemplat
 const activationPasswordTemplate = require("./template/activationPasswordTemplate");
 
 exports.sendMail = function (mailTypes, options) {
-  const user = "alighafooridev";
-  const pass = "Gh@f00r!";
-
+  const user = "alighafooridev@yahoo.com";
+  const pass = "edajpqqwtknejzch";
   const transporter = nodemailer.createTransport({
-    host: "smtp.mail.yahoo.com",
-    port: 587,
-    service: "yahoo",
-    secure: false,
+    service: "Yahoo",
     auth: {
       user,
       pass,
     },
-    debug: false,
-    logger: true,
     // host: "smtp.gmail.com",
     // port: 465,
     // secure: true,
@@ -27,7 +21,6 @@ exports.sendMail = function (mailTypes, options) {
     //   pass,
     // },
   });
-
   return new Promise((resolve, reject) => {
     const mailOptions = {};
     const types = {
@@ -55,8 +48,8 @@ exports.sendMail = function (mailTypes, options) {
     };
     if (types[mailTypes]) {
       types[mailTypes]();
-
       transporter.sendMail(mailOptions, function (error, info) {
+        console.log(error, info);
         if (error) {
           return reject(error);
         }
