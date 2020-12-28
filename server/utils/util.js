@@ -1,7 +1,8 @@
 exports.getUiAddress = function () {
-  if (process.env.NODE_ENV === "development") {
-    return "http://localhost:3000";
-  }
+  // if (process.env.NODE_ENV === "development") {
+  //   return "http://localhost:3000";
+  // }
 
-  return "https://ggchat.io";
+  // return "https://ggchat.io";
+  return "https://ghafooridev-gg.zeet.app";
 };
