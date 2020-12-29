@@ -5,10 +5,10 @@ const activationRegisterTemplate = require("./template/activationRegisterTemplat
 const activationPasswordTemplate = require("./template/activationPasswordTemplate");
 
 exports.sendMail = function (mailTypes, options) {
-  const user = "ggchatcompany@yahoo.com";
-  const pass = "cjfqztiyszyupbwy";
+  const user = "ggchat1234@gmail.com";
+  const pass = "lxhuabxcoqtmcdjg";
   const transporter = nodemailer.createTransport({
-    service: "Yahoo",
+    service: "gmail",
     auth: {
       user,
       pass,
